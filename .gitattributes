@@ -1,6 +1,8 @@
-# Unity项目 Git LFS 配置文件
+# ==========================
+# Unity Project .gitattributes
+# ==========================
 
-# 图像文件
+# 图像文件（走 LFS）
 *.png filter=lfs diff=lfs merge=lfs -text
 *.jpg filter=lfs diff=lfs merge=lfs -text
 *.jpeg filter=lfs diff=lfs merge=lfs -text
@@ -10,46 +12,44 @@
 *.tiff filter=lfs diff=lfs merge=lfs -text
 *.psd filter=lfs diff=lfs merge=lfs -text
 
-# 音频文件
+# 音频文件（走 LFS）
 *.mp3 filter=lfs diff=lfs merge=lfs -text
 *.wav filter=lfs diff=lfs merge=lfs -text
 *.ogg filter=lfs diff=lfs merge=lfs -text
 *.aiff filter=lfs diff=lfs merge=lfs -text
 
-# 视频文件
+# 视频文件（走 LFS）
 *.mov filter=lfs diff=lfs merge=lfs -text
 *.mp4 filter=lfs diff=lfs merge=lfs -text
 *.avi filter=lfs diff=lfs merge=lfs -text
 
-# 3D模型文件
+# 3D 模型（走 LFS）
 *.fbx filter=lfs diff=lfs merge=lfs -text
 *.3ds filter=lfs diff=lfs merge=lfs -text
 *.obj filter=lfs diff=lfs merge=lfs -text
 *.blend filter=lfs diff=lfs merge=lfs -text
 *.dae filter=lfs diff=lfs merge=lfs -text
 
-# Unity特定文件
+# Unity 特定资源包
 *.unitypackage filter=lfs diff=lfs merge=lfs -text
 *.cubemap filter=lfs diff=lfs merge=lfs -text
 
-# 字体文件
+# 字体文件（走 LFS）
 *.ttf filter=lfs diff=lfs merge=lfs -text
 *.otf filter=lfs diff=lfs merge=lfs -text
 
-# 大型数据文件
+# 大型二进制文件（走 LFS）
 *.bin filter=lfs diff=lfs merge=lfs -text
 *.bytes filter=lfs diff=lfs merge=lfs -text
 
-# 确保某些重要文件不使用LFS
-*.cs diff=csharp
-*.meta -filter
-*.unity -filter
-*.prefab -filter
-*.mat -filter
-*.controller -filter
-*.anim -filter
+# 以下文件不要使用 LFS
+*.cs -filter -diff -merge text
+*.meta -filter -diff -merge text
+*.unity -filter -diff -merge text
+*.prefab -filter -diff -merge text
+*.mat -filter -diff -merge text
+*.controller -filter -diff -merge text
+*.anim -filter -diff -merge text
 
-# 行尾处理
-*.cs text eol=crlf
-*.js text eol=crlf
-*.shader text eol=crlf
+# 不进行换行符转换（保持原样）
+* -text
