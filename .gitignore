@@ -1,0 +1,88 @@
+# =========================
+# Unity standard ignores
+# =========================
+
+# Cache and build folders
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Aa]ssets/AssetStoreTools*  # optional
+
+# User settings
+/[Uu]ser[Ss]ettings/
+
+# Memory captures and recordings
+/[Mm]emoryCaptures/
+/[Rr]ecordings/
+
+# System files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# Visual Studio / Rider / VSCode
+.vs/
+*.csproj
+*.sln
+*.suo
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+*.DotSettings.user
+.idea/
+.vscode/
+
+# Mono auto-generated files
+mono_crash.*
+
+# Crashlytics generated files
+crashlytics-build.properties
+
+# Unity3D generated files
+sysinfo.txt
+*.pidb.meta
+*.pdb.meta
+*.mdb.meta
+
+# Unity generated builds
+*.apk
+*.aab
+*.app
+*.unitypackage
+*.unitypackage.meta
+
+# Addressables default ignores
+/[Aa]ssets/StreamingAssets/aa*
+/[Aa]ssets/AddressableAssetsData/*/*.bin*
+/[Aa]ssets/Addressables_Temp*
+/[Aa]ssets/Addressables_Temp*
+
+# Visual Scripting generated files
+/[Aa]ssets/Unity.VisualScripting.Generated/
+
+# =========================
+# Keep .meta files
+# =========================
+!*.meta
+
+# =========================
+# LFS (large files)
+# =========================
+# Track large resources in .gitattributes, e.g.:
+# git lfs track "*.png"
+# git lfs track "*.fbx"
+# git lfs track "*.wav"
