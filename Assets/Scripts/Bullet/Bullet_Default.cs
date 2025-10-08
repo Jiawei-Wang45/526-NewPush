@@ -7,11 +7,14 @@ public class Bullet_Default: MonoBehaviour
     public float bulletLifeTime;
     public float bulletDamage;
 
-    public void InitBullet(float bulletSpeed, float bulletLifeTime,float bulletDamage)
+    public string bulletType;
+
+    public void InitBullet(float bulletSpeed, float bulletLifeTime, float bulletDamage, string bulletType)
     {
         this.bulletSpeed = bulletSpeed;
         this.bulletLifeTime = bulletLifeTime;
         this.bulletDamage = bulletDamage;
+        this.bulletType = bulletType;
     }
     private void Start()
     {
@@ -21,9 +24,15 @@ public class Bullet_Default: MonoBehaviour
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.TryGetComponent<EnemyStats>(out EnemyStats enemyScript))
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Enemy") && bulletType == "player")
         {
-            enemyScript.takeDamage(bulletDamage);
+            EnemyStats enemyStats = collision.gameObject.GetComponent<EnemyStats>();
+            enemyStats.takeDamage(bulletDamage);
+        }
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Player") && bulletType == "enemy")
+        {
+            PlayerStats playerStats = collision.gameObject.GetComponent<PlayerStats>();
+            playerStats.TakeDamage(bulletDamage);
         }
         Destroy(gameObject);
     }

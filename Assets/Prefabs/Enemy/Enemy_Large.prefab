@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 278665738959221860}
   - component: {fileID: 1068734311500911877}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: EyeBall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -102,7 +102,7 @@ GameObject:
   - component: {fileID: 8329438148079293782}
   - component: {fileID: 616894894149804898}
   - component: {fileID: 8572776704057460049}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Enemy_Large
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -170,7 +170,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 1
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 0.7812501, g: 0.23829652, b: 0.990566, a: 1}
+  m_Color: {r: 0.23921566, g: 0.99215686, b: 0.37520164, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -292,7 +292,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 20
-  enemyMovementSpeed: 5
+  enemyMovementSpeed: 1
   enemyDamage: 0.05
   health: 0
 --- !u!114 &8572776704057460049
@@ -309,6 +309,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pcTest: {fileID: 0}
   enemyStats: {fileID: 0}
+  weapon: {fileID: 11400000, guid: ce7798f7bd1134a17a2d77f337f270c0, type: 2}
   rb: {fileID: 0}
   gameManager: {fileID: 0}
   BoundHealthbar: {fileID: 0}
