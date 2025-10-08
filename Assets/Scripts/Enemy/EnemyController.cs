@@ -84,6 +84,7 @@ public class EnemyController : MonoBehaviour
 
     IEnumerator BeginFiringSequence()
     {
+        currentlyFiring = true;
         for (int i = 0; i < weapon.bulletPattern.fireCount; i++)
         {
             FireOnce(i);
@@ -92,6 +93,7 @@ public class EnemyController : MonoBehaviour
                 yield return new WaitForSeconds(weapon.bulletPattern.timeBetweenFiring);
             }
         }
+        currentlyFiring = false;
 
     }
 
