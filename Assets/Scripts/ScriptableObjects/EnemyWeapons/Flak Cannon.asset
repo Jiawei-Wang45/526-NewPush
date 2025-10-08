@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletLifeTime: 10
   bulletDamage: 1
-  bulletSpeed: 4
+  bulletSpeed: 3
   bulletType: {fileID: 8604903965720594084, guid: 04d380db99e814f64a851e76366f14f9, type: 3}
-  fireRate: 0
+  fireRate: 5
   bulletPattern: {fileID: 11400000, guid: b8a58268b5bcd4b5dbad4476ed61c2d7, type: 2}

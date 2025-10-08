@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletCount: 4
   firingAngle: 360
-  bulletDistribution: 0
-  fireCount: 15
-  rotateBetweenFiring: 1
+  bulletDistribution: 3
+  fireCount: 25
+  rotateBetweenFiring: 2
   timeBetweenFiring: 0.1

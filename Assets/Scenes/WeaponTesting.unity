@@ -961,6 +961,8 @@ MonoBehaviour:
   - {fileID: 2834873648303903019, guid: 0810de3e989fb2a46b9f6a974ca641b1, type: 3}
   - {fileID: 4670447388552369797, guid: 2333d313260042b4e9ab6f3b3468d6ce, type: 3}
   - {fileID: 7357116651023933741, guid: 4ce1f3d830ec8a845b751489040af445, type: 3}
+  - {fileID: 7357116651023933741, guid: c4111b8f8ebd44d88be64b489b15ab63, type: 3}
+  - {fileID: 7357116651023933741, guid: 82315443f1f4e431b89cf8a7cbbf23f2, type: 3}
   enemySpawnIndicator: {fileID: 62652219401394802, guid: cc44a7ca5f6c670479244ae20d6b696c, type: 3}
   spawnPosVariationScale: 1
 --- !u!4 &373476908

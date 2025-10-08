@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9fd78b07c1d854bed858b02a0fde1ad2, type: 3}
   m_Name: Buckshot
   m_EditorClassIdentifier: 
-  bulletCount: 5
+  bulletCount: 6
   firingAngle: 50
   bulletDistribution: 2
   fireCount: 2

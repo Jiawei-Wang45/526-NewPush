@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9fd78b07c1d854bed858b02a0fde1ad2, type: 3}
   m_Name: Flakshot
   m_EditorClassIdentifier: 
-  bulletCount: 6
+  bulletCount: 4
   firingAngle: 70
   bulletDistribution: 1
   fireCount: 3
