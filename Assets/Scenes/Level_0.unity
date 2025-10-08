@@ -5025,6 +5025,7 @@ MonoBehaviour:
   InGameEndingMenu: {fileID: 2023604928}
   InGameWinMenu: {fileID: 363682969}
   isInLevel: 1
+  levelStartTime: 0
 --- !u!4 &850232883
 Transform:
   m_ObjectHideFlags: 0

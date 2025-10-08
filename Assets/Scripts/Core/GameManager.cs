@@ -10,11 +10,13 @@ public class GameManager : MonoBehaviour
     public GameObject InGameEndingMenu;
     public GameObject InGameWinMenu;
     public bool isInLevel;
+    public float levelStartTime;
 
     private void Start()
     {
         if (isInLevel)
         {
+            levelStartTime = Time.time;
             InGamePauseMenu.SetActive(false);
             InGameEndingMenu.SetActive(false);
             InGameWinMenu.SetActive(false);
@@ -101,5 +103,14 @@ public class GameManager : MonoBehaviour
         isPlayerAlive = false;
         Time.timeScale = 0;
         InGameWinMenu.SetActive(true);
+
+        // Record level completion time
+        float completionTime = Time.time - levelStartTime;
+        string levelName = SceneManager.GetActiveScene().name;
+        GameAnalyticsManager gaManager = FindFirstObjectByType<GameAnalyticsManager>();
+        if (gaManager != null)
+        {
+            gaManager.SendLevelCompletedEvent(levelName, completionTime);
+        }
     }
 }
