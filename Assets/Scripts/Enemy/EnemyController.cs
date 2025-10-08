@@ -56,14 +56,17 @@ public class EnemyController : MonoBehaviour
         {
             rb.linearVelocity = transform.right * enemySpeed;
         }
-        if (!currentlyFiring)
+        if (weapon)
         {
-            timeToFire += Time.deltaTime;
-        }
-        if (timeToFire >= weapon.fireRate)
-        {
-            timeToFire = 0;
-            StartCoroutine(BeginFiringSequence());
+            if (!currentlyFiring)
+            {
+                timeToFire += Time.deltaTime;
+            }
+            if (timeToFire >= weapon.fireRate)
+            {
+                timeToFire = 0;
+                StartCoroutine(BeginFiringSequence());
+            }
         }
 
     }
