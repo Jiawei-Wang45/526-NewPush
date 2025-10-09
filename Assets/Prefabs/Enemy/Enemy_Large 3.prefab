@@ -310,9 +310,11 @@ MonoBehaviour:
   pcTest: {fileID: 0}
   enemyStats: {fileID: 0}
   weapon: {fileID: 11400000, guid: c85e7f5d5563746dda9866e1380fa354, type: 2}
+  movementPattern: {fileID: 11400000, guid: 5ecd999a8b9aafb4881ba454561786b8, type: 2}
   rb: {fileID: 0}
   gameManager: {fileID: 0}
   BoundHealthbar: {fileID: 0}
   RotationSpeed: 15
   enemySpeed: 0
+  comfortableDistance: 5
   isAttacking: 0
