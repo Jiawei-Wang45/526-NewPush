@@ -145,6 +145,7 @@ public class EnemyController : MonoBehaviour
                         // we probably spawned in wall, let the physics engine sort it out
                         // Fixing spawner logic to avoid spawning in walls should fix this
                     }
+                    Debug.Log(tries);
                 }
             }
         }
