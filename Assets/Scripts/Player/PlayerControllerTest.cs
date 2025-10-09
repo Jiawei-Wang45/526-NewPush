@@ -119,7 +119,7 @@ public class PlayerControllerTest : MonoBehaviour
         {
             GameObject spawnedBullet=Instantiate(currentWeapon.bulletType, firePoint.position, firePoint.rotation);
             Bullet_Default bulletAttributes = spawnedBullet.GetComponent<Bullet_Default>();
-            bulletAttributes.InitBullet(currentWeapon.weaponBulletSpeed, currentWeapon.weaponBulletLifeTime, currentWeapon.weaponBulletDamage);
+            bulletAttributes.InitBullet(currentWeapon.weaponBulletSpeed, currentWeapon.weaponBulletLifeTime, currentWeapon.weaponBulletDamage, "player");
             spawnedBullet.transform.Rotate(0, 0, bulletTiltAngle+Random.Range(-currentWeapon.weaponBulletSpread,currentWeapon.weaponBulletSpread));
             bulletTiltAngle += currentWeapon.weaponFiringAngle;
         }

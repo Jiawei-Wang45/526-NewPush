@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 2307834556038864095}
   - component: {fileID: 71048726345297618}
   - component: {fileID: 3966506979569408143}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Enemy_Medium
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -205,7 +205,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 15
-  enemyMovementSpeed: 5
+  enemyMovementSpeed: 1
   enemyDamage: 0.05
   health: 0
 --- !u!114 &3966506979569408143
@@ -222,6 +222,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pcTest: {fileID: 0}
   enemyStats: {fileID: 0}
+  weapon: {fileID: 11400000, guid: 2f504e69458d84b22a3015cc83f5d04b, type: 2}
   rb: {fileID: 0}
   gameManager: {fileID: 0}
   BoundHealthbar: {fileID: 0}
@@ -238,7 +239,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5239680158776192814}
   - component: {fileID: 5281098964119232569}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: EyeBall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
