@@ -2,32 +2,34 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.AI;
 public class EnemyController : MonoBehaviour
 {
 
     public PlayerControllerTest pcTest;
     public EnemyStats enemyStats;
+    public NavMeshAgent agent;
 
     public EnemyWeaponData weapon;
     public EnemyMovementPattern movementPattern;
     public Rigidbody2D rb;
     public GameManager gameManager;
     public GameObject BoundHealthbar;
+    //** AI Logic variables  **//
     public float RotationSpeed = 15.0f;
     public float enemySpeed;
     public float comfortableDistance = 5.0f;
-
-    
     private Vector2 movement;
     private float timeToFire = 0;
     private bool currentlyFiring = false;
     private bool foundPlayer = false;
     private bool canSeePlayer = false;
+    private float elapsedTime;
     private LayerMask terrainMask;
+    private LayerMask ObstacleMask;
     private float checkInterval = 0.1f;
     private Vector3 randomTarget;
-
+    //** AI Logic variables  **//
     public bool isAttacking;
 
 
@@ -36,16 +38,24 @@ public class EnemyController : MonoBehaviour
         pcTest = FindFirstObjectByType<PlayerControllerTest>();
         enemyStats = GetComponent<EnemyStats>();
         rb = GetComponent<Rigidbody2D>();
+        agent = GetComponent<NavMeshAgent>();
+        agent.updateUpAxis = false;
+        agent.updateRotation = false;
+        agent.stoppingDistance = movementPattern.TargetStoppingDistance;
+        agent.speed= movementPattern.MovementSpeed;
         terrainMask = LayerMask.GetMask("Wall", "Player");
+        ObstacleMask = LayerMask.GetMask("Wall", "Enemy");
         gameManager = FindFirstObjectByType<GameManager>();
         RefreshStats();
-        timeToFire = weapon.fireRate - 0.6f;
+        //timeToFire = weapon.fireRate - 0.6f;
+        //let it fire quicker at first time
+        timeToFire = weapon.fireRate / 2;
         randomTarget = transform.position;
     }
     public void RefreshStats()
     {
         //enemySpeed = enemyStats.enemyMovementSpeed;
-        comfortableDistance = movementPattern.comfortableDistance;
+        //comfortableDistance = movementPattern.comfortableDistance;
         enemySpeed = movementPattern.MovementSpeed;
     }
     private void Update()
@@ -53,32 +63,53 @@ public class EnemyController : MonoBehaviour
         if (gameManager.isPlayerAlive)
         {
             RaycastHit2D hit = Physics2D.Linecast(transform.position, pcTest.transform.position, terrainMask);
-            if(hit.collider != null){
-                if(hit.collider.transform.position == pcTest.transform.position){
+            if (hit.collider != null)
+            {
+                if (hit.collider.transform.position == pcTest.transform.position)
+                {
                     foundPlayer = true;
                     canSeePlayer = true;
-                    Vector2 direction = pcTest.transform.position - transform.position;
-                    float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-                    Quaternion targetRotation = Quaternion.AngleAxis(angle, Vector3.forward);
-                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.deltaTime);
-                } else {
+                    elapsedTime = 0;
+             
+                    //Vector2 direction = pcTest.transform.position - transform.position;
+                    //float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+                    //Quaternion targetRotation = Quaternion.AngleAxis(angle, Vector3.forward);
+                    //transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.deltaTime);
+                }
+                else
+                {
                     canSeePlayer = false;
-                    if(movementPattern.LeashTime > 0)
+                    if (foundPlayer)
                     {
-                        StartCoroutine(LeashPlayer());
+                        elapsedTime += Time.deltaTime;
                     }
+                    //if (movementPattern.LeashTime > 0)
+                    //{
+                    //    StartCoroutine(LeashPlayer());
+                    //}
                 }
             }
-            else{
+            else
+            {
                 foundPlayer = false;
             }
 
+            //if (isAttacking)
+            //{
+            //    pcTest.TakeDamage(enemyStats.enemyDamage);
+            //}
 
-            if (isAttacking)
+            if (canSeePlayer || (foundPlayer && elapsedTime< movementPattern.LeashTime))
             {
-                pcTest.TakeDamage(enemyStats.enemyDamage);
+                agent.SetDestination(pcTest.transform.position);
+            }
+            else if (foundPlayer)
+            {
+                foundPlayer = false;
+                agent.ResetPath();
             }
         }
+        
     }
     private void FixedUpdate()
     {
@@ -86,89 +117,117 @@ public class EnemyController : MonoBehaviour
         {
             if (foundPlayer)
             {
-                float factor = 1.0f;
-                if(canSeePlayer){
-                    factor = (transform.position - pcTest.transform.position).magnitude > comfortableDistance ? 1.0f : -1.0f * movementPattern.BackoffSpeedFactor;
+                // agent is moving
+                if (agent.velocity.magnitude != 0)
+                {
+                    float angle = Mathf.Atan2(agent.velocity.y, agent.velocity.x) * Mathf.Rad2Deg;
+                    Quaternion targetRotation = Quaternion.AngleAxis(angle, Vector3.forward);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.deltaTime);
                 }
-                rb.linearVelocity = factor * transform.right * enemySpeed;
-            } else {
-                switch(movementPattern.idleBehavior)
+                //agent reaches target and orients twowards player
+                else
+                {
+                    Vector2 direction = pcTest.transform.position - transform.position;
+                    float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+                    Quaternion targetRotation = Quaternion.AngleAxis(angle, Vector3.forward);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.deltaTime);
+                }
+                //float factor = 1.0f;
+                //if (canSeePlayer)
+                //{
+                //    factor = (transform.position - pcTest.transform.position).magnitude > comfortableDistance ? 1.0f : -1.0f * movementPattern.BackoffSpeedFactor;
+                //}
+                //rb.linearVelocity = factor * transform.right * enemySpeed;
+            }
+            else
+            {
+                switch (movementPattern.idleBehavior)
                 {
                     case EnemyMovementPattern.idleBehaviors.Stops:
                         rb.linearVelocity = Vector2.zero;
                         break;
                     case EnemyMovementPattern.idleBehaviors.RandomWalk:
-                        if((randomTarget - transform.position).magnitude < 0.1f){
-                            Vector2 offset = UnityEngine.Random.insideUnitCircle.normalized * 5.0f;
-                            randomTarget = transform.position + new Vector3(offset.x, offset.y, 0);
+                        if ((randomTarget - transform.position).magnitude < 1f)
+                        {
+                            Vector2 offset = UnityEngine.Random.insideUnitCircle.normalized * 10.0f;
+                            randomTarget = transform.position + new Vector3(offset.x, offset.y, 0);               
                         }
                         Vector2 direction = randomTarget - transform.position;
                         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
                         Quaternion targetRotation = Quaternion.AngleAxis(angle, Vector3.forward);
                         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.deltaTime);
                         rb.linearVelocity = transform.right * enemySpeed;
+                        Debug.DrawLine(randomTarget - Vector3.up * 0.5f, randomTarget + Vector3.up * 0.5f, Color.red);
+                        Debug.DrawLine(randomTarget - Vector3.left * 0.5f, randomTarget + Vector3.left * 0.5f, Color.red);
                         break;
                 }
             }
+            if (canSeePlayer)
+            {
+                if (!currentlyFiring)
+                {
+                    timeToFire += Time.deltaTime;
+                }
+                if (timeToFire >= weapon.fireRate)
+                {
+                    timeToFire = 0;
+                    StartCoroutine(BeginFiringSequence());
+                }
+            }
+
         }
 
-        if(canSeePlayer){
-            if (!currentlyFiring)
-            {
-                timeToFire += Time.deltaTime;
-            }
-            if (timeToFire >= weapon.fireRate)
-            {
-                timeToFire = 0;
-                StartCoroutine(BeginFiringSequence());
-            }
-        }
+
 
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Wall"))
+        if (((1 << collision.gameObject.layer) & ObstacleMask.value) !=0)
         {
-            if(movementPattern.idleBehavior == EnemyMovementPattern.idleBehaviors.RandomWalk && !foundPlayer){
-                Vector2 offset = UnityEngine.Random.insideUnitCircle.normalized * 5.0f;
-                randomTarget = transform.position + new Vector3(offset.x, offset.y, 0);
+            if (movementPattern.idleBehavior == EnemyMovementPattern.idleBehaviors.RandomWalk && !foundPlayer)
+            {
+                Vector2 offset = UnityEngine.Random.insideUnitCircle.normalized * 10.0f;
+                Vector3 newTarget= transform.position + new Vector3(offset.x, offset.y, 0);         
                 RaycastHit2D hit = Physics2D.Linecast(transform.position, randomTarget, terrainMask);
                 int tries = 0;
-                while(hit.collider != null){
-                    offset = UnityEngine.Random.insideUnitCircle.normalized * 5.0f;
-                    randomTarget = transform.position + new Vector3(offset.x, offset.y, 0);
-                    hit = Physics2D.Linecast(transform.position, randomTarget, terrainMask);
+                while (hit.collider != null)
+                {
+                    offset = UnityEngine.Random.insideUnitCircle.normalized * 10.0f;
+                    newTarget = transform.position + new Vector3(offset.x, offset.y, 0);
+                    hit = Physics2D.Linecast(transform.position, newTarget, terrainMask);
                     tries++;
-                    if(tries > 10){
+                    if (tries > 10)
+                    {
                         break;
                         // we probably spawned in wall, let the physics engine sort it out
                         // Fixing spawner logic to avoid spawning in walls should fix this
                     }
                     Debug.Log(tries);
                 }
+                randomTarget = newTarget;
             }
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.gameObject.TryGetComponent<PlayerControllerTest>(out PlayerControllerTest pcScript))
-        {
-            isAttacking = true;
-        }
-    }
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (collision.gameObject.TryGetComponent<PlayerControllerTest>(out PlayerControllerTest pcScript))
-        {
-            isAttacking = false;
-        }
-    }
+    //private void OnTriggerEnter2D(Collider2D collision)
+    //{
+    //    if (collision.gameObject.TryGetComponent<PlayerControllerTest>(out PlayerControllerTest pcScript))
+    //    {
+    //        isAttacking = true;
+    //    }
+    //}
+    //private void OnTriggerExit2D(Collider2D collision)
+    //{
+    //    if (collision.gameObject.TryGetComponent<PlayerControllerTest>(out PlayerControllerTest pcScript))
+    //    {
+    //        isAttacking = false;
+    //    }
+    //}
 
     IEnumerator LeashPlayer()
     {
-        if(movementPattern.LeashTime > 0)
+        if(gameManager.isPlayerAlive && movementPattern.LeashTime > 0)
         {
             float elapsedTime = 0;
             while(true)
@@ -193,7 +252,6 @@ public class EnemyController : MonoBehaviour
 
     IEnumerator BeginFiringSequence()
     {
-        currentlyFiring = true;
         for (int i = 0; i < weapon.bulletPattern.fireCount; i++)
         {
             FireOnce(i);
@@ -279,7 +337,7 @@ public class EnemyController : MonoBehaviour
         Quaternion rotation = Quaternion.Euler(0, 0, angle);
         GameObject spawnedBullet = Instantiate(weapon.bulletType, spawnPosition, rotation);
         Bullet_Default bulletAttributes = spawnedBullet.GetComponent<Bullet_Default>();
-        bulletAttributes.InitBullet(weapon.bulletSpeed, weapon.bulletLifeTime, weapon.bulletDamage, "enemy");
+        bulletAttributes.InitBullet(weapon.bulletSpeed, weapon.bulletLifeTime, weapon.bulletDamage, "enemy","Red");
     }
 
     

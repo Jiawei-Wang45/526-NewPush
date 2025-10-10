@@ -102,6 +102,7 @@ GameObject:
   - component: {fileID: 8329438148079293782}
   - component: {fileID: 616894894149804898}
   - component: {fileID: 8572776704057460049}
+  - component: {fileID: -1547207051002763383}
   m_Layer: 7
   m_Name: Enemy_Large 2
   m_TagString: Untagged
@@ -268,7 +269,7 @@ Rigidbody2D:
   m_LinearDamping: 10
   m_AngularDamping: 0.05
   m_GravityScale: 0
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 7ba8e9c236c5d1341895d6968c686a4d, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -295,6 +296,7 @@ MonoBehaviour:
   enemyMovementSpeed: 1
   enemyDamage: 0.05
   health: 0
+  color: Blue
 --- !u!114 &8572776704057460049
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -309,6 +311,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pcTest: {fileID: 0}
   enemyStats: {fileID: 0}
+  agent: {fileID: 0}
   weapon: {fileID: 11400000, guid: 5568405f334c14171a3de8da86218dce, type: 2}
   movementPattern: {fileID: 11400000, guid: 5ecd999a8b9aafb4881ba454561786b8, type: 2}
   rb: {fileID: 0}
@@ -318,3 +321,25 @@ MonoBehaviour:
   enemySpeed: 0
   comfortableDistance: 5
   isAttacking: 0
+--- !u!195 &-1547207051002763383
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7357116651023933741}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 1
+  m_BaseOffset: 0.5
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4

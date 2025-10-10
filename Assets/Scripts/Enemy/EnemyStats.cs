@@ -6,6 +6,7 @@ public class EnemyStats : MonoBehaviour
     public float enemyMovementSpeed;
     public float enemyDamage;
     public float health;
+    public string color;
 
     private void Start()
     {
@@ -13,11 +14,12 @@ public class EnemyStats : MonoBehaviour
     }
     public void takeDamage(float damage)
     {
-        health-=damage; 
+        health=Mathf.Clamp(health-damage,0, maxHealth);
         if (health<=0)
         {
             Destroy(GetComponent<EnemyController>().BoundHealthbar);
             Destroy(gameObject);
         }
+        
     }
 }

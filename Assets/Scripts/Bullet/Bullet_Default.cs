@@ -6,15 +6,20 @@ public class Bullet_Default: MonoBehaviour
     public float bulletSpeed;
     public float bulletLifeTime;
     public float bulletDamage;
-
     public string bulletType;
+    public string bulletColor;
+    public ColorTable bulletColorTable;
+    public SpriteRenderer spriteRenderer;
 
-    public void InitBullet(float bulletSpeed, float bulletLifeTime, float bulletDamage, string bulletType)
+    public void InitBullet(float bulletSpeed, float bulletLifeTime, float bulletDamage, string bulletType,string bulletColor)
     {
         this.bulletSpeed = bulletSpeed;
         this.bulletLifeTime = bulletLifeTime;
         this.bulletDamage = bulletDamage;
         this.bulletType = bulletType;
+        this.bulletColor=bulletColor;
+        spriteRenderer.color = bulletColorTable.GetColorByName(bulletColor);
+ 
     }
     private void Start()
     {
@@ -27,7 +32,8 @@ public class Bullet_Default: MonoBehaviour
         if (collision.gameObject.layer == LayerMask.NameToLayer("Enemy") && bulletType == "player")
         {
             EnemyStats enemyStats = collision.gameObject.GetComponent<EnemyStats>();
-            enemyStats.takeDamage(bulletDamage);
+            float multiplier = bulletColorTable.GetMultiplier(enemyStats.color, bulletColor);
+            enemyStats.takeDamage(multiplier*bulletDamage);
         }
         if (collision.gameObject.layer == LayerMask.NameToLayer("Player") && bulletType == "enemy")
         {

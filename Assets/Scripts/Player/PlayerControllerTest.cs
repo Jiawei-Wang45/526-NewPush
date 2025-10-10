@@ -13,9 +13,12 @@ public class PlayerControllerTest : MonoBehaviour
     private float fireTimer;
     public Transform firePoint;
     public PlayerWeapon currentWeapon;
+    public InteractionPoint interactionPoint;
+    private string BulletColor;
     public void RefreshStats()
     {
         speed = playerStats.movementSpeed;
+        BulletColor = "Black";
     }
 
     private void Awake()
@@ -43,6 +46,9 @@ public class PlayerControllerTest : MonoBehaviour
         //fire input binding
         playerInput.Default.Fire.performed += OnFireTriggered;
         playerInput.Default.Fire.canceled += OnFireTriggered;
+
+        //bullet color changing
+        playerInput.Default.Interaction.started += OnBulletColorChanged;
 
     }
 
@@ -119,7 +125,7 @@ public class PlayerControllerTest : MonoBehaviour
         {
             GameObject spawnedBullet=Instantiate(currentWeapon.bulletType, firePoint.position, firePoint.rotation);
             Bullet_Default bulletAttributes = spawnedBullet.GetComponent<Bullet_Default>();
-            bulletAttributes.InitBullet(currentWeapon.weaponBulletSpeed, currentWeapon.weaponBulletLifeTime, currentWeapon.weaponBulletDamage, "player");
+            bulletAttributes.InitBullet(currentWeapon.weaponBulletSpeed, currentWeapon.weaponBulletLifeTime, currentWeapon.weaponBulletDamage, "player", BulletColor);
             spawnedBullet.transform.Rotate(0, 0, bulletTiltAngle+Random.Range(-currentWeapon.weaponBulletSpread,currentWeapon.weaponBulletSpread));
             bulletTiltAngle += currentWeapon.weaponFiringAngle;
         }
@@ -151,6 +157,13 @@ public class PlayerControllerTest : MonoBehaviour
                 if (currentWeapon.triggerType == TriggerType.SemiAutomatic)
                     hasFired = false;
                 break;
+        }
+    }
+    private void OnBulletColorChanged(InputAction.CallbackContext context)
+    {
+        if (interactionPoint!=null)
+        {
+            BulletColor = interactionPoint.colorName;
         }
     }
 
