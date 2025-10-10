@@ -15,7 +15,28 @@ MonoBehaviour:
   entries:
   - name: Red
     color: {r: 1, g: 0, b: 0, a: 1}
+    counters:
+    - counterColor: Red
+      counterMultiplier: -1
+    - counterColor: Blue
+      counterMultiplier: 1
+    - counterColor: Black
+      counterMultiplier: 0.1
   - name: Blue
     color: {r: 0, g: 0.27705574, b: 1, a: 1}
+    counters:
+    - counterColor: Red
+      counterMultiplier: 1
+    - counterColor: Blue
+      counterMultiplier: -1
+    - counterColor: Black
+      counterMultiplier: 0.1
   - name: Black
     color: {r: 0, g: 0, b: 0, a: 1}
+    counters:
+    - counterColor: Red
+      counterMultiplier: 1
+    - counterColor: Blue
+      counterMultiplier: 1
+    - counterColor: Black
+      counterMultiplier: 1
