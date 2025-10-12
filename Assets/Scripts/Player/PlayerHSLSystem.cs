@@ -19,6 +19,10 @@ public class PlayerHSLSystem : MonoBehaviour
     [Header("Ammo Settings")]
     public int maxAmmo = 100;
     public int currentAmmo = 100;
+    [Header("Ammo Regen")]
+    [Tooltip("Ammo recovered per second when not full (can be fractional, accumulated into integer ammo)")]
+    public float ammoRegenRate = 0f;
+    private float ammoRegenAccumulator = 0f;
     
     [Header("Hue Shift Settings")]
     public float originalHue = 0f; // 原始色相
@@ -70,6 +74,19 @@ public class PlayerHSLSystem : MonoBehaviour
         hue = originalHue + currentHueShift;
         hue = Mathf.Repeat(hue, 360f); // 确保色相在0-360范围内
         
+        // 弹药自动回复：在弹药未满时按速率累加小数部分，达到1后转为整数弹药
+        if (currentAmmo < maxAmmo && ammoRegenRate > 0f)
+        {
+            ammoRegenAccumulator += ammoRegenRate * Time.deltaTime;
+            if (ammoRegenAccumulator >= 1f)
+            {
+                int gain = Mathf.FloorToInt(ammoRegenAccumulator);
+                currentAmmo += gain;
+                currentAmmo = Mathf.Clamp(currentAmmo, 0, maxAmmo);
+                ammoRegenAccumulator -= gain;
+            }
+        }
+
         // 更新饱和度（基于弹药量）
         saturation = (float)currentAmmo / maxAmmo * 100f;
         

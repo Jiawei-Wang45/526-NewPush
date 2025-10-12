@@ -19,6 +19,13 @@ public class EnemyHSLSystem : MonoBehaviour
     [Header("Visual Settings")]
     public SpriteRenderer enemySpriteRenderer;
     public UnityEngine.UI.Image healthbarImage;
+    // 记录敌人出生时的初始HSL（用于掉落恢复初始色）
+    [HideInInspector]
+    public float initialHue;
+    [HideInInspector]
+    public float initialSaturation;
+    [HideInInspector]
+    public float initialLightness;
     
     private void Start()
     {
@@ -32,6 +39,11 @@ public class EnemyHSLSystem : MonoBehaviour
         {
             enemySpriteRenderer = GetComponent<SpriteRenderer>();
         }
+
+        // 保存初始HSL值
+        initialHue = hue;
+        initialSaturation = saturation;
+        initialLightness = lightness;
         
         UpdateColor();
     }

@@ -298,6 +298,7 @@ MonoBehaviour:
   enemyDamage: 0.05
   health: 0
   color: Blue
+  treasurePrefab: {fileID: 184313002424103684, guid: c298bafc6d7d6fc4ca85c672ef980fb8, type: 3}
 --- !u!114 &8572776704057460049
 MonoBehaviour:
   m_ObjectHideFlags: 0
