@@ -148,21 +148,40 @@ public class GameManager : MonoBehaviour
         GhostController[] ghosts = FindObjectsByType<GhostController>(FindObjectsInactive.Include, FindObjectsSortMode.None);
         foreach (GhostController g in ghosts)
         {
-            g.Reset();
+                g.Reset();
         }
     
-        /*
+        // reset all enemy spawners to respawn enemies in the same positions
+        EnemySpawner[] spawners = FindObjectsByType<EnemySpawner>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        foreach (EnemySpawner s in spawners)
+        {
+                s.ResetSpawner();
+        }
+
         EnemyController[] enemyObjects = FindObjectsByType<EnemyController>(FindObjectsInactive.Include, FindObjectsSortMode.None);
         foreach (EnemyController e in enemyObjects)
         {
-            e.Reset();
+                Destroy(e.gameObject);
         }
-        */
+        
+        // Destroy all enemy spawn indicators to prevent spawning during reset
+        EnemySpawnIndicator[] indicators = FindObjectsByType<EnemySpawnIndicator>(FindObjectsInactive.Include, FindObjectsSortMode.None); 
+        foreach (EnemySpawnIndicator i in indicators)
+        {
+                Destroy(i.gameObject);
+        }
+
+        // Destroy all enemy healthbars to clean up UI elements
+        EnemyHealthbar[] healthbars = FindObjectsByType<EnemyHealthbar>(FindObjectsInactive.Include, FindObjectsSortMode.None); 
+        foreach (EnemyHealthbar h in healthbars)
+        {
+                Destroy(h.gameObject);
+        }
 
         Bullet_Default[] bullets = FindObjectsByType<Bullet_Default>(FindObjectsInactive.Include, FindObjectsSortMode.None);
         foreach (Bullet_Default b in bullets)
         {
-            Destroy(b.gameObject);
+                Destroy(b.gameObject);
         }
 
     }

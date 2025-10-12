@@ -82,6 +82,13 @@ public class GhostController : MonoBehaviour
             Bullet_Default bulletAttributes = spawnedBullet.GetComponent<Bullet_Default>();
             bulletAttributes.InitBullet(currentWeapon.weaponBulletSpeed, currentWeapon.weaponBulletLifeTime, currentWeapon.weaponBulletDamage, "player");
             spawnedBullet.transform.Rotate(0, 0, bulletTiltAngle+Random.Range(-currentWeapon.weaponBulletSpread,currentWeapon.weaponBulletSpread));
+            // Make the bullet semi-transparent like the ghost
+            SpriteRenderer bulletSr = spawnedBullet.GetComponent<SpriteRenderer>();
+            if (bulletSr != null)
+            {
+                Color bulletColor = bulletSr.color;
+                bulletSr.color = new Color(bulletColor.r, bulletColor.g, bulletColor.b, 0.5f);
+            }
             bulletTiltAngle += currentWeapon.weaponFiringAngle;
         }
         

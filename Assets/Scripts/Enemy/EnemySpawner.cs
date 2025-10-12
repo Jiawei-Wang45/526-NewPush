@@ -17,8 +17,15 @@ public class EnemySpawner : MonoBehaviour
 
     public float spawnPosVariationScale;
 
+    // Random seed for enemy spawn positions, generated per game session
+    private int seed; 
+
     private void Start()
     {
+        // Generate a random seed for this game session to randomize enemy positions across games
+        seed = Random.Range(0, 1000000);
+        // Initialize random state with the seed for consistent positions within the session
+        Random.InitState(seed); 
         InitspawnPos();
         StartCoroutine(EnemySpawnProcess());
     }
@@ -33,6 +40,13 @@ public class EnemySpawner : MonoBehaviour
                 spawnedIndicator.GetComponent<EnemySpawnIndicator>().enemyToSpawn = enemySpawnList[index];
             }
         }
+    }
+    public void ResetSpawner()
+    {
+        StopAllCoroutines();
+        // Reset random state to the same seed for consistent enemy positions during ghost replay
+        Random.InitState(seed); 
+        StartCoroutine(EnemySpawnProcess());
     }
     public void InitspawnPos()
     {

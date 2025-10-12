@@ -39,6 +39,8 @@ public class EnemyController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         terrainMask = LayerMask.GetMask("Wall", "Player");
         gameManager = FindFirstObjectByType<GameManager>();
+        // Initialize enemy position for reset
+        initialPosition = transform.position;
         RefreshStats();
         timeToFire = weapon.fireRate - 0.6f;
         randomTarget = transform.position;
