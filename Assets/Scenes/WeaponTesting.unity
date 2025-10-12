@@ -2308,7 +2308,10 @@ MonoBehaviour:
   InGamePauseMenu: {fileID: 960480113}
   InGameEndingMenu: {fileID: 2023604928}
   InGameWinMenu: {fileID: 363682969}
+  player: {fileID: 1335872719}
+  ghost: {fileID: 6080577275780738487, guid: 3da4563d95aee4e269ed80e3113f8e78, type: 3}
   isInLevel: 1
+  levelStartTime: 0
 --- !u!4 &850232883
 Transform:
   m_ObjectHideFlags: 0
@@ -3243,7 +3246,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 2
   m_Sprite: {fileID: 7482667652216324306, guid: 4694bd6e8479b4b64be07dab8051e668, type: 3}
   m_Color: {r: 0.54208523, g: 0.7735849, b: 0.40503737, a: 1}
   m_FlipX: 0
@@ -3357,6 +3360,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa21c586e06314247892681f1a067a3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  initialPosition: {x: 0, y: 0}
   firePoint: {fileID: 50638741}
   currentWeapon: {fileID: 0}
 --- !u!114 &1335872720
@@ -3374,6 +3378,7 @@ MonoBehaviour:
   movementSpeed: 10
   maxHealth: 100
   health: 0
+  isGhost: 0
 --- !u!114 &1335872721
 MonoBehaviour:
   m_ObjectHideFlags: 0

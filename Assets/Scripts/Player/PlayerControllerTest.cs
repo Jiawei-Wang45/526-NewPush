@@ -1,21 +1,29 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 public class PlayerControllerTest : MonoBehaviour
 {
     private Rigidbody2D rb;
-    private PlayerStats playerStats;
+    private PlayerStats stats;
     public PlayerInput playerInput;
     private float speed;
     private Vector2 movement;
+    public Vector2 initialPosition;
 
     private bool isFiring=false;
     private bool hasFired = false;
+
+    private bool recordFireAction = false;
+    private bool recordEquipAction = false;
+
+    private List<ObjectState> recordedStates = new List<ObjectState>();
+
     private float fireTimer;
     public Transform firePoint;
     public PlayerWeapon currentWeapon;
     public void RefreshStats()
     {
-        speed = playerStats.movementSpeed;
+        speed = stats.movementSpeed;
     }
 
     private void Awake()
@@ -33,7 +41,8 @@ public class PlayerControllerTest : MonoBehaviour
     private void Start()
     {
         rb= GetComponent<Rigidbody2D>();
-        playerStats= GetComponent<PlayerStats>();
+        stats = GetComponent<PlayerStats>();
+        initialPosition = transform.position;
         RefreshStats();
 
         //player movement binding
@@ -59,6 +68,7 @@ public class PlayerControllerTest : MonoBehaviour
         if (currentWeapon.weaponType== WeaponType.Passive)
         {
             Fire();
+            recordFireAction = true;
         }
         else
         {
@@ -75,6 +85,7 @@ public class PlayerControllerTest : MonoBehaviour
                 if (isFiring && fireTimer >= 1 / currentWeapon.weaponBulletSpeed)
                 {
                     Fire();
+                    recordFireAction = true;
                     fireTimer = 0;       
                 }
                 else
@@ -96,6 +107,7 @@ public class PlayerControllerTest : MonoBehaviour
                 if (isFiring && !hasFired && fireTimer >= 1 / currentWeapon.weaponBulletSpeed)
                 {
                     Fire();
+                    recordFireAction = true;
                     fireTimer = 0;
                     hasFired = true;
                 }
@@ -110,9 +122,21 @@ public class PlayerControllerTest : MonoBehaviour
     private void FixedUpdate()
     {
         rb.linearVelocity = movement * speed;
+        if (recordEquipAction)
+        {
+            recordedStates.Add(new ObjectState(rb.linearVelocity, firePoint.rotation, recordFireAction, currentWeapon));
+            recordEquipAction = false;
+
+        } else {
+            recordedStates.Add(new ObjectState(rb.linearVelocity, firePoint.rotation, recordFireAction));
+        }
+        if (recordFireAction)
+        {
+            recordFireAction = false;
+        }
     }
 
-    public void Fire()
+    private void Fire()
     {
         float bulletTiltAngle = -(currentWeapon.weaponBulletAmount - 1) * currentWeapon.weaponFiringAngle / 2;
         for (int i = 0;i<currentWeapon.weaponBulletAmount;i++)
@@ -125,13 +149,15 @@ public class PlayerControllerTest : MonoBehaviour
         }
         
     }
-    private void EquipWeapon(PlayerWeapon weapon)
+    public void EquipWeapon(PlayerWeapon weapon)
     {
+        Debug.Log("Player equipping weapon");
         currentWeapon = weapon;
+        recordEquipAction = true;
     }
     public void TakeDamage(float damage)
     {
-        playerStats.TakeDamage(damage);
+        stats.TakeDamage(damage);
     }
     private void OnMoveTriggered(InputAction.CallbackContext context)
     {
@@ -141,7 +167,7 @@ public class PlayerControllerTest : MonoBehaviour
     private void OnFireTriggered(InputAction.CallbackContext context)
     {
         if (currentWeapon == null) return;
-        switch(context.phase)
+        switch (context.phase)
         {
             case InputActionPhase.Performed:
                 isFiring = true;
@@ -152,6 +178,25 @@ public class PlayerControllerTest : MonoBehaviour
                     hasFired = false;
                 break;
         }
+    }
+
+    public List<ObjectState> sendStates()
+    {
+        Debug.Log($"Sending state list of size {recordedStates.Count}");
+        return recordedStates;
+    }
+    
+    public void Reset()
+    {
+        Debug.Log("Resetting player");
+        transform.position = initialPosition;
+        rb.linearVelocityX = 0;
+        rb.linearVelocityY = 0;
+        isFiring = false;
+        hasFired = false;
+        recordFireAction = false;
+        fireTimer = 0;
+        recordedStates.Clear();
     }
 
 }

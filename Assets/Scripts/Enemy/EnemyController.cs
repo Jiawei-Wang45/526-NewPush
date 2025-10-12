@@ -18,8 +18,9 @@ public class EnemyController : MonoBehaviour
     public float enemySpeed;
     public float comfortableDistance = 5.0f;
 
-    
+
     private Vector2 movement;
+    private Vector2 initialPosition;
     private float timeToFire = 0;
     private bool currentlyFiring = false;
     private bool foundPlayer = false;
@@ -280,6 +281,17 @@ public class EnemyController : MonoBehaviour
         GameObject spawnedBullet = Instantiate(weapon.bulletType, spawnPosition, rotation);
         Bullet_Default bulletAttributes = spawnedBullet.GetComponent<Bullet_Default>();
         bulletAttributes.InitBullet(weapon.bulletSpeed, weapon.bulletLifeTime, weapon.bulletDamage, "enemy");
+    }
+
+    public void Reset()
+    {
+        StopAllCoroutines();
+        transform.position = initialPosition;
+        RefreshStats();
+        timeToFire = weapon.fireRate - 0.6f;
+        randomTarget = transform.position;
+        rb.linearVelocityX = 0;
+        rb.linearVelocityY = 0;
     }
 
     

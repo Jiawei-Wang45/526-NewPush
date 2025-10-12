@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
 {
@@ -9,8 +10,24 @@ public class GameManager : MonoBehaviour
     public GameObject InGamePauseMenu;
     public GameObject InGameEndingMenu;
     public GameObject InGameWinMenu;
+    public PlayerControllerTest player;
+    public GhostController ghost;
     public bool isInLevel;
     public float levelStartTime;
+
+        void OnEnable()
+    {
+        InputSystem.actions["Reset"].performed += OnReset;
+    }
+
+    void OnDisable()
+    {
+        InputSystem.actions["Reset"].performed -= OnReset;
+
+    }
+
+    private void OnReset(InputAction.CallbackContext ctx) => ResetWithGhost();
+
 
     private void Start()
     {
@@ -112,5 +129,41 @@ public class GameManager : MonoBehaviour
         {
             gaManager.SendLevelCompletedEvent(levelName, completionTime);
         }
+    }
+
+    public void ResetWithGhost()
+    {
+        List<ObjectState> playerStates = new List<ObjectState>(player.sendStates());
+        Reset();
+        GhostController newGhost = Instantiate(ghost);
+        newGhost.InitializeGhost(player.initialPosition, playerStates);
+
+    }
+
+    public void Reset()
+    {
+
+        player.Reset();
+
+        GhostController[] ghosts = FindObjectsByType<GhostController>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        foreach (GhostController g in ghosts)
+        {
+            g.Reset();
+        }
+    
+        /*
+        EnemyController[] enemyObjects = FindObjectsByType<EnemyController>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        foreach (EnemyController e in enemyObjects)
+        {
+            e.Reset();
+        }
+        */
+
+        Bullet_Default[] bullets = FindObjectsByType<Bullet_Default>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        foreach (Bullet_Default b in bullets)
+        {
+            Destroy(b.gameObject);
+        }
+
     }
 }
