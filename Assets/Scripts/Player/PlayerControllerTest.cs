@@ -182,6 +182,12 @@ public class PlayerControllerTest : MonoBehaviour
 
     public List<ObjectState> sendStates()
     {
+        if (currentWeapon)
+        {
+            ObjectState stateToChange = recordedStates[0];
+            stateToChange.usingNewWeapon = currentWeapon;
+            recordedStates[0] = stateToChange;
+        }
         Debug.Log($"Sending state list of size {recordedStates.Count}");
         return recordedStates;
     }

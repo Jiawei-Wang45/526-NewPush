@@ -10,6 +10,7 @@ public class GhostController : MonoBehaviour
     private SpriteRenderer sr;
     private Rigidbody2D rb;
     public Vector2 initialPosition;
+    private Color initialColor;
     private List<ObjectState> recordedStates = new List<ObjectState>();
 
     public Transform ghostAim;
@@ -20,6 +21,7 @@ public class GhostController : MonoBehaviour
         sr = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
         initialPosition = transform.position;
+        initialColor = sr.color;
 
     }
     
@@ -51,24 +53,23 @@ public class GhostController : MonoBehaviour
         } else
         {
             Debug.Log("Disappearing");
-            StartCoroutine(Disappear(0.8f));
+            StartCoroutine(Disappear(0.4f));
         }
     }
 
     private IEnumerator Disappear(float fadeDuration)
     {
         GetComponent<Collider2D>().enabled = false;
-        Color color = sr.color;
         float timeElapsed = 0f;
         while (timeElapsed < fadeDuration)
         {
             timeElapsed += Time.deltaTime;
             float newAlpha = Mathf.Lerp(0.5f, 0f, timeElapsed / fadeDuration);
-            sr.color = new Color(color.r, color.g, color.b, newAlpha);
+            sr.color = new Color(initialColor.r, initialColor.g, initialColor.b, newAlpha);
             yield return null;
         }
 
-        sr.color = new Color(color.r, color.g, color.b, 0f);
+        sr.color = new Color(initialColor.r, initialColor.g, initialColor.b, 0f);
         gameObject.SetActive(false);
     }
 
@@ -93,6 +94,7 @@ public class GhostController : MonoBehaviour
         gameObject.SetActive(true);
         stateIndex = 0;
         transform.position = initialPosition;
+        sr.color = initialColor;
     }
 
 }
