@@ -4,6 +4,7 @@ public class PlayerControllerTest : MonoBehaviour
 {
     private Rigidbody2D rb;
     private PlayerStats playerStats;
+    private PlayerHSLSystem hslSystem;
     public PlayerInput playerInput;
     private float speed;
     private Vector2 movement;
@@ -13,12 +14,9 @@ public class PlayerControllerTest : MonoBehaviour
     private float fireTimer;
     public Transform firePoint;
     public PlayerWeapon currentWeapon;
-    public InteractionPoint interactionPoint;
-    private string BulletColor;
     public void RefreshStats()
     {
         speed = playerStats.movementSpeed;
-        BulletColor = "Black";
     }
 
     private void Awake()
@@ -37,6 +35,7 @@ public class PlayerControllerTest : MonoBehaviour
     {
         rb= GetComponent<Rigidbody2D>();
         playerStats= GetComponent<PlayerStats>();
+        hslSystem = GetComponent<PlayerHSLSystem>();
         RefreshStats();
 
         //player movement binding
@@ -46,9 +45,6 @@ public class PlayerControllerTest : MonoBehaviour
         //fire input binding
         playerInput.Default.Fire.performed += OnFireTriggered;
         playerInput.Default.Fire.canceled += OnFireTriggered;
-
-        //bullet color changing
-        playerInput.Default.Interaction.started += OnBulletColorChanged;
 
     }
 
@@ -120,24 +116,71 @@ public class PlayerControllerTest : MonoBehaviour
 
     public void Fire()
     {
+        // 检查是否可以开火（色相偏移检查）
+        if (hslSystem != null && !hslSystem.CanFire())
+        {
+            Debug.Log("Cannot fire! Hue shift too high: " + hslSystem.GetHueShiftPercentage() * 100f + "%");
+            return; // 色相偏移过大，无法开火
+        }
+        
+        // 检查弹药是否足够
+        if (hslSystem != null && !currentWeapon.hasInfiniteAmmo)
+        {
+            int requiredAmmo = currentWeapon.weaponBulletAmount * currentWeapon.ammoPerShot;
+            if (hslSystem.currentAmmo < requiredAmmo)
+            {
+                Debug.Log("Not enough ammo! Current: " + hslSystem.currentAmmo + ", Required: " + requiredAmmo);
+                return; // 弹药不足，无法开火
+            }
+        }
+        
         float bulletTiltAngle = -(currentWeapon.weaponBulletAmount - 1) * currentWeapon.weaponFiringAngle / 2;
         for (int i = 0;i<currentWeapon.weaponBulletAmount;i++)
         {
             GameObject spawnedBullet=Instantiate(currentWeapon.bulletType, firePoint.position, firePoint.rotation);
             Bullet_Default bulletAttributes = spawnedBullet.GetComponent<Bullet_Default>();
-            bulletAttributes.InitBullet(currentWeapon.weaponBulletSpeed, currentWeapon.weaponBulletLifeTime, currentWeapon.weaponBulletDamage, "player", BulletColor);
+            bulletAttributes.InitBullet(currentWeapon.weaponBulletSpeed, currentWeapon.weaponBulletLifeTime, currentWeapon.weaponBulletDamage, "player");
             spawnedBullet.transform.Rotate(0, 0, bulletTiltAngle+Random.Range(-currentWeapon.weaponBulletSpread,currentWeapon.weaponBulletSpread));
             bulletTiltAngle += currentWeapon.weaponFiringAngle;
         }
         
+        // 消耗弹药
+        if (hslSystem != null && !currentWeapon.hasInfiniteAmmo)
+        {
+            int ammoToConsume = currentWeapon.weaponBulletAmount * currentWeapon.ammoPerShot;
+            hslSystem.ConsumeAmmo(ammoToConsume);
+        }
     }
     private void EquipWeapon(PlayerWeapon weapon)
     {
         currentWeapon = weapon;
+        
+        // 如果HSL系统存在，设置新武器的弹药量
+        if (hslSystem != null && weapon != null)
+        {
+            hslSystem.SetMaxAmmo(weapon.maxAmmo);
+        }
     }
     public void TakeDamage(float damage)
     {
         playerStats.TakeDamage(damage);
+    }
+    
+    public void ReloadAmmo(int amount)
+    {
+        if (hslSystem != null)
+        {
+            hslSystem.ReloadAmmo(amount);
+        }
+    }
+    
+    public void FullReload()
+    {
+        if (hslSystem != null && currentWeapon != null)
+        {
+            int ammoNeeded = currentWeapon.maxAmmo - hslSystem.currentAmmo;
+            hslSystem.ReloadAmmo(ammoNeeded);
+        }
     }
     private void OnMoveTriggered(InputAction.CallbackContext context)
     {
@@ -157,13 +200,6 @@ public class PlayerControllerTest : MonoBehaviour
                 if (currentWeapon.triggerType == TriggerType.SemiAutomatic)
                     hasFired = false;
                 break;
-        }
-    }
-    private void OnBulletColorChanged(InputAction.CallbackContext context)
-    {
-        if (interactionPoint!=null)
-        {
-            BulletColor = interactionPoint.colorName;
         }
     }
 

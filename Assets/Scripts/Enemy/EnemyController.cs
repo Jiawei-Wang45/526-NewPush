@@ -8,6 +8,7 @@ public class EnemyController : MonoBehaviour
 
     public PlayerControllerTest pcTest;
     public EnemyStats enemyStats;
+    private EnemyHSLSystem hslSystem;
     public NavMeshAgent agent;
 
     public EnemyWeaponData weapon;
@@ -37,6 +38,7 @@ public class EnemyController : MonoBehaviour
     {
         pcTest = FindFirstObjectByType<PlayerControllerTest>();
         enemyStats = GetComponent<EnemyStats>();
+        hslSystem = GetComponent<EnemyHSLSystem>();
         rb = GetComponent<Rigidbody2D>();
         agent = GetComponent<NavMeshAgent>();
         agent.updateUpAxis = false;
@@ -51,6 +53,8 @@ public class EnemyController : MonoBehaviour
         //let it fire quicker at first time
         timeToFire = weapon.fireRate / 2;
         randomTarget = transform.position;
+        
+        // HSL系统只用于显示血量，不需要设置弹药
     }
     public void RefreshStats()
     {
@@ -337,7 +341,51 @@ public class EnemyController : MonoBehaviour
         Quaternion rotation = Quaternion.Euler(0, 0, angle);
         GameObject spawnedBullet = Instantiate(weapon.bulletType, spawnPosition, rotation);
         Bullet_Default bulletAttributes = spawnedBullet.GetComponent<Bullet_Default>();
-        bulletAttributes.InitBullet(weapon.bulletSpeed, weapon.bulletLifeTime, weapon.bulletDamage, "enemy","Red");
+        
+        // 获取敌人的当前HSL颜色和色相
+        Color enemyColor = Color.white; // 默认颜色
+        float enemyHue = 0f; // 默认色相
+        if (hslSystem != null)
+        {
+            // 从HSL系统获取当前颜色和色相
+            Vector3 hslValues = hslSystem.GetHSLValues();
+            enemyColor = HSLToRGB(hslValues.x / 360f, hslValues.y / 100f, hslValues.z / 100f);
+            enemyHue = hslValues.x; // 获取色相
+        }
+        
+        bulletAttributes.InitBullet(weapon.bulletSpeed, weapon.bulletLifeTime, weapon.bulletDamage, "enemy", enemyColor, enemyHue);
+    }
+    
+    // HSL转RGB的辅助方法
+    private Color HSLToRGB(float h, float s, float l)
+    {
+        float r, g, b;
+        
+        if (s == 0f)
+        {
+            // 无饱和度，灰色
+            r = g = b = l;
+        }
+        else
+        {
+            float q = l < 0.5f ? l * (1f + s) : l + s - l * s;
+            float p = 2f * l - q;
+            r = HueToRGB(p, q, h + 1f / 3f);
+            g = HueToRGB(p, q, h);
+            b = HueToRGB(p, q, h - 1f / 3f);
+        }
+        
+        return new Color(r, g, b, 1f);
+    }
+    
+    private float HueToRGB(float p, float q, float t)
+    {
+        if (t < 0f) t += 1f;
+        if (t > 1f) t -= 1f;
+        if (t < 1f / 6f) return p + (q - p) * 6f * t;
+        if (t < 1f / 2f) return q;
+        if (t < 2f / 3f) return p + (q - p) * (2f / 3f - t) * 6f;
+        return p;
     }
 
     

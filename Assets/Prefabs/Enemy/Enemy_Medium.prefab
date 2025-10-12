@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 71048726345297618}
   - component: {fileID: 3966506979569408143}
   - component: {fileID: 6529854023185085637}
+  - component: {fileID: -3477787989935053757}
   m_Layer: 7
   m_Name: Enemy_Medium
   m_TagString: Untagged
@@ -209,6 +210,7 @@ MonoBehaviour:
   enemyMovementSpeed: 1
   enemyDamage: 0.05
   health: 0
+  color: 
 --- !u!114 &3966506979569408143
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -255,6 +257,25 @@ NavMeshAgent:
   m_BaseOffset: 0.5
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &-3477787989935053757
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4670447388552369797}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa71f9db8c66b844ea2699d86911a230, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hue: 0
+  saturation: 100
+  lightness: 50
+  maxHealth: 100
+  currentHealth: 100
+  enemySpriteRenderer: {fileID: 0}
+  healthbarImage: {fileID: 0}
 --- !u!1 &9195187841401722624
 GameObject:
   m_ObjectHideFlags: 0

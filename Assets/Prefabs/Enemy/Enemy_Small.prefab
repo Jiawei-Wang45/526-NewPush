@@ -103,6 +103,7 @@ GameObject:
   - component: {fileID: 2710650354573910833}
   - component: {fileID: 4258157441187923356}
   - component: {fileID: 4988156695742307273}
+  - component: {fileID: 3805098700750791925}
   m_Layer: 7
   m_Name: Enemy_Small
   m_TagString: Untagged
@@ -296,6 +297,7 @@ MonoBehaviour:
   enemyMovementSpeed: 1
   enemyDamage: 0.05
   health: 0
+  color: 
 --- !u!114 &4258157441187923356
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -342,3 +344,22 @@ NavMeshAgent:
   m_BaseOffset: 0.5
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &3805098700750791925
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2834873648303903019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa71f9db8c66b844ea2699d86911a230, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hue: 0
+  saturation: 100
+  lightness: 50
+  maxHealth: 100
+  currentHealth: 100
+  enemySpriteRenderer: {fileID: 0}
+  healthbarImage: {fileID: 0}

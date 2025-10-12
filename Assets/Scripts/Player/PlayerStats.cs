@@ -2,27 +2,73 @@ using UnityEngine;
 
 public class PlayerStats : MonoBehaviour
 {
-
-
-
     public float movementSpeed = 10f;
     public float maxHealth = 100.0f;
     public float health;
+    
+    private PlayerHSLSystem hslSystem;
 
     private void Start()
     {
-        health = maxHealth;
+        hslSystem = GetComponent<PlayerHSLSystem>();
+        
+        // 如果HSL系统存在，让HSL系统管理血量
+        if (hslSystem != null)
+        {
+            hslSystem.currentHealth = maxHealth;
+            hslSystem.maxHealth = maxHealth;
+            health = hslSystem.currentHealth; // 从HSL系统同步
+        }
+        else
+        {
+            health = maxHealth; // 如果没有HSL系统，使用默认值
+        }
     }
+    
+    private void Update()
+    {
+        // 确保血量始终与HSL系统同步
+        if (hslSystem != null)
+        {
+            health = hslSystem.currentHealth;
+        }
+    }
+    
     public void TakeDamage(float damage)
     {
-        health -= damage;
-        if ( health<=0)
+        // 如果HSL系统存在，让HSL系统处理伤害
+        if (hslSystem != null)
+        {
+            hslSystem.TakeDamage(damage);
+            health = hslSystem.currentHealth; // 从HSL系统同步血量
+        }
+        else
+        {
+            health -= damage;
+            health = Mathf.Clamp(health, 0f, maxHealth);
+        }
+        
+        if (health <= 0)
         {
             // don't destroy the camera attached to the player
             GetComponentInChildren<Camera>().transform.parent = null;
             FindFirstObjectByType<GameManager>().PlayerDead();
             Destroy(gameObject);
-            
+        }
+    }
+    
+    public void Heal(float healAmount)
+    {
+        // 如果HSL系统存在，让HSL系统处理治疗
+        if (hslSystem != null)
+        {
+            hslSystem.Heal(healAmount);
+            health = hslSystem.currentHealth; // 从HSL系统同步血量
+        }
+        else
+        {
+            health += healAmount;
+            health = Mathf.Clamp(health, 0f, maxHealth);
         }
     }
 }

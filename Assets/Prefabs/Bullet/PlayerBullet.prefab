@@ -106,7 +106,6 @@ MonoBehaviour:
   bulletLifeTime: 0
   bulletDamage: 0
   bulletType: 
-  bulletColorTable: {fileID: 11400000, guid: 2d9ce63301c2d6f43aa02211cc6a84ed, type: 2}
   spriteRenderer: {fileID: 3634944123230592999}
 --- !u!58 &8784066047790718971
 CircleCollider2D:

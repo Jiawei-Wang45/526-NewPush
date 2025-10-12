@@ -18,6 +18,11 @@ public class PlayerWeapon : ScriptableObject
     public float weaponFiringAngle;
     public float weaponBulletSpread;
 
+    //ammo attributes
+    public int maxAmmo = 100;
+    public int ammoPerShot = 1;
+    public bool hasInfiniteAmmo = false;
+
     public string weaponName;
     public GameObject bulletType;  //type of the bullet we are gonna use
     public Sprite weaponImage;
