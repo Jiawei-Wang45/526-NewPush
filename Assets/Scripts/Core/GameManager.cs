@@ -1,7 +1,9 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -12,19 +14,26 @@ public class GameManager : MonoBehaviour
     public GameObject InGameWinMenu;
     public PlayerControllerTest player;
     public GhostController ghost;
+    public EnemySpawner enemySpawner;
     public bool isInLevel;
     public float levelStartTime;
+    private int resetsRemaining = 2;
+    public TMP_Text resetsRemainingText;
+    public TMP_Text infoText;
+    private int waveCount = 1;
 
+    /*
         void OnEnable()
-    {
-        InputSystem.actions["Reset"].performed += OnReset;
-    }
+        {
+            InputSystem.actions["Reset"].performed += OnReset;
+        }
 
-    void OnDisable()
-    {
-        InputSystem.actions["Reset"].performed -= OnReset;
+        void OnDisable()
+        {
+            InputSystem.actions["Reset"].performed -= OnReset;
 
-    }
+        }
+        */
 
     private void OnReset(InputAction.CallbackContext ctx) => ResetWithGhost();
 
@@ -50,8 +59,46 @@ public class GameManager : MonoBehaviour
     //    }
     //}
 
-    public void PlayerDead()
+    public void PlayerDestroyed()
     {
+        if (resetsRemaining == 0)
+        {
+            GameOver();
+        }
+        else
+        {
+            resetsRemaining -= 1;
+            resetsRemainingText.text = $"<size=20><color=#FF0000>Resets Remaining: </color>{resetsRemaining}</size>";
+            ResetWithGhost();
+        }
+    }
+
+    public void WaveClear()
+    {
+        //clear bullets
+        Bullet_Default[] bullets = FindObjectsByType<Bullet_Default>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        foreach (Bullet_Default b in bullets)
+        {
+            Destroy(b.gameObject);
+        }
+
+        resetsRemaining = 2;
+        resetsRemainingText.text = $"<size=20><color=#FF0000>Resets Remaining: </color>{resetsRemaining}</size>";
+        infoText.text = "<size=20><color=#FF0000>Wave Clear!</color></size>\nLives and ghosts restored";
+        player.UponWaveClear();
+        waveCount++;
+        StartCoroutine(WaveStartMessage());
+    }
+
+     IEnumerator WaveStartMessage()
+    {
+        yield return new WaitForSeconds(1.5f);
+        infoText.text = $"<size=30><color=#FF0000>Wave {waveCount}</color></size>";
+    }
+    
+    public void GameOver()
+    {
+        player.gameObject.SetActive(false);
         isPlayerAlive = false;
         Time.timeScale = 0;
         InGameEndingMenu.SetActive(true);
@@ -151,17 +198,10 @@ public class GameManager : MonoBehaviour
                 g.Reset();
         }
     
-        // reset all enemy spawners to respawn enemies in the same positions
-        EnemySpawner[] spawners = FindObjectsByType<EnemySpawner>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-        foreach (EnemySpawner s in spawners)
-        {
-                s.ResetSpawner();
-        }
-
         EnemyController[] enemyObjects = FindObjectsByType<EnemyController>(FindObjectsInactive.Include, FindObjectsSortMode.None);
         foreach (EnemyController e in enemyObjects)
         {
-                Destroy(e.gameObject);
+            e.Reset();
         }
         
         // Destroy all enemy spawn indicators to prevent spawning during reset
@@ -171,18 +211,13 @@ public class GameManager : MonoBehaviour
                 Destroy(i.gameObject);
         }
 
-        // Destroy all enemy healthbars to clean up UI elements
-        EnemyHealthbar[] healthbars = FindObjectsByType<EnemyHealthbar>(FindObjectsInactive.Include, FindObjectsSortMode.None); 
-        foreach (EnemyHealthbar h in healthbars)
-        {
-                Destroy(h.gameObject);
-        }
-
         Bullet_Default[] bullets = FindObjectsByType<Bullet_Default>(FindObjectsInactive.Include, FindObjectsSortMode.None);
         foreach (Bullet_Default b in bullets)
         {
-                Destroy(b.gameObject);
+            Destroy(b.gameObject);
         }
+
+        enemySpawner.SpawnWave();
 
     }
 }

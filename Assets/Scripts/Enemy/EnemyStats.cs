@@ -6,18 +6,24 @@ public class EnemyStats : MonoBehaviour
     public float enemyMovementSpeed;
     public float enemyDamage;
     public float health;
-
+    private EnemySpawner spawner;
     private void Start()
     {
-        health=maxHealth;
+        health = maxHealth;
+        spawner = FindFirstObjectByType<EnemySpawner>();
     }
     public void takeDamage(float damage)
     {
-        health-=damage; 
-        if (health<=0)
+        health -= damage;
+        if (health <= 0)
         {
-            GetComponent<EnemyController>().BoundHealthbar.SetActive(false);
-            gameObject.SetActive(false);
+            GetComponent<EnemyController>().isAlive(false);
+            spawner.EnemyDestroyed();
         }
+    }
+    
+    public void Reset()
+    {
+        health = maxHealth;
     }
 }

@@ -65,14 +65,14 @@ public class PlayerControllerTest : MonoBehaviour
         // branch between active and passive weapons
         if (currentWeapon == null)
             return;
-        if (currentWeapon.weaponType== WeaponType.Passive)
+        if (currentWeapon.weaponType == WeaponType.Passive)
         {
             Fire();
             recordFireAction = true;
         }
         else
         {
-            if (currentWeapon.triggerType== TriggerType.Automatic)
+            if (currentWeapon.triggerType == TriggerType.Automatic)
             {
                 //if (Input.GetMouseButtonDown(0))
                 //{
@@ -86,14 +86,14 @@ public class PlayerControllerTest : MonoBehaviour
                 {
                     Fire();
                     recordFireAction = true;
-                    fireTimer = 0;       
+                    fireTimer = 0;
                 }
                 else
                 {
-                    fireTimer += Time.deltaTime;
+                    fireTimer += Time.fixedDeltaTime;
                 }
             }
-            else if (currentWeapon.triggerType==TriggerType.SemiAutomatic)
+            else if (currentWeapon.triggerType == TriggerType.SemiAutomatic)
             {
                 //if (Input.GetMouseButtonDown(0))
                 //{
@@ -113,12 +113,13 @@ public class PlayerControllerTest : MonoBehaviour
                 }
                 else
                 {
-                    fireTimer += Time.deltaTime;
+                    fireTimer += Time.fixedDeltaTime;
                 }
             }
         }
         Debug.DrawLine(firePoint.position, firePoint.position + firePoint.transform.right, Color.red, 0);
     }
+    
     private void FixedUpdate()
     {
         rb.linearVelocity = movement * speed;
@@ -191,10 +192,10 @@ public class PlayerControllerTest : MonoBehaviour
         Debug.Log($"Sending state list of size {recordedStates.Count}");
         return recordedStates;
     }
-    
+
     public void Reset()
     {
-        Debug.Log("Resetting player");
+        stats.Reset();
         transform.position = initialPosition;
         rb.linearVelocityX = 0;
         rb.linearVelocityY = 0;
@@ -203,6 +204,13 @@ public class PlayerControllerTest : MonoBehaviour
         recordFireAction = false;
         fireTimer = 0;
         recordedStates.Clear();
+    }
+    
+    public void UponWaveClear()
+    {
+        stats.health = stats.maxHealth;
+        recordedStates.Clear();
+        initialPosition = transform.position;
     }
 
 }

@@ -17,19 +17,22 @@ public class PlayerStats : MonoBehaviour
     public void TakeDamage(float damage)
     {
         health -= damage;
-        if (health<=0)
+        if (health <= 0)
         {
             if (!isGhost)
             {
-                // don't destroy the camera attached to the player
-                GetComponentInChildren<Camera>().transform.parent = null;
-                Destroy(gameObject);
-                FindFirstObjectByType<GameManager>().PlayerDead();
-            } else
+                FindFirstObjectByType<GameManager>().PlayerDestroyed();
+            }
+            else
             {
                 gameObject.SetActive(false);
             }
-            
+
         }
+    }
+    
+    public void Reset()
+    {
+        health = maxHealth;
     }
 }
