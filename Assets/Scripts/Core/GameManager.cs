@@ -82,6 +82,14 @@ public class GameManager : MonoBehaviour
             Destroy(b.gameObject);
         }
 
+        //reset ghosts
+        GhostController[] ghosts = FindObjectsByType<GhostController>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        foreach (GhostController g in ghosts)
+        {
+            Destroy(g.gameObject);
+        }
+    
+
         resetsRemaining = 2;
         resetsRemainingText.text = $"<size=20><color=#FF0000>Resets Remaining: </color>{resetsRemaining}</size>";
         infoText.text = "<size=20><color=#FF0000>Wave Clear!</color></size>\nLives and ghosts restored";
