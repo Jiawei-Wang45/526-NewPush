@@ -100,7 +100,7 @@ public class EnemySpawner : MonoBehaviour
             e.Erase();
         }
         enemiesInWave.Clear();
-        spawnBudget += 5;
+        spawnBudget += 10;
         InitializeNewWave();
         SpawnWave();
         gameManager.WaveClear();

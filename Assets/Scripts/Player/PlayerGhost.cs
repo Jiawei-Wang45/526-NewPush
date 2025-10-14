@@ -104,4 +104,5 @@ public class GhostController : MonoBehaviour
         sr.color = initialColor;
     }
 
+
 }
