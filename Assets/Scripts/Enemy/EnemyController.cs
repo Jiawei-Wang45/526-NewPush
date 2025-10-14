@@ -8,6 +8,7 @@ public class EnemyController : MonoBehaviour
 
     public PlayerControllerTest pcTest;
     public EnemyStats enemyStats;
+    public int challengeLevel;
 
     public EnemyWeaponData weapon;
     public EnemyMovementPattern movementPattern;
@@ -20,7 +21,6 @@ public class EnemyController : MonoBehaviour
 
 
     private Vector2 movement;
-    private Vector2 initialPosition;
     private float timeToFire = 0;
     private bool currentlyFiring = false;
     private bool foundPlayer = false;
@@ -28,6 +28,10 @@ public class EnemyController : MonoBehaviour
     private LayerMask terrainMask;
     private float checkInterval = 0.1f;
     private Vector3 randomTarget;
+    private List<ObjectState> recordedStates = new List<ObjectState>();
+    private int stateIndex = 0;
+    private bool isReplayingActions = false;
+
 
     public bool isAttacking;
 
@@ -39,11 +43,10 @@ public class EnemyController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         terrainMask = LayerMask.GetMask("Wall", "Player");
         gameManager = FindFirstObjectByType<GameManager>();
-        // Initialize enemy position for reset
-        initialPosition = transform.position;
         RefreshStats();
         timeToFire = weapon.fireRate - 0.6f;
         randomTarget = transform.position;
+        isAlive(false);
     }
     public void RefreshStats()
     {
@@ -53,26 +56,31 @@ public class EnemyController : MonoBehaviour
     }
     private void Update()
     {
-        if (gameManager.isPlayerAlive)
+        if (!isReplayingActions && gameManager.isPlayerAlive)
         {
             RaycastHit2D hit = Physics2D.Linecast(transform.position, pcTest.transform.position, terrainMask);
-            if(hit.collider != null){
-                if(hit.collider.transform.position == pcTest.transform.position){
+            if (hit.collider != null)
+            {
+                if (hit.collider.transform.position == pcTest.transform.position)
+                {
                     foundPlayer = true;
                     canSeePlayer = true;
                     Vector2 direction = pcTest.transform.position - transform.position;
                     float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
                     Quaternion targetRotation = Quaternion.AngleAxis(angle, Vector3.forward);
-                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.deltaTime);
-                } else {
+                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.fixedDeltaTime);
+                }
+                else
+                {
                     canSeePlayer = false;
-                    if(movementPattern.LeashTime > 0)
+                    if (movementPattern.LeashTime > 0)
                     {
                         StartCoroutine(LeashPlayer());
                     }
                 }
             }
-            else{
+            else
+            {
                 foundPlayer = false;
             }
 
@@ -85,48 +93,78 @@ public class EnemyController : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        if (gameManager.isPlayerAlive)
+        if (isReplayingActions)
         {
-            if (foundPlayer)
-            {
-                float factor = 1.0f;
-                if(canSeePlayer){
-                    factor = (transform.position - pcTest.transform.position).magnitude > comfortableDistance ? 1.0f : -1.0f * movementPattern.BackoffSpeedFactor;
-                }
-                rb.linearVelocity = factor * transform.right * enemySpeed;
-            } else {
-                switch(movementPattern.idleBehavior)
-                {
-                    case EnemyMovementPattern.idleBehaviors.Stops:
-                        rb.linearVelocity = Vector2.zero;
-                        break;
-                    case EnemyMovementPattern.idleBehaviors.RandomWalk:
-                        if((randomTarget - transform.position).magnitude < 0.1f){
-                            Vector2 offset = UnityEngine.Random.insideUnitCircle.normalized * 5.0f;
-                            randomTarget = transform.position + new Vector3(offset.x, offset.y, 0);
-                        }
-                        Vector2 direction = randomTarget - transform.position;
-                        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-                        Quaternion targetRotation = Quaternion.AngleAxis(angle, Vector3.forward);
-                        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.deltaTime);
-                        rb.linearVelocity = transform.right * enemySpeed;
-                        break;
-                }
-            }
-        }
-
-        if(canSeePlayer){
+            ObjectState currentState = recordedStates[stateIndex];
+            rb.linearVelocity = currentState.currentVelocity;
+            transform.rotation = currentState.currentRotation;
             if (!currentlyFiring)
             {
-                timeToFire += Time.deltaTime;
+                timeToFire += Time.fixedDeltaTime;
             }
-            if (timeToFire >= weapon.fireRate)
+            if (currentState.currentlyFiring)
             {
                 timeToFire = 0;
                 StartCoroutine(BeginFiringSequence());
             }
+            stateIndex++;
+            if (stateIndex == recordedStates.Count)
+            {
+                isReplayingActions = false;
+            }
         }
+        else
+        {
+            bool firedThisTick = false;
+            if (gameManager.isPlayerAlive)
+            {
+                if (foundPlayer)
+                {
+                    float factor = 1.0f;
+                    if (canSeePlayer)
+                    {
+                        factor = (transform.position - pcTest.transform.position).magnitude > comfortableDistance ? 1.0f : -1.0f * movementPattern.BackoffSpeedFactor;
+                    }
+                    rb.linearVelocity = factor * transform.right * enemySpeed;
+                }
+                else
+                {
+                    switch (movementPattern.idleBehavior)
+                    {
+                        case EnemyMovementPattern.idleBehaviors.Stops:
+                            rb.linearVelocity = Vector2.zero;
+                            break;
+                        case EnemyMovementPattern.idleBehaviors.RandomWalk:
+                            if ((randomTarget - transform.position).magnitude < 0.1f)
+                            {
+                                Vector2 offset = UnityEngine.Random.insideUnitCircle.normalized * 5.0f;
+                                randomTarget = transform.position + new Vector3(offset.x, offset.y, 0);
+                            }
+                            Vector2 direction = randomTarget - transform.position;
+                            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+                            Quaternion targetRotation = Quaternion.AngleAxis(angle, Vector3.forward);
+                            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.fixedDeltaTime);
+                            rb.linearVelocity = transform.right * enemySpeed;
+                            break;
+                    }
+                }
+            }
 
+            if (canSeePlayer)
+            {
+                if (!currentlyFiring)
+                {
+                    timeToFire += Time.fixedDeltaTime;
+                }
+                if (timeToFire >= weapon.fireRate)
+                {
+                    firedThisTick = true;
+                    timeToFire = 0;
+                    StartCoroutine(BeginFiringSequence());
+                }
+            }
+            recordedStates.Add(new ObjectState(rb.linearVelocity, transform.rotation, firedThisTick));
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -148,6 +186,7 @@ public class EnemyController : MonoBehaviour
                         // we probably spawned in wall, let the physics engine sort it out
                         // Fixing spawner logic to avoid spawning in walls should fix this
                     }
+                    Debug.Log(tries);
                 }
             }
         }
@@ -284,15 +323,31 @@ public class EnemyController : MonoBehaviour
         bulletAttributes.InitBullet(weapon.bulletSpeed, weapon.bulletLifeTime, weapon.bulletDamage, "enemy");
     }
 
+    public void isAlive(bool status)
+    {
+        gameObject.SetActive(status);
+        BoundHealthbar.SetActive(status);
+    }
+
+    public void Erase()
+    {
+        Destroy(BoundHealthbar);
+        Destroy(gameObject);
+    }
+
     public void Reset()
     {
+        Debug.Log($"Enemy state count: {recordedStates.Count}");
+        stateIndex = 0;
         StopAllCoroutines();
-        transform.position = initialPosition;
         RefreshStats();
+        enemyStats.Reset();
         timeToFire = weapon.fireRate - 0.6f;
         randomTarget = transform.position;
         rb.linearVelocityX = 0;
         rb.linearVelocityY = 0;
+        isReplayingActions = true;
+        isAlive(false);
     }
 
     

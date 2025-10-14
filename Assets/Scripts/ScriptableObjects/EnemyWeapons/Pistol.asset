@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f049e53cb6dc4a2285268441f6201fb, type: 3}
   m_Name: Pistol
   m_EditorClassIdentifier: 
-  bulletLifeTime: 5
-  bulletDamage: 7
+  bulletLifeTime: 10
+  bulletDamage: 1
   bulletSpeed: 5
   bulletType: {fileID: 8604903965720594084, guid: 04d380db99e814f64a851e76366f14f9, type: 3}
   fireRate: 1.2
