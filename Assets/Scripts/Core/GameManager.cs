@@ -107,7 +107,7 @@ public class GameManager : MonoBehaviour
     // Main Menu button's functions
     public void NewGame()
     {
-        SceneManager.LoadScene("Level_0");
+        SceneManager.LoadScene("AlphaProgressCheck");
         //InitializePauseStat();
     }
     public void Exit()
