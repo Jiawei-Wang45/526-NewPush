@@ -20,6 +20,7 @@ public class GameManager : MonoBehaviour
     private int resetsRemaining = 2;
     public TMP_Text resetsRemainingText;
     public TMP_Text infoText;
+    public TMP_Text displayScoreText;
     private int waveCount = 1;
 
     /*
@@ -106,10 +107,11 @@ public class GameManager : MonoBehaviour
     
     public void GameOver()
     {
-        player.gameObject.SetActive(false);
+        //player.gameObject.SetActive(false);
         isPlayerAlive = false;
         Time.timeScale = 0;
         InGameEndingMenu.SetActive(true);
+        displayScoreText.text = $"<size=20><color=#FF0000>Waves Cleared: </color>{waveCount - 1}</size>";
 
     }
     // Main Menu button's functions

@@ -293,7 +293,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 20
   enemyMovementSpeed: 1
-  enemyDamage: 0.05
+  enemyDamage: 0
   health: 0
 --- !u!114 &8572776704057460049
 MonoBehaviour:
