@@ -9,19 +9,37 @@ public class Bullet_Default: MonoBehaviour
 
     public string bulletType;
 
-    public void InitBullet(float bulletSpeed, float bulletLifeTime, float bulletDamage, string bulletType)
+    public HSLColor bulletColor = new HSLColor(); 
+
+    public void InitBullet(float bulletSpeed, float bulletLifeTime, float bulletDamage, string bulletType, HSLColor color)
     {
         this.bulletSpeed = bulletSpeed;
         this.bulletLifeTime = bulletLifeTime;
         this.bulletDamage = bulletDamage;
         this.bulletType = bulletType;
+        this.bulletColor = color;
     }
     private void Start()
     {
         rb= GetComponent<Rigidbody2D>();
         rb.linearVelocity = transform.right * bulletSpeed;
+
+        UpdateBulletColor();
+
         Destroy(gameObject, bulletLifeTime);
+
     }
+
+    private void UpdateBulletColor()
+    {
+        // 获取子弹的SpriteRenderer组件并应用HSL颜色
+        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.color = bulletColor.ToRGB();
+        }
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Enemy") && bulletType == "player")
@@ -33,6 +51,10 @@ public class Bullet_Default: MonoBehaviour
         {
             PlayerStats playerStats = collision.gameObject.GetComponent<PlayerStats>();
             playerStats.TakeDamage(bulletDamage);
+
+            float influence = 0.01f;
+            playerStats.ChangeWeaponType(bulletColor.H, influence);
+
         }
         Destroy(gameObject);
     }

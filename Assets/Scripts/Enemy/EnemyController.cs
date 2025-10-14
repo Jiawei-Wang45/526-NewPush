@@ -56,6 +56,7 @@ public class EnemyController : MonoBehaviour
     }
     private void Update()
     {
+        UpdateEnemyColor();
         if (!isReplayingActions && gameManager.isPlayerAlive)
         {
             RaycastHit2D hit = Physics2D.Linecast(transform.position, pcTest.transform.position, terrainMask);
@@ -320,7 +321,7 @@ public class EnemyController : MonoBehaviour
         Quaternion rotation = Quaternion.Euler(0, 0, angle);
         GameObject spawnedBullet = Instantiate(weapon.bulletType, spawnPosition, rotation);
         Bullet_Default bulletAttributes = spawnedBullet.GetComponent<Bullet_Default>();
-        bulletAttributes.InitBullet(weapon.bulletSpeed, weapon.bulletLifeTime, weapon.bulletDamage, "enemy");
+        bulletAttributes.InitBullet(weapon.bulletSpeed, weapon.bulletLifeTime, weapon.bulletDamage, "enemy",enemyStats.enemyColor);
     }
 
     public void isAlive(bool status)
@@ -348,6 +349,19 @@ public class EnemyController : MonoBehaviour
         rb.linearVelocityY = 0;
         isReplayingActions = true;
         isAlive(false);
+    }
+
+    private void UpdateEnemyColor()
+    {
+
+        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.color = enemyStats.enemyColor.ToRGB();
+        }
+        
+
+        Debug.Log($"Enemy Color - H:{enemyStats.enemyColor.H:F1}, S:{enemyStats.enemyColor.S:F1}, L:{enemyStats.enemyColor.L:F1}");
     }
 
     

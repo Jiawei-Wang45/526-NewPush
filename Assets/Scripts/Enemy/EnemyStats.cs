@@ -7,14 +7,22 @@ public class EnemyStats : MonoBehaviour
     public float enemyDamage;
     public float health;
     private EnemySpawner spawner;
+
+    public HSLColor enemyColor = new HSLColor();
+
+
     private void Start()
     {
         health = maxHealth;
+
+        enemyColor = new HSLColor(200f, 100f, 50f);
+
         spawner = FindFirstObjectByType<EnemySpawner>();
     }
     public void takeDamage(float damage)
     {
         health -= damage;
+        enemyColor.L = 50f + (health / maxHealth) * 40f;
         if (health <= 0)
         {
             GetComponent<EnemyController>().isAlive(false);
@@ -23,6 +31,7 @@ public class EnemyStats : MonoBehaviour
     }
     
     public void Reset()
+    
     {
         health = maxHealth;
     }

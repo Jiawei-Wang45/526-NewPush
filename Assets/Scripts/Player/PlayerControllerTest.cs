@@ -53,6 +53,8 @@ public class PlayerControllerTest : MonoBehaviour
         playerInput.Default.Fire.performed += OnFireTriggered;
         playerInput.Default.Fire.canceled += OnFireTriggered;
 
+        playerInput.Default.Reload.performed += OnReloadTriggered;
+
     }
 
 
@@ -63,6 +65,9 @@ public class PlayerControllerTest : MonoBehaviour
         //movement=new Vector2(inputX, inputY);
 
         // branch between active and passive weapons
+
+        UpdatePlayerColor();
+
         if (currentWeapon == null)
             return;
         if (currentWeapon.weaponType == WeaponType.Passive)
@@ -139,12 +144,17 @@ public class PlayerControllerTest : MonoBehaviour
 
     private void Fire()
     {
+
+        if (!stats.CanFire()) return;
+
+        stats.ConsumeAmmo(1f);
+
         float bulletTiltAngle = -(currentWeapon.weaponBulletAmount - 1) * currentWeapon.weaponFiringAngle / 2;
         for (int i = 0;i<currentWeapon.weaponBulletAmount;i++)
         {
             GameObject spawnedBullet=Instantiate(currentWeapon.bulletType, firePoint.position, firePoint.rotation);
             Bullet_Default bulletAttributes = spawnedBullet.GetComponent<Bullet_Default>();
-            bulletAttributes.InitBullet(currentWeapon.weaponBulletSpeed, currentWeapon.weaponBulletLifeTime, currentWeapon.weaponBulletDamage, "player");
+            bulletAttributes.InitBullet(currentWeapon.weaponBulletSpeed, currentWeapon.weaponBulletLifeTime, currentWeapon.weaponBulletDamage, "player",stats.playerColor);
             spawnedBullet.transform.Rotate(0, 0, bulletTiltAngle+Random.Range(-currentWeapon.weaponBulletSpread,currentWeapon.weaponBulletSpread));
             bulletTiltAngle += currentWeapon.weaponFiringAngle;
         }
@@ -181,6 +191,14 @@ public class PlayerControllerTest : MonoBehaviour
         }
     }
 
+    private void OnReloadTriggered(InputAction.CallbackContext context){
+
+    if (context.performed)
+    {
+        stats.StartReload();
+    }
+    }
+
     public List<ObjectState> sendStates()
     {
         if (currentWeapon)
@@ -193,9 +211,23 @@ public class PlayerControllerTest : MonoBehaviour
         return recordedStates;
     }
 
+    private void UpdatePlayerColor()
+    {
+
+        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.color = stats.playerColor.ToRGB();
+        }
+        
+
+        Debug.Log($"Player Color - H:{stats.playerColor.H:F1}, S:{stats.playerColor.S:F1}, L:{stats.playerColor.L:F1}");
+    }
+
     public void Reset()
     {
         stats.Reset();
+        stats.ResetH();
         transform.position = initialPosition;
         rb.linearVelocityX = 0;
         rb.linearVelocityY = 0;
