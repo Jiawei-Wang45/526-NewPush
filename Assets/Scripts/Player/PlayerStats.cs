@@ -8,7 +8,7 @@ public class PlayerStats : MonoBehaviour
     public float movementSpeed = 10f;
     public float maxHealth = 100.0f;
     public float health;
-    public int lives = 2;
+    public int lives = 3;
     public bool isGhost = false;
 
     private void Start()

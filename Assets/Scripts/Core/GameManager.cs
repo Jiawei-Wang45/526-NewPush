@@ -37,7 +37,7 @@ public class GameManager : MonoBehaviour
         return spawnCompleted;
     }
 
-    private void OnReset(InputAction.CallbackContext ctx) => ResetWithGhost();
+    private void OnReset(InputAction.CallbackContext ctx) => activeRespawn();
 
 
     private void Start()
@@ -73,6 +73,7 @@ public class GameManager : MonoBehaviour
     {
         SceneManager.LoadScene("WeaponTesting");
         spawnCompleted = false;
+        FindFirstObjectByType<DoorTemp>().resetEnemiesToKill();
         //InitializePauseStat();
     }
     public void Exit()
@@ -95,6 +96,7 @@ public class GameManager : MonoBehaviour
     { 
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         spawnCompleted = false;
+        FindFirstObjectByType<DoorTemp>().resetEnemiesToKill();
         //InitializePauseStat();
     }
 
@@ -145,9 +147,15 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void activeRespawn()
+    {
+        FindFirstObjectByType<PlayerStats>().TakeDamage(200);
+    }
+
     public void ResetWithGhost()
     {
         spawnCompleted = false;
+        FindFirstObjectByType<DoorTemp>().resetEnemiesToKill();
         List<ObjectState> playerStates = new List<ObjectState>(player.sendStates());
         Reset();
         GhostController newGhost = Instantiate(ghost);
