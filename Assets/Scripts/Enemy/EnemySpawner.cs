@@ -40,6 +40,7 @@ public class EnemySpawner : MonoBehaviour
                 spawnedIndicator.GetComponent<EnemySpawnIndicator>().enemyToSpawn = enemySpawnList[index];
             }
         }
+        FindFirstObjectByType<GameManager>().SetSpawnCompleted();
     }
     public void ResetSpawner()
     {
@@ -51,7 +52,7 @@ public class EnemySpawner : MonoBehaviour
     public void InitspawnPos()
     {
         spawnPosX = defaultSpawnPosX * spawnPosVariationScale;
-        spawnPosY=defaultSpawnPosY* spawnPosVariationScale;
+        spawnPosY = defaultSpawnPosY * spawnPosVariationScale;
     }
 
 }

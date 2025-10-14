@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Blunderbuss
   m_EditorClassIdentifier: 
   bulletLifeTime: 5
-  bulletDamage: 1
+  bulletDamage: 5
   bulletSpeed: 6.6
   bulletType: {fileID: 8604903965720594084, guid: 04d380db99e814f64a851e76366f14f9, type: 3}
   fireRate: 4

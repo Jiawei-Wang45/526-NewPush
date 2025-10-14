@@ -82,7 +82,7 @@ public class PlayerControllerTest : MonoBehaviour
                 //{
                 //    isFiring = false;
                 //}
-                if (isFiring && fireTimer >= 1 / currentWeapon.weaponBulletSpeed)
+                if (isFiring && fireTimer >= currentWeapon.weaponFireRate)
                 {
                     Fire();
                     recordFireAction = true;
@@ -104,7 +104,7 @@ public class PlayerControllerTest : MonoBehaviour
                 //    isFiring = false;
                 //    hasFired = false;
                 //} 
-                if (isFiring && !hasFired && fireTimer >= 1 / currentWeapon.weaponBulletSpeed)
+                if (isFiring && !hasFired && fireTimer >= currentWeapon.weaponFireRate)
                 {
                     Fire();
                     recordFireAction = true;

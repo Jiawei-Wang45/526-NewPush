@@ -16,6 +16,7 @@ public class EnemyStats : MonoBehaviour
         health-=damage; 
         if (health<=0)
         {
+            FindFirstObjectByType<DoorTemp>().EnemiesToKill--;
             GetComponent<EnemyController>().BoundHealthbar.SetActive(false);
             gameObject.SetActive(false);
         }

@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
     public GhostController ghost;
     public bool isInLevel;
     public float levelStartTime;
+    private bool spawnCompleted = false;
 
         void OnEnable()
     {
@@ -24,6 +25,16 @@ public class GameManager : MonoBehaviour
     {
         InputSystem.actions["Reset"].performed -= OnReset;
 
+    }
+
+    public void SetSpawnCompleted()
+    {
+        Debug.Log("Spawn completed");
+        spawnCompleted = true;
+    }
+    public bool GetSpawnCompleted()
+    {
+        return spawnCompleted;
     }
 
     private void OnReset(InputAction.CallbackContext ctx) => ResetWithGhost();
@@ -60,7 +71,8 @@ public class GameManager : MonoBehaviour
     // Main Menu button's functions
     public void NewGame()
     {
-        SceneManager.LoadScene("Level_0");
+        SceneManager.LoadScene("WeaponTesting");
+        spawnCompleted = false;
         //InitializePauseStat();
     }
     public void Exit()
@@ -82,12 +94,14 @@ public class GameManager : MonoBehaviour
     public void Restart()
     { 
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        spawnCompleted = false;
         //InitializePauseStat();
     }
 
     public void BackToMainMenu()
     {
         SceneManager.LoadScene("MainMenu");
+        spawnCompleted = false;
     }
     //helper functions
     private void ChangePauseStat()
@@ -133,6 +147,7 @@ public class GameManager : MonoBehaviour
 
     public void ResetWithGhost()
     {
+        spawnCompleted = false;
         List<ObjectState> playerStates = new List<ObjectState>(player.sendStates());
         Reset();
         GhostController newGhost = Instantiate(ghost);

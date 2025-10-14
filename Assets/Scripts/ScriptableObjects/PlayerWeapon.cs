@@ -11,6 +11,7 @@ public class PlayerWeapon : ScriptableObject
     public float weaponBulletLifeTime;
     public float weaponBulletDamage;
     public float weaponBulletSpeed;
+    public float weaponFireRate = 0.2f;
 
     //weapon attributes
     public float weaponFireSpeed;    //times per second
