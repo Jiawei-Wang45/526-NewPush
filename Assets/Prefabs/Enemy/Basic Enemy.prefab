@@ -104,7 +104,7 @@ GameObject:
   - component: {fileID: 4258157441187923356}
   m_Layer: 7
   m_Name: Basic Enemy
-  m_TagString: Untagged
+  m_TagString: Pausible
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -295,6 +295,10 @@ MonoBehaviour:
   enemyMovementSpeed: 1
   enemyDamage: 0
   health: 0
+  enemyColor:
+    H: 0
+    S: 100
+    L: 50
 --- !u!114 &4258157441187923356
 MonoBehaviour:
   m_ObjectHideFlags: 0

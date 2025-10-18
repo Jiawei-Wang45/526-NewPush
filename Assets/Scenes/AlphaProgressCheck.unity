@@ -3916,7 +3916,7 @@ GameObject:
   - component: {fileID: 1335872721}
   m_Layer: 3
   m_Name: player
-  m_TagString: Player
+  m_TagString: Pausable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4097,6 +4097,19 @@ MonoBehaviour:
   maxHealth: 5
   health: 0
   isGhost: 0
+  playerColor:
+    H: 0
+    S: 100
+    L: 50
+  originalH: 0
+  weaponTypeThreshold: 15
+  maxAmmo: 100
+  currentAmmo: 0
+  reloadTime: 2
+  hRecoverySpeed: 1
+  hRecoveryDelay: 2
+  hRecoveryTimer: 0
+  isRecoveringH: 0
 --- !u!114 &1335872721
 MonoBehaviour:
   m_ObjectHideFlags: 0

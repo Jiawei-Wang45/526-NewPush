@@ -35,6 +35,8 @@ public class EnemyController : MonoBehaviour
 
     public bool isAttacking;
 
+    private bool isPaused = false;
+    private Vector2 savedVelocity;
 
     private void Start()
     {
@@ -56,6 +58,7 @@ public class EnemyController : MonoBehaviour
     }
     private void Update()
     {
+        if (isPaused) return;
         UpdateEnemyColor();
         if (!isReplayingActions && gameManager.isPlayerAlive)
         {
@@ -94,6 +97,7 @@ public class EnemyController : MonoBehaviour
     }
     private void FixedUpdate()
     {
+        if (isPaused) return;
         if (isReplayingActions)
         {
             ObjectState currentState = recordedStates[stateIndex];
@@ -321,7 +325,10 @@ public class EnemyController : MonoBehaviour
         Quaternion rotation = Quaternion.Euler(0, 0, angle);
         GameObject spawnedBullet = Instantiate(weapon.bulletType, spawnPosition, rotation);
         Bullet_Default bulletAttributes = spawnedBullet.GetComponent<Bullet_Default>();
-        bulletAttributes.InitBullet(weapon.bulletSpeed, weapon.bulletLifeTime, weapon.bulletDamage, "enemy",enemyStats.enemyColor);
+
+        float timeScaleFactor = isPaused ? 0.5f : 1.0f;
+        
+        bulletAttributes.InitBullet(weapon.bulletSpeed * timeScaleFactor, weapon.bulletLifeTime, weapon.bulletDamage, "enemy",enemyStats.enemyColor);
     }
 
     public void isAlive(bool status)
@@ -361,8 +368,36 @@ public class EnemyController : MonoBehaviour
         }
         
 
-        Debug.Log($"Enemy Color - H:{enemyStats.enemyColor.H:F1}, S:{enemyStats.enemyColor.S:F1}, L:{enemyStats.enemyColor.L:F1}");
+        //Debug.Log($"Enemy Color - H:{enemyStats.enemyColor.H:F1}, S:{enemyStats.enemyColor.S:F1}, L:{enemyStats.enemyColor.L:F1}");
     }
+
+    public void PauseEnemy(float pauseDuration)
+    {
+        if (!isPaused)
+        {
+            StartCoroutine(PauseCoroutine(pauseDuration));
+        }
+    }
+    
+    private IEnumerator PauseCoroutine(float pauseDuration)
+    {
+        savedVelocity = rb.linearVelocity;
+        rb.linearVelocity /= 2f;
+        isPaused = true;
+        
+        yield return new WaitForSeconds(pauseDuration);
+        
+        ResumeEnemy();
+    }
+    
+    public void ResumeEnemy()
+    {
+        if (isPaused)
+        {
+            rb.linearVelocity = savedVelocity;
+            isPaused = false;
+        }
+    }    
 
     
 }

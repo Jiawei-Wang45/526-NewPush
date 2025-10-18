@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections;
 public class PlayerControllerTest : MonoBehaviour
 {
     private Rigidbody2D rb;
@@ -21,6 +22,11 @@ public class PlayerControllerTest : MonoBehaviour
     private float fireTimer;
     public Transform firePoint;
     public PlayerWeapon currentWeapon;
+
+    private Vector2 savedVelocity;
+    private bool savedIsFiring;
+    private bool isPaused = false;
+
     public void RefreshStats()
     {
         speed = stats.movementSpeed;
@@ -55,6 +61,8 @@ public class PlayerControllerTest : MonoBehaviour
 
         playerInput.Default.Reload.performed += OnReloadTriggered;
 
+        playerInput.Default.PauseBullets.performed += OnPauseAllTriggered;
+
     }
 
 
@@ -65,7 +73,7 @@ public class PlayerControllerTest : MonoBehaviour
         //movement=new Vector2(inputX, inputY);
 
         // branch between active and passive weapons
-
+        //if (isPaused) return;
         UpdatePlayerColor();
 
         if (currentWeapon == null)
@@ -127,6 +135,7 @@ public class PlayerControllerTest : MonoBehaviour
     
     private void FixedUpdate()
     {
+        //if (isPaused) return;
         rb.linearVelocity = movement * speed;
         if (recordEquipAction)
         {
@@ -154,7 +163,10 @@ public class PlayerControllerTest : MonoBehaviour
         {
             GameObject spawnedBullet=Instantiate(currentWeapon.bulletType, firePoint.position, firePoint.rotation);
             Bullet_Default bulletAttributes = spawnedBullet.GetComponent<Bullet_Default>();
-            bulletAttributes.InitBullet(currentWeapon.weaponBulletSpeed, currentWeapon.weaponBulletLifeTime, currentWeapon.weaponBulletDamage, "player",stats.playerColor);
+
+            float timeScaleFactor = isPaused ? 0.5f : 1.0f;
+
+            bulletAttributes.InitBullet(currentWeapon.weaponBulletSpeed * timeScaleFactor, currentWeapon.weaponBulletLifeTime, currentWeapon.weaponBulletDamage, "player",stats.playerColor);
             spawnedBullet.transform.Rotate(0, 0, bulletTiltAngle+Random.Range(-currentWeapon.weaponBulletSpread,currentWeapon.weaponBulletSpread));
             bulletTiltAngle += currentWeapon.weaponFiringAngle;
         }
@@ -198,6 +210,8 @@ public class PlayerControllerTest : MonoBehaviour
         stats.StartReload();
     }
     }
+
+    
 
     public List<ObjectState> sendStates()
     {
@@ -245,4 +259,69 @@ public class PlayerControllerTest : MonoBehaviour
         initialPosition = transform.position;
     }
 
+    private void OnPauseAllTriggered(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            PauseAllPausable(2.0f); // 暂停2秒
+        }
+    }
+
+    public void PauseAllPausable(float pauseDuration)
+    {
+       GameObject[] pausableObjects = GameObject.FindGameObjectsWithTag("Pausable");
+       foreach (GameObject obj in pausableObjects)
+       {
+           // 暂停子弹
+           Bullet_Default bullet = obj.GetComponent<Bullet_Default>();
+           if (bullet != null)
+           {
+               bullet.PauseBullet(pauseDuration);
+           }
+           
+           // 暂停敌人
+           EnemyController enemy = obj.GetComponent<EnemyController>();
+           if (enemy != null)
+           {
+               enemy.PauseEnemy(pauseDuration);
+           }
+           
+           // 暂停玩家
+           PlayerControllerTest player = obj.GetComponent<PlayerControllerTest>();
+           if (player != null)
+           {
+               player.PausePlayer(pauseDuration);
+           }
+       }
+    }
+    public void PausePlayer(float pauseDuration)
+    {
+        if (!isPaused)
+        {
+            StartCoroutine(PauseCoroutine(pauseDuration));
+        }
+    }
+
+    private IEnumerator PauseCoroutine(float pauseDuration)
+    {
+        //savedVelocity = rb.linearVelocity;
+        //savedIsFiring = isFiring;
+        //rb.linearVelocity = Vector2.zero;
+        //isFiring = false;
+        isPaused = true;
+
+        yield return new WaitForSeconds(pauseDuration);
+
+        ResumePlayer();
+    }
+
+    public void ResumePlayer()
+    {
+        if (isPaused)
+        {
+            //rb.linearVelocity = savedVelocity;
+            //isFiring = savedIsFiring;
+            isPaused = false;
+        }
+    }    
 }

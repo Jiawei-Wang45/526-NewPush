@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class Bullet_Default: MonoBehaviour
 {
@@ -9,7 +10,21 @@ public class Bullet_Default: MonoBehaviour
 
     public string bulletType;
 
+    public enum BulletState
+{
+    Flying,
+    Paused
+}   
+
     public HSLColor bulletColor = new HSLColor(); 
+    public BulletState currentState;
+    private Vector2 savedVelocity;
+
+    private float pausedTime;
+
+    private float OriLifeTime;
+
+    
 
     public void InitBullet(float bulletSpeed, float bulletLifeTime, float bulletDamage, string bulletType, HSLColor color)
     {
@@ -18,6 +33,7 @@ public class Bullet_Default: MonoBehaviour
         this.bulletDamage = bulletDamage;
         this.bulletType = bulletType;
         this.bulletColor = color;
+        currentState = BulletState.Flying;
     }
     private void Start()
     {
@@ -57,5 +73,34 @@ public class Bullet_Default: MonoBehaviour
 
         }
         Destroy(gameObject);
+    }
+//********************************Bullet Pause********************************
+    public void PauseBullet(float pauseDuration)  // 替换现有方法
+    {
+        if (currentState == BulletState.Flying)
+        {
+            StartCoroutine(PauseCoroutine(pauseDuration));
+        }
+    }
+
+    private IEnumerator PauseCoroutine(float pauseDuration)  // 新增协程
+    {
+        savedVelocity = rb.linearVelocity;
+        rb.linearVelocity /= 2f;
+        currentState = BulletState.Paused;
+
+        yield return new WaitForSeconds(pauseDuration);
+
+        ResumeBullet();
+    }
+
+    public void ResumeBullet()  // 保留现有方法
+    {
+        if (currentState == BulletState.Paused)
+        {
+            rb.linearVelocity = savedVelocity;
+            currentState = BulletState.Flying;
+            bulletLifeTime = OriLifeTime;
+        }
     }
 }
