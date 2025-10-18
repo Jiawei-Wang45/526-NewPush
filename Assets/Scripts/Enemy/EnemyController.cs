@@ -370,7 +370,7 @@ public class EnemyController : MonoBehaviour
 
         //Debug.Log($"Enemy Color - H:{enemyStats.enemyColor.H:F1}, S:{enemyStats.enemyColor.S:F1}, L:{enemyStats.enemyColor.L:F1}");
     }
-
+//********************************Enemy Pause********************************
     public void PauseEnemy(float pauseDuration)
     {
         if (!isPaused)

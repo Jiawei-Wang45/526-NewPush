@@ -263,30 +263,27 @@ public class PlayerControllerTest : MonoBehaviour
     {
         if (context.performed)
         {
-            PauseAllPausable(2.0f); // 暂停2秒
+            PauseAllPausable(2.0f);
         }
     }
-
+//********************************Pause All Pausable********************************
     public void PauseAllPausable(float pauseDuration)
     {
        GameObject[] pausableObjects = GameObject.FindGameObjectsWithTag("Pausable");
        foreach (GameObject obj in pausableObjects)
        {
-           // 暂停子弹
            Bullet_Default bullet = obj.GetComponent<Bullet_Default>();
            if (bullet != null)
            {
                bullet.PauseBullet(pauseDuration);
            }
            
-           // 暂停敌人
            EnemyController enemy = obj.GetComponent<EnemyController>();
            if (enemy != null)
            {
                enemy.PauseEnemy(pauseDuration);
            }
-           
-           // 暂停玩家
+
            PlayerControllerTest player = obj.GetComponent<PlayerControllerTest>();
            if (player != null)
            {
@@ -294,6 +291,7 @@ public class PlayerControllerTest : MonoBehaviour
            }
        }
     }
+//********************************Player Pause********************************
     public void PausePlayer(float pauseDuration)
     {
         if (!isPaused)

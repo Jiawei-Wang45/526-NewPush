@@ -75,7 +75,7 @@ public class Bullet_Default: MonoBehaviour
         Destroy(gameObject);
     }
 //********************************Bullet Pause********************************
-    public void PauseBullet(float pauseDuration)  // 替换现有方法
+    public void PauseBullet(float pauseDuration)
     {
         if (currentState == BulletState.Flying)
         {
@@ -83,7 +83,7 @@ public class Bullet_Default: MonoBehaviour
         }
     }
 
-    private IEnumerator PauseCoroutine(float pauseDuration)  // 新增协程
+    private IEnumerator PauseCoroutine(float pauseDuration)
     {
         savedVelocity = rb.linearVelocity;
         rb.linearVelocity /= 2f;
@@ -94,7 +94,7 @@ public class Bullet_Default: MonoBehaviour
         ResumeBullet();
     }
 
-    public void ResumeBullet()  // 保留现有方法
+    public void ResumeBullet()
     {
         if (currentState == BulletState.Paused)
         {
