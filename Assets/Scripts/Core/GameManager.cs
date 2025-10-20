@@ -49,6 +49,23 @@ public class GameManager : MonoBehaviour
             InGameWinMenu.SetActive(false);
             PlayerControllerTest pcTest = FindFirstObjectByType<PlayerControllerTest>();
             pcTest.playerInput.Default.Escape.performed += OnEscapeTriggered;
+            // Apply any ability selected from the initial menu
+            int selected = GetSelectedAbility();
+            if (selected != -1)
+            {
+                // Try to apply to the found PlayerControllerTest first
+                if (pcTest != null)
+                {
+                    pcTest.abilityEnum = selected;
+                    Debug.Log($"Applied selected ability {selected} to player (pcTest)");
+                }
+                // Also apply to serialized player reference if available
+                if (player != null)
+                {
+                    player.abilityEnum = selected;
+                    Debug.Log($"Applied selected ability {selected} to player (player field)");
+                }
+            }
         }
         Time.timeScale = 1.0f;
     }
@@ -185,6 +202,36 @@ public class GameManager : MonoBehaviour
         if (gaManager != null)
         {
             gaManager.SendLevelCompletedEvent(levelName, completionTime);
+        }
+    }
+
+    // -------------------- Ability selection (initial menu) --------------------
+    private const string SelectedAbilityKey = "SelectedAbility";
+
+    // Set the currently selected ability (called from initial UI)
+    public void SetSelectedAbility(int abilityId)
+    {
+        PlayerPrefs.SetInt(SelectedAbilityKey, abilityId);
+        PlayerPrefs.Save();
+        Debug.Log($"Selected ability set to {abilityId}");
+    }
+
+    // Get the selected ability; returns -1 if none
+    public int GetSelectedAbility()
+    {
+        if (PlayerPrefs.HasKey(SelectedAbilityKey))
+            return PlayerPrefs.GetInt(SelectedAbilityKey);
+        return -1;
+    }
+
+    // Clear any selected ability
+    public void ClearSelectedAbility()
+    {
+        if (PlayerPrefs.HasKey(SelectedAbilityKey))
+        {
+            PlayerPrefs.DeleteKey(SelectedAbilityKey);
+            PlayerPrefs.Save();
+            Debug.Log("Cleared selected ability");
         }
     }
 
