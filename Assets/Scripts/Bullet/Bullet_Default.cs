@@ -69,63 +69,45 @@ public class Bullet_Default: MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        // If this bullet belongs to the player and hit an enemy
         if (collision.gameObject.layer == LayerMask.NameToLayer("Enemy") && bulletType == "player")
         {
             EnemyStats enemyStats = collision.gameObject.GetComponent<EnemyStats>();
-            if (enemyStats != null)
-            {
-                enemyStats.takeDamage(bulletDamage);
-            }
-            Destroy(gameObject);
-            return;
+            enemyStats.takeDamage(bulletDamage);
         }
-
-        // If this bullet belongs to an enemy and hit the player
         if (collision.gameObject.layer == LayerMask.NameToLayer("Player") && bulletType == "enemy")
         {
             PlayerStats playerStats = collision.gameObject.GetComponent<PlayerStats>();
-            if (playerStats != null)
+
+            if (playerStats.isInvincible)
             {
-                // If player is invincible, disable future collisions between this bullet and the player's collider
-                if (playerStats.isInvincible)
+                Collider2D myCol = GetComponent<Collider2D>();
+                Collider2D playerCol = collision.collider as Collider2D;
+                if (myCol != null && playerCol != null)
                 {
-                    Collider2D myCol = GetComponent<Collider2D>();
-                    Collider2D playerCol = collision.collider as Collider2D;
-                    if (myCol != null && playerCol != null)
-                    {
-                        Physics2D.IgnoreCollision(myCol, playerCol);
-                    }
-                    // don't apply damage or destroy the bullet; let it pass through
-                    // restore velocity to pre-collision value to avoid physics impulse altering direction
-                    if (rb != null)
-                    {
-                        rb.linearVelocity = lastVelocity;
-                    }
-                    return;
+                    Physics2D.IgnoreCollision(myCol, playerCol);
                 }
 
-                // Player not invincible: apply damage and influence
-                playerStats.TakeDamage(bulletDamage);
-
-                float influence = 0.01f;
-                playerStats.ChangeWeaponType(bulletColor.H, influence);
+                if (rb != null)
+                {
+                    rb.linearVelocity = lastVelocity;
+                }
+                
+                // don't apply damage or destroy the bullet; let it pass through
+                return;
             }
-            Destroy(gameObject);
-            return;
-        }
 
-        // If hit a shield
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Shield"))
+            playerStats.TakeDamage(bulletDamage);
+
+            float influence = 0.01f;
+            playerStats.ChangeWeaponType(bulletColor.H, influence);
+
+        }
+        if(collision.gameObject.layer == LayerMask.NameToLayer("Shield"))
         {
             Shield shield = collision.gameObject.GetComponent<Shield>();
-            if (shield != null)
-            {
-                shield.takeDamage(bulletDamage);
-            }
-            Destroy(gameObject);
-            return;
+            shield.takeDamage(bulletDamage);
         }
+        Destroy(gameObject);
     }
 //********************************Bullet Pause********************************
     public void PauseBullet(float pauseDuration, float pauseStrength)
