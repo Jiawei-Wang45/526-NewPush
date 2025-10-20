@@ -19,6 +19,8 @@ public class Bullet_Default: MonoBehaviour
     public HSLColor bulletColor = new HSLColor(); 
     public BulletState currentState;
     private Vector2 savedVelocity;
+    // store last velocity before physics step so we can restore it if a collision is ignored
+    private Vector2 lastVelocity;
 
     private float pausedTime;
 
@@ -49,6 +51,15 @@ public class Bullet_Default: MonoBehaviour
         Destroy(gameObject, bulletLifeTime);
     }
 
+    private void FixedUpdate()
+    {
+        // keep track of the last velocity before any collision resolution
+        if (rb != null)
+        {
+            lastVelocity = rb.linearVelocity;
+        }
+    }
+
     private void UpdateBulletColor()
     {
         // 获取子弹的SpriteRenderer组件并应用HSL颜色
@@ -74,6 +85,25 @@ public class Bullet_Default: MonoBehaviour
         if (collision.collider.gameObject.layer == LayerMask.NameToLayer("Player") && bulletType == "enemy")
         {
             PlayerStats playerStats = collision.gameObject.GetComponent<PlayerStats>();
+
+            if (playerStats.isInvincible)
+            {
+                Collider2D myCol = GetComponent<Collider2D>();
+                Collider2D playerCol = collision.collider as Collider2D;
+                if (myCol != null && playerCol != null)
+                {
+                    Physics2D.IgnoreCollision(myCol, playerCol);
+                }
+
+                if (rb != null)
+                {
+                    rb.linearVelocity = lastVelocity;
+                }
+                
+                // don't apply damage or destroy the bullet; let it pass through
+                return;
+            }
+
             playerStats.TakeDamage(bulletDamage);
 
             float influence = 0.01f;

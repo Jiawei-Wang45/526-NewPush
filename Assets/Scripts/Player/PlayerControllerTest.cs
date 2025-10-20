@@ -13,7 +13,7 @@ public class PlayerControllerTest : MonoBehaviour
     public Vector2 initialPosition;
     public int abilityEnum = 0;
 
-    private bool isFiring=false;
+    private bool isFiring = false;
     private bool hasFired = false;
 
     private bool recordFireAction = false;
@@ -24,6 +24,15 @@ public class PlayerControllerTest : MonoBehaviour
     private float fireTimer;
     public Transform firePoint;
     public PlayerWeapon currentWeapon;
+
+    // Ghost dash settings
+    [Header("Ghost Dash")]
+    public float dashMultiplier = 2.0f; // how many times faster during dash
+    public float dashDuration = 3.0f; // seconds the dash lasts
+    public float dashCooldown = 3.0f; // seconds before dash can be used again
+    public GameObject dashEffectPrefab; // optional visual effect instantiated during dash
+    private bool isDashing = false;
+    private bool dashOnCooldown = false;
 
     private Vector2 savedVelocity;
     private bool savedIsFiring;
@@ -50,7 +59,7 @@ public class PlayerControllerTest : MonoBehaviour
     }
     private void Start()
     {
-        rb= GetComponent<Rigidbody2D>();
+        rb = GetComponent<Rigidbody2D>();
         stats = GetComponent<PlayerStats>();
         initialPosition = transform.position;
         RefreshStats();
@@ -136,19 +145,21 @@ public class PlayerControllerTest : MonoBehaviour
         }
         Debug.DrawLine(firePoint.position, firePoint.position + firePoint.transform.right, Color.red, 0);
     }
-    
+
     private void FixedUpdate()
     {
         //if (isPaused) return;
         rb.linearVelocity = movement * speed;
-        if(isRecording)
+        if (isRecording)
         {
             if (recordEquipAction)
             {
                 recordedStates.Add(new ObjectState(rb.linearVelocity, rb.position, firePoint.rotation, recordFireAction, currentWeapon));
                 recordEquipAction = false;
 
-            } else {
+            }
+            else
+            {
                 recordedStates.Add(new ObjectState(rb.linearVelocity, rb.position, firePoint.rotation, recordFireAction));
             }
             if (recordFireAction)
@@ -166,18 +177,18 @@ public class PlayerControllerTest : MonoBehaviour
         stats.ConsumeAmmo(1f);
 
         float bulletTiltAngle = -(currentWeapon.weaponBulletAmount - 1) * currentWeapon.weaponFiringAngle / 2;
-        for (int i = 0;i<currentWeapon.weaponBulletAmount;i++)
+        for (int i = 0; i < currentWeapon.weaponBulletAmount; i++)
         {
-            GameObject spawnedBullet=Instantiate(currentWeapon.bulletType, firePoint.position, firePoint.rotation);
+            GameObject spawnedBullet = Instantiate(currentWeapon.bulletType, firePoint.position, firePoint.rotation);
             Bullet_Default bulletAttributes = spawnedBullet.GetComponent<Bullet_Default>();
 
             float timeScaleFactor = isPaused ? 0.5f : 1.0f;
 
-            bulletAttributes.InitBullet(currentWeapon.weaponBulletSpeed * timeScaleFactor, currentWeapon.weaponBulletLifeTime, currentWeapon.weaponBulletDamage, "player",stats.playerColor);
-            spawnedBullet.transform.Rotate(0, 0, bulletTiltAngle+Random.Range(-currentWeapon.weaponBulletSpread,currentWeapon.weaponBulletSpread));
+            bulletAttributes.InitBullet(currentWeapon.weaponBulletSpeed * timeScaleFactor, currentWeapon.weaponBulletLifeTime, currentWeapon.weaponBulletDamage, "player", stats.playerColor);
+            spawnedBullet.transform.Rotate(0, 0, bulletTiltAngle + Random.Range(-currentWeapon.weaponBulletSpread, currentWeapon.weaponBulletSpread));
             bulletTiltAngle += currentWeapon.weaponFiringAngle;
         }
-        
+
     }
     public void EquipWeapon(PlayerWeapon weapon)
     {
@@ -210,15 +221,16 @@ public class PlayerControllerTest : MonoBehaviour
         }
     }
 
-    private void OnReloadTriggered(InputAction.CallbackContext context){
-
-    if (context.performed)
+    private void OnReloadTriggered(InputAction.CallbackContext context)
     {
-        stats.StartReload();
-    }
+
+        if (context.performed)
+        {
+            stats.StartReload();
+        }
     }
 
-    
+
 
     public List<ObjectState> sendStates()
     {
@@ -238,9 +250,19 @@ public class PlayerControllerTest : MonoBehaviour
         SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
         if (spriteRenderer != null)
         {
-            spriteRenderer.color = stats.playerColor.ToRGB();
+            Color baseColor = stats.playerColor.ToRGB();
+            if (stats != null && stats.isInvincible)
+            {
+                // half transparent when invincible
+                baseColor.a = 0.5f;
+            }
+            else
+            {
+                baseColor.a = 1f;
+            }
+            spriteRenderer.color = baseColor;
         }
-        
+
 
         //Debug.Log($"Player Color - H:{stats.playerColor.H:F1}, S:{stats.playerColor.S:F1}, L:{stats.playerColor.L:F1}");
     }
@@ -258,7 +280,7 @@ public class PlayerControllerTest : MonoBehaviour
         fireTimer = 0;
         recordedStates.Clear();
     }
-    
+
     public void UponWaveClear()
     {
         stats.health = stats.maxHealth;
@@ -278,19 +300,22 @@ public class PlayerControllerTest : MonoBehaviour
                 case 1:
                     PauseAllPausable(2.0f, 0.1f);
                     break;
-                
+
                 case 3:
                     ActiveRecordGhost();
+                    break;
+                case 4:
+                    GhostDash();
                     break;
                 default:
                     break;
             }
         }
     }
-    
+
     private void ActiveRecordGhost()
     {
-        if(isRecording) return;
+        if (isRecording) return;
         isRecording = true;
         recordedStates.Clear();
         recordedStates.Add(new ObjectState(rb.linearVelocity, savedPosition, savedRotation, currentWeapon));
@@ -311,32 +336,32 @@ public class PlayerControllerTest : MonoBehaviour
         isRecording = false;
     }
 
-//********************************Pause All Pausable********************************
+    //********************************Pause All Pausable********************************
     public void PauseAllPausable(float pauseDuration, float pauseStrength)
     {
-       GameObject[] pausableObjects = GameObject.FindGameObjectsWithTag("Pausable");
-       foreach (GameObject obj in pausableObjects)
-       {
-           Bullet_Default bullet = obj.GetComponent<Bullet_Default>();
-           if (bullet != null)
-           {
-               bullet.PauseBullet(pauseDuration, pauseStrength);
-           }
-           
-           EnemyController enemy = obj.GetComponent<EnemyController>();
-           if (enemy != null)
-           {
-               enemy.PauseEnemy(pauseDuration, pauseStrength);
-           }
+        GameObject[] pausableObjects = GameObject.FindGameObjectsWithTag("Pausable");
+        foreach (GameObject obj in pausableObjects)
+        {
+            Bullet_Default bullet = obj.GetComponent<Bullet_Default>();
+            if (bullet != null)
+            {
+                bullet.PauseBullet(pauseDuration, pauseStrength);
+            }
 
-           PlayerControllerTest player = obj.GetComponent<PlayerControllerTest>();
-           if (player != null)
-           {
-               player.PausePlayer(pauseDuration);
-           }
-       }
+            EnemyController enemy = obj.GetComponent<EnemyController>();
+            if (enemy != null)
+            {
+                enemy.PauseEnemy(pauseDuration, pauseStrength);
+            }
+
+            PlayerControllerTest player = obj.GetComponent<PlayerControllerTest>();
+            if (player != null)
+            {
+                player.PausePlayer(pauseDuration);
+            }
+        }
     }
-//********************************Player Pause********************************
+    //********************************Player Pause********************************
     public void PausePlayer(float pauseDuration)
     {
         if (!isPaused)
@@ -366,5 +391,40 @@ public class PlayerControllerTest : MonoBehaviour
             //isFiring = savedIsFiring;
             isPaused = false;
         }
-    }    
+    }
+
+//********************************Ghost Dash********************************
+    public void GhostDash()
+    {
+        // Prevent starting another dash while on cooldown or already dashing
+        if (dashOnCooldown || isDashing) return;
+        StartCoroutine(GhostDashCoroutine());
+    }
+
+    private IEnumerator GhostDashCoroutine()
+    {
+        dashOnCooldown = true;
+        isDashing = true;
+
+        // save current speed so we can restore it later
+        float savedSpeed = speed;
+
+        // apply dash speed
+        speed = stats != null ? stats.movementSpeed * dashMultiplier : speed * dashMultiplier;
+
+        // make player invincible during dash
+        stats.isInvincible = true;
+
+        yield return new WaitForSeconds(dashDuration);
+
+        // end dash
+        isDashing = false;
+        stats.isInvincible = false;
+        // restore speed (use current stats.movementSpeed in case it changed while dashing)
+        speed = stats != null ? stats.movementSpeed : savedSpeed;
+
+        // start cooldown wait
+        yield return new WaitForSeconds(dashCooldown);
+        dashOnCooldown = false;
+    }
 }
