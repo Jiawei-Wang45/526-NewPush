@@ -16,7 +16,7 @@ public class GhostController : MonoBehaviour
     public Transform ghostAim;
     public Transform firePoint;
     public PlayerWeapon currentWeapon;
-    private void Start()
+    protected virtual void Start()
     {
         sr = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
@@ -38,7 +38,8 @@ public class GhostController : MonoBehaviour
         if (stateIndex < recordedStates.Count)
         {
             ObjectState currentState = recordedStates[stateIndex];
-            rb.linearVelocity = currentState.currentVelocity;
+            //rb.linearVelocity = currentState.currentVelocity;
+            rb.position = currentState.currentPosition;
             ghostAim.rotation = currentState.currentRotation;
             if (currentState.usingNewWeapon)
             {

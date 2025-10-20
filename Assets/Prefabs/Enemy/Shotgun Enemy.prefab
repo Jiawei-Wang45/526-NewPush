@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 3966506979569408143}
   m_Layer: 7
   m_Name: Shotgun Enemy
-  m_TagString: Pausible
+  m_TagString: Pausable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

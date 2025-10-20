@@ -7,6 +7,7 @@ public class PlayerControllerTest : MonoBehaviour
     private Rigidbody2D rb;
     private PlayerStats stats;
     public PlayerInput playerInput;
+    public ShieldGhost ghost;
     private float speed;
     private Vector2 movement;
     public Vector2 initialPosition;
@@ -27,7 +28,9 @@ public class PlayerControllerTest : MonoBehaviour
     private Vector2 savedVelocity;
     private bool savedIsFiring;
     private bool isPaused = false;
-
+    private bool isRecording = false;
+    private Vector2 savedPosition;
+    private Quaternion savedRotation;
     public void RefreshStats()
     {
         speed = stats.movementSpeed;
@@ -138,17 +141,20 @@ public class PlayerControllerTest : MonoBehaviour
     {
         //if (isPaused) return;
         rb.linearVelocity = movement * speed;
-        if (recordEquipAction)
+        if(isRecording)
         {
-            recordedStates.Add(new ObjectState(rb.linearVelocity, firePoint.rotation, recordFireAction, currentWeapon));
-            recordEquipAction = false;
+            if (recordEquipAction)
+            {
+                recordedStates.Add(new ObjectState(rb.linearVelocity, rb.position, firePoint.rotation, recordFireAction, currentWeapon));
+                recordEquipAction = false;
 
-        } else {
-            recordedStates.Add(new ObjectState(rb.linearVelocity, firePoint.rotation, recordFireAction));
-        }
-        if (recordFireAction)
-        {
-            recordFireAction = false;
+            } else {
+                recordedStates.Add(new ObjectState(rb.linearVelocity, rb.position, firePoint.rotation, recordFireAction));
+            }
+            if (recordFireAction)
+            {
+                recordFireAction = false;
+            }
         }
     }
 
@@ -272,11 +278,39 @@ public class PlayerControllerTest : MonoBehaviour
                 case 1:
                     PauseAllPausable(2.0f, 0.1f);
                     break;
+                
+                case 3:
+                    ActiveRecordGhost();
+                    break;
                 default:
                     break;
             }
         }
     }
+    
+    private void ActiveRecordGhost()
+    {
+        if(isRecording) return;
+        isRecording = true;
+        recordedStates.Clear();
+        recordedStates.Add(new ObjectState(rb.linearVelocity, savedPosition, savedRotation, currentWeapon));
+        PauseAllPausable(5.0f, 20.0f);
+        StartCoroutine(RecordingCoroutine());
+    }
+
+    private IEnumerator RecordingCoroutine()
+    {
+        savedPosition = transform.position;
+        savedRotation = transform.rotation;
+        yield return new WaitForSeconds(5.0f);
+        List<ObjectState> playerStates = sendStates();
+        ShieldGhost newGhost = Instantiate(ghost);
+        newGhost.InitializeGhost(savedPosition, playerStates);
+        transform.position = savedPosition;
+        transform.rotation = savedRotation;
+        isRecording = false;
+    }
+
 //********************************Pause All Pausable********************************
     public void PauseAllPausable(float pauseDuration, float pauseStrength)
     {

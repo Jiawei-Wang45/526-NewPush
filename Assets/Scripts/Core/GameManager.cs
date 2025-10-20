@@ -70,7 +70,7 @@ public class GameManager : MonoBehaviour
         {
             resetsRemaining -= 1;
             resetsRemainingText.text = $"<size=20><color=#FF0000>Resets Remaining: </color>{resetsRemaining}</size>";
-            ResetWithGhost();
+            Reset();
         }
     }
 

@@ -4078,7 +4078,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa21c586e06314247892681f1a067a3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ghost: {fileID: 0}
   initialPosition: {x: 0, y: 0}
+  abilityEnum: 3
   firePoint: {fileID: 50638741}
   currentWeapon: {fileID: 11400000, guid: 5f786e869e4946a4db125a3b36a5b841, type: 2}
 --- !u!114 &1335872720

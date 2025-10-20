@@ -72,6 +72,11 @@ public class Bullet_Default: MonoBehaviour
             playerStats.ChangeWeaponType(bulletColor.H, influence);
 
         }
+        if(collision.gameObject.layer == LayerMask.NameToLayer("Shield"))
+        {
+            Shield shield = collision.gameObject.GetComponent<Shield>();
+            shield.takeDamage(bulletDamage);
+        }
         Destroy(gameObject);
     }
 //********************************Bullet Pause********************************

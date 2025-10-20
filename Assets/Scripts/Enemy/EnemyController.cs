@@ -168,7 +168,7 @@ public class EnemyController : MonoBehaviour
                     StartCoroutine(BeginFiringSequence());
                 }
             }
-            recordedStates.Add(new ObjectState(rb.linearVelocity, transform.rotation, firedThisTick));
+            recordedStates.Add(new ObjectState(rb.linearVelocity, transform.position, transform.rotation, firedThisTick));
         }
     }
 
