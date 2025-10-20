@@ -16,6 +16,8 @@ public class PlayerControllerTest : MonoBehaviour
     private Vector2 movement;
     public Vector2 initialPosition;
     public int abilityEnum = 0;
+    [Header("Analytics")]
+    [SerializeField] private SendToGoogle sendToGoogle;
 
     private bool isFiring = false;
     private bool hasFired = false;
@@ -51,7 +53,38 @@ public class PlayerControllerTest : MonoBehaviour
 
     private void Awake()
     {
+        // initialize input
         playerInput = new PlayerInput();
+
+        // ensure sendToGoogle is assigned
+        if (sendToGoogle == null)
+        {
+            // try to find any enabled instance first
+            sendToGoogle = FindFirstObjectByType<SendToGoogle>();
+            // if still null, try to find inactive instances (Unity API that returns array)
+            if (sendToGoogle == null)
+            {
+                try
+                {
+                    SendToGoogle[] all = FindObjectsByType<SendToGoogle>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+                    if (all != null && all.Length > 0)
+                    {
+                        sendToGoogle = all[0];
+                    }
+                }
+                catch
+                {
+                    // fallback: use FindObjectOfType that supports inactive when available
+                    try
+                    {
+                        sendToGoogle = FindObjectOfType<SendToGoogle>(true);
+                    }
+                    catch { }
+                }
+            }
+        }
+
+        Debug.Log($"[PlayerControllerTest] Awake auto-assign sendToGoogle: {sendToGoogle != null} (object: {sendToGoogle?.gameObject.name})");
     }
     private void OnEnable()
     {
@@ -313,6 +346,15 @@ public class PlayerControllerTest : MonoBehaviour
                     break;
                 default:
                     break;
+            }
+
+            // Send analytics when ability is used
+            GameManager gm = FindFirstObjectByType<GameManager>();
+            int waveToSend = gm != null ? gm.CurrentWave : 0;
+            Debug.Log($"[PlayerControllerTest] sendToGoogle assigned? {sendToGoogle != null} wave={waveToSend} pos={transform.position}");
+            if (sendToGoogle != null)
+            {
+                sendToGoogle.SendAbilityUse(transform.position, waveToSend);
             }
         }
     }
