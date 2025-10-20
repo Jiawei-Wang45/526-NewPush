@@ -8,6 +8,10 @@ public class PlayerControllerTest : MonoBehaviour
     private PlayerStats stats;
     public PlayerInput playerInput;
     public ShieldGhost ghost;
+    public GameObject StandShape;
+    public GameObject HitboxShape;
+    public GameObject ReturnPosition;
+    private GameObject returnPositionInstance;
     private float speed;
     private Vector2 movement;
     public Vector2 initialPosition;
@@ -316,6 +320,12 @@ public class PlayerControllerTest : MonoBehaviour
     private void ActiveRecordGhost()
     {
         if (isRecording) return;
+        GetComponent<SpriteRenderer>().sortingOrder -= 3;
+        returnPositionInstance = Instantiate(ReturnPosition, transform.position, transform.rotation);
+        StandShape.SetActive(true);
+        StandShape.GetComponent<SpriteRenderer>().sortingOrder += 3;
+        HitboxShape.SetActive(true);
+        HitboxShape.GetComponent<SpriteRenderer>().sortingOrder += 3;
         isRecording = true;
         recordedStates.Clear();
         recordedStates.Add(new ObjectState(rb.linearVelocity, savedPosition, savedRotation, currentWeapon));
@@ -329,6 +339,12 @@ public class PlayerControllerTest : MonoBehaviour
         savedRotation = transform.rotation;
         yield return new WaitForSeconds(5.0f);
         List<ObjectState> playerStates = sendStates();
+        Destroy(returnPositionInstance.gameObject);
+        GetComponent<SpriteRenderer>().sortingOrder += 3;
+        StandShape.SetActive(false);
+        StandShape.GetComponent<SpriteRenderer>().sortingOrder -= 3;
+        HitboxShape.SetActive(false);
+        HitboxShape.GetComponent<SpriteRenderer>().sortingOrder -= 3;
         ShieldGhost newGhost = Instantiate(ghost);
         newGhost.InitializeGhost(savedPosition, playerStates);
         transform.position = savedPosition;
