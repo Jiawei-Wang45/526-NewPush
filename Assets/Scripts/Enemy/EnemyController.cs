@@ -363,6 +363,12 @@ public class EnemyController : MonoBehaviour
         Destroy(gameObject);
     }
 
+    public void Stun()
+    {
+        StopCoroutine(BeginFiringSequence());
+        currentlyFiring = false;
+    }
+
     public void Reset()
     {
         Debug.Log($"Enemy state count: {recordedStates.Count}");

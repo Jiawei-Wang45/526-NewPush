@@ -19,15 +19,21 @@ public class Bullet_Eraser: Bullet_Default
         if (collision.gameObject.layer == LayerMask.NameToLayer("EnemyBullet"))
         {
             Bullet_Default enemyBullet = collision.gameObject.GetComponent<Bullet_Default>();
-            if(enemyBullet.currentState == BulletState.Paused)
+            if (enemyBullet.currentState == BulletState.Paused)
             {
                 SpriteRenderer spriteRenderer = collision.gameObject.GetComponent<SpriteRenderer>();
                 Color bulletColor = spriteRenderer.color;
                 spriteRenderer.color = new Color(bulletColor.r, bulletColor.g, bulletColor.b, 0.2f);
                 collision.gameObject.GetComponent<Collider2D>().enabled = false;
-            } else {
+            }
+            else
+            {
                 Destroy(collision.gameObject);
             }
+        }
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+        {
+            collision.gameObject.GetComponent<EnemyController>().Stun();
         }
     }
 
