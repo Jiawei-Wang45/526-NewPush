@@ -29,21 +29,24 @@ public class Bullet_Default: MonoBehaviour
     public void InitBullet(float bulletSpeed, float bulletLifeTime, float bulletDamage, string bulletType, HSLColor color)
     {
         this.bulletSpeed = bulletSpeed;
+        rb.linearVelocity = transform.right * bulletSpeed;
         this.bulletLifeTime = bulletLifeTime;
         this.bulletDamage = bulletDamage;
         this.bulletType = bulletType;
         this.bulletColor = color;
         currentState = BulletState.Flying;
     }
-    private void Start()
+
+    private void Awake()
     {
         rb= GetComponent<Rigidbody2D>();
-        rb.linearVelocity = transform.right * bulletSpeed;
+    }
 
+    private void Start()
+    {
         UpdateBulletColor();
 
         Destroy(gameObject, bulletLifeTime);
-
     }
 
     private void UpdateBulletColor()
@@ -58,12 +61,17 @@ public class Bullet_Default: MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Enemy") && bulletType == "player")
+        if(collision.collider.gameObject.layer == LayerMask.NameToLayer("Shield"))
+        {
+            Shield shield = collision.collider.gameObject.GetComponent<Shield>();
+            shield.takeDamage(bulletDamage);
+        }
+        if (collision.collider.gameObject.layer == LayerMask.NameToLayer("Enemy") && bulletType == "player")
         {
             EnemyStats enemyStats = collision.gameObject.GetComponent<EnemyStats>();
             enemyStats.takeDamage(bulletDamage);
         }
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Player") && bulletType == "enemy")
+        if (collision.collider.gameObject.layer == LayerMask.NameToLayer("Player") && bulletType == "enemy")
         {
             PlayerStats playerStats = collision.gameObject.GetComponent<PlayerStats>();
             playerStats.TakeDamage(bulletDamage);
@@ -71,11 +79,6 @@ public class Bullet_Default: MonoBehaviour
             float influence = 0.01f;
             playerStats.ChangeWeaponType(bulletColor.H, influence);
 
-        }
-        if(collision.gameObject.layer == LayerMask.NameToLayer("Shield"))
-        {
-            Shield shield = collision.gameObject.GetComponent<Shield>();
-            shield.takeDamage(bulletDamage);
         }
         Destroy(gameObject);
     }

@@ -37,6 +37,8 @@ public class EnemyController : MonoBehaviour
 
     private bool isPaused = false;
     private Vector2 savedVelocity;
+    private float slowFactor = 1.0f;
+    private float timeintoslow = 0.0f;
 
     private void Start()
     {
@@ -97,7 +99,10 @@ public class EnemyController : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        if (isPaused) return;
+        if (isPaused) {
+            timeintoslow += Time.deltaTime;
+            return;
+        }
         if (isReplayingActions)
         {
             ObjectState currentState = recordedStates[stateIndex];
@@ -245,7 +250,7 @@ public class EnemyController : MonoBehaviour
             FireOnce(i);
             if (i < weapon.bulletPattern.fireCount - 1)
             {
-                yield return new WaitForSeconds(weapon.bulletPattern.timeBetweenFiring);
+                yield return new WaitForSeconds(weapon.bulletPattern.timeBetweenFiring * slowFactor);
             }
         }
         currentlyFiring = false;
@@ -325,10 +330,9 @@ public class EnemyController : MonoBehaviour
         Quaternion rotation = Quaternion.Euler(0, 0, angle);
         GameObject spawnedBullet = Instantiate(weapon.bulletType, spawnPosition, rotation);
         Bullet_Default bulletAttributes = spawnedBullet.GetComponent<Bullet_Default>();
-
-        float timeScaleFactor = isPaused ? 0.5f : 1.0f;
         
-        bulletAttributes.InitBullet(weapon.bulletSpeed * timeScaleFactor, weapon.bulletLifeTime, weapon.bulletDamage, "enemy",enemyStats.enemyColor);
+        bulletAttributes.InitBullet(weapon.bulletSpeed, weapon.bulletLifeTime, weapon.bulletDamage, "enemy",enemyStats.enemyColor);
+        if(isPaused) bulletAttributes.PauseBullet(5.0f - timeintoslow, slowFactor);
     }
 
     public void isAlive(bool status)
@@ -383,6 +387,7 @@ public class EnemyController : MonoBehaviour
     {
         savedVelocity = rb.linearVelocity;
         rb.linearVelocity /= pauseStrength;
+        slowFactor = pauseStrength;
         isPaused = true;
         
         yield return new WaitForSeconds(pauseDuration);
@@ -396,6 +401,8 @@ public class EnemyController : MonoBehaviour
         {
             rb.linearVelocity = savedVelocity;
             isPaused = false;
+            slowFactor = 1.0f;
+            timeintoslow = 0.0f;
         }
     }    
 

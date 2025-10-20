@@ -25,7 +25,7 @@ public class GhostController : MonoBehaviour
 
     }
     
-    public void InitializeGhost(Vector2 position, List<ObjectState> playerStates)
+    public virtual void InitializeGhost(Vector2 position, List<ObjectState> playerStates)
     {
         Debug.Log("Initializing");
         transform.position = position;
@@ -33,7 +33,7 @@ public class GhostController : MonoBehaviour
 
     }
 
-    private void FixedUpdate()
+    protected virtual void FixedUpdate()
     {
         if (stateIndex < recordedStates.Count)
         {

@@ -242,7 +242,7 @@ public class PlayerControllerTest : MonoBehaviour
         }
         
 
-        Debug.Log($"Player Color - H:{stats.playerColor.H:F1}, S:{stats.playerColor.S:F1}, L:{stats.playerColor.L:F1}");
+        //Debug.Log($"Player Color - H:{stats.playerColor.H:F1}, S:{stats.playerColor.S:F1}, L:{stats.playerColor.L:F1}");
     }
 
     public void Reset()

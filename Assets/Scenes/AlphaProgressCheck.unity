@@ -4078,7 +4078,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa21c586e06314247892681f1a067a3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ghost: {fileID: 0}
+  ghost: {fileID: 7532095911874647355, guid: eac058c53890ef04cb0b0a0216058ac2, type: 3}
   initialPosition: {x: 0, y: 0}
   abilityEnum: 3
   firePoint: {fileID: 50638741}
