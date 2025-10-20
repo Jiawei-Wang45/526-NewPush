@@ -10,6 +10,7 @@ public class PlayerControllerTest : MonoBehaviour
     private float speed;
     private Vector2 movement;
     public Vector2 initialPosition;
+    public int abilityEnum = 0;
 
     private bool isFiring=false;
     private bool hasFired = false;
@@ -61,7 +62,7 @@ public class PlayerControllerTest : MonoBehaviour
 
         playerInput.Default.Reload.performed += OnReloadTriggered;
 
-        playerInput.Default.PauseBullets.performed += OnPauseAllTriggered;
+        playerInput.Default.PauseBullets.performed += OnAbilityTriggered;
 
     }
 
@@ -259,15 +260,25 @@ public class PlayerControllerTest : MonoBehaviour
         initialPosition = transform.position;
     }
 
-    private void OnPauseAllTriggered(InputAction.CallbackContext context)
+    private void OnAbilityTriggered(InputAction.CallbackContext context)
     {
         if (context.performed)
         {
-            PauseAllPausable(2.0f);
+            switch (abilityEnum)
+            {
+                case 0:
+                    PauseAllPausable(2.0f, 8.0f);
+                    break;
+                case 1:
+                    PauseAllPausable(2.0f, 0.1f);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 //********************************Pause All Pausable********************************
-    public void PauseAllPausable(float pauseDuration)
+    public void PauseAllPausable(float pauseDuration, float pauseStrength)
     {
        GameObject[] pausableObjects = GameObject.FindGameObjectsWithTag("Pausable");
        foreach (GameObject obj in pausableObjects)
@@ -275,13 +286,13 @@ public class PlayerControllerTest : MonoBehaviour
            Bullet_Default bullet = obj.GetComponent<Bullet_Default>();
            if (bullet != null)
            {
-               bullet.PauseBullet(pauseDuration);
+               bullet.PauseBullet(pauseDuration, pauseStrength);
            }
            
            EnemyController enemy = obj.GetComponent<EnemyController>();
            if (enemy != null)
            {
-               enemy.PauseEnemy(pauseDuration);
+               enemy.PauseEnemy(pauseDuration, pauseStrength);
            }
 
            PlayerControllerTest player = obj.GetComponent<PlayerControllerTest>();

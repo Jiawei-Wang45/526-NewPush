@@ -371,18 +371,18 @@ public class EnemyController : MonoBehaviour
         //Debug.Log($"Enemy Color - H:{enemyStats.enemyColor.H:F1}, S:{enemyStats.enemyColor.S:F1}, L:{enemyStats.enemyColor.L:F1}");
     }
 //********************************Enemy Pause********************************
-    public void PauseEnemy(float pauseDuration)
+    public void PauseEnemy(float pauseDuration, float pauseStrength)
     {
         if (!isPaused)
         {
-            StartCoroutine(PauseCoroutine(pauseDuration));
+            StartCoroutine(PauseCoroutine(pauseDuration, pauseStrength));
         }
     }
     
-    private IEnumerator PauseCoroutine(float pauseDuration)
+    private IEnumerator PauseCoroutine(float pauseDuration, float pauseStrength)
     {
         savedVelocity = rb.linearVelocity;
-        rb.linearVelocity /= 2f;
+        rb.linearVelocity /= pauseStrength;
         isPaused = true;
         
         yield return new WaitForSeconds(pauseDuration);

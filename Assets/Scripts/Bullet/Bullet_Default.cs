@@ -75,18 +75,18 @@ public class Bullet_Default: MonoBehaviour
         Destroy(gameObject);
     }
 //********************************Bullet Pause********************************
-    public void PauseBullet(float pauseDuration)
+    public void PauseBullet(float pauseDuration, float pauseStrength)
     {
         if (currentState == BulletState.Flying)
         {
-            StartCoroutine(PauseCoroutine(pauseDuration));
+            StartCoroutine(PauseCoroutine(pauseDuration, pauseStrength));
         }
     }
 
-    private IEnumerator PauseCoroutine(float pauseDuration)
+    private IEnumerator PauseCoroutine(float pauseDuration, float pauseStrength)
     {
         savedVelocity = rb.linearVelocity;
-        rb.linearVelocity /= 2f;
+        rb.linearVelocity /= pauseStrength;
         currentState = BulletState.Paused;
 
         yield return new WaitForSeconds(pauseDuration);
