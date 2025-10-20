@@ -46,7 +46,7 @@ public class PlayerStats : MonoBehaviour
 
         health -= damage;
 
-        playerColor.L = 50f + (health / maxHealth) * 40f;
+        playerColor.L = 50f + (1-(health / maxHealth)) * 40f;
 
         if (health <= 0)
         {
@@ -97,13 +97,16 @@ public class PlayerStats : MonoBehaviour
     public void ResetH()
     {
         playerColor.H = originalH;
+        playerColor.L = 50f;
         isRecoveringH = false;
         hRecoveryTimer = 0f;
+
 
     }
 
     public void Reset(){
         health = maxHealth;
+        ResetH();
     }
 
     public bool CanFire()
