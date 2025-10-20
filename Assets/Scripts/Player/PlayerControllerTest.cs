@@ -414,6 +414,7 @@ public class PlayerControllerTest : MonoBehaviour
 
         // make player invincible during dash
         stats.isInvincible = true;
+        PauseAllPausable(dashDuration, 5.0f);
 
         yield return new WaitForSeconds(dashDuration);
 
