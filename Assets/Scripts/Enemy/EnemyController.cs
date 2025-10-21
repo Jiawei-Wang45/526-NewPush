@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyController : MonoBehaviour
+public class EnemyController : MonoBehaviour, IPausable
 {
 
     public PlayerControllerTest pcTest;
@@ -39,6 +39,7 @@ public class EnemyController : MonoBehaviour
     private Vector2 savedVelocity;
     private float slowFactor = 1.0f;
     private float timeintoslow = 0.0f;
+    private float slowDuration;
 
     private void Start()
     {
@@ -60,7 +61,10 @@ public class EnemyController : MonoBehaviour
     }
     private void Update()
     {
-        if (isPaused) return;
+        if (isPaused)
+        {
+            timeintoslow += Time.deltaTime;
+        }
         UpdateEnemyColor();
         if (!isReplayingActions && gameManager.isPlayerAlive)
         {
@@ -74,7 +78,7 @@ public class EnemyController : MonoBehaviour
                     Vector2 direction = pcTest.transform.position - transform.position;
                     float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
                     Quaternion targetRotation = Quaternion.AngleAxis(angle, Vector3.forward);
-                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.fixedDeltaTime);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.deltaTime/slowFactor);
                 }
                 else
                 {
@@ -99,10 +103,6 @@ public class EnemyController : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        if (isPaused) {
-            timeintoslow += Time.deltaTime;
-            return;
-        }
         if (isReplayingActions)
         {
             ObjectState currentState = recordedStates[stateIndex];
@@ -135,7 +135,7 @@ public class EnemyController : MonoBehaviour
                     {
                         factor = (transform.position - pcTest.transform.position).magnitude > comfortableDistance ? 1.0f : -1.0f * movementPattern.BackoffSpeedFactor;
                     }
-                    rb.linearVelocity = factor * transform.right * enemySpeed;
+                    rb.linearVelocity = factor * transform.right * enemySpeed/ slowFactor;
                 }
                 else
                 {
@@ -153,8 +153,8 @@ public class EnemyController : MonoBehaviour
                             Vector2 direction = randomTarget - transform.position;
                             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
                             Quaternion targetRotation = Quaternion.AngleAxis(angle, Vector3.forward);
-                            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.fixedDeltaTime);
-                            rb.linearVelocity = transform.right * enemySpeed;
+                            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.fixedDeltaTime/slowFactor);
+                            rb.linearVelocity = transform.right * enemySpeed/slowFactor;
                             break;
                     }
                 }
@@ -164,7 +164,7 @@ public class EnemyController : MonoBehaviour
             {
                 if (!currentlyFiring)
                 {
-                    timeToFire += Time.fixedDeltaTime;
+                    timeToFire += Time.fixedDeltaTime/slowFactor;
                 }
                 if (timeToFire >= weapon.fireRate)
                 {
@@ -332,7 +332,7 @@ public class EnemyController : MonoBehaviour
         Bullet_Default bulletAttributes = spawnedBullet.GetComponent<Bullet_Default>();
         
         bulletAttributes.InitBullet(weapon.bulletSpeed, weapon.bulletLifeTime, weapon.bulletDamage, "enemy",enemyStats.enemyColor);
-        if(isPaused) bulletAttributes.PauseBullet(5.0f - timeintoslow, slowFactor);
+        if(isPaused) bulletAttributes.Pause(slowDuration - timeintoslow, slowFactor);
     }
 
     public void isAlive(bool status)
@@ -358,7 +358,7 @@ public class EnemyController : MonoBehaviour
         randomTarget = transform.position;
         rb.linearVelocityX = 0;
         rb.linearVelocityY = 0;
-        isReplayingActions = true;
+        ResumePause();
         isAlive(false);
     }
 
@@ -374,35 +374,34 @@ public class EnemyController : MonoBehaviour
 
         //Debug.Log($"Enemy Color - H:{enemyStats.enemyColor.H:F1}, S:{enemyStats.enemyColor.S:F1}, L:{enemyStats.enemyColor.L:F1}");
     }
-//********************************Enemy Pause********************************
-    public void PauseEnemy(float pauseDuration, float pauseStrength)
+    //********************************Enemy Pause********************************
+    public void Pause(float pauseDuration, float pauseStrength)
     {
         if (!isPaused)
         {
-            StartCoroutine(PauseCoroutine(pauseDuration, pauseStrength));
+            isPaused = true;
+            savedVelocity = rb.linearVelocity;
+            //rb.linearVelocity /= pauseStrength;
+            slowDuration=pauseDuration;
+            slowFactor = pauseStrength;
+            timeintoslow = 0.0f;
+            StartCoroutine(PauseCoroutine(pauseDuration));
         }
     }
     
-    private IEnumerator PauseCoroutine(float pauseDuration, float pauseStrength)
+    private IEnumerator PauseCoroutine(float pauseDuration)
     {
-        savedVelocity = rb.linearVelocity;
-        rb.linearVelocity /= pauseStrength;
-        slowFactor = pauseStrength;
-        isPaused = true;
-        
         yield return new WaitForSeconds(pauseDuration);
-        
-        ResumeEnemy();
+        ResumePause();
     }
     
-    public void ResumeEnemy()
+    public void ResumePause()
     {
         if (isPaused)
         {
             rb.linearVelocity = savedVelocity;
             isPaused = false;
             slowFactor = 1.0f;
-            timeintoslow = 0.0f;
         }
     }    
 

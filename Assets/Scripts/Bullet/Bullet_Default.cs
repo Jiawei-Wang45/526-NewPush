@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class Bullet_Default: MonoBehaviour
+public class Bullet_Default: MonoBehaviour, IPausable
 {
     private Rigidbody2D rb;
     public float bulletSpeed;
@@ -24,7 +24,7 @@ public class Bullet_Default: MonoBehaviour
 
     private float pausedTime;
 
-    private float OriLifeTime;
+    //private float OriLifeTime;
 
     
 
@@ -48,7 +48,7 @@ public class Bullet_Default: MonoBehaviour
     {
         UpdateBulletColor();
 
-        Destroy(gameObject, bulletLifeTime);
+        //Destroy(gameObject, bulletLifeTime);
     }
 
     private void FixedUpdate()
@@ -112,8 +112,8 @@ public class Bullet_Default: MonoBehaviour
         }
         Destroy(gameObject);
     }
-//********************************Bullet Pause********************************
-    public void PauseBullet(float pauseDuration, float pauseStrength)
+    //********************************Bullet Pause********************************
+    public void Pause(float pauseDuration, float pauseStrength)
     {
         if (currentState == BulletState.Flying)
         {
@@ -138,7 +138,7 @@ public class Bullet_Default: MonoBehaviour
         {
             rb.linearVelocity = savedVelocity;
             currentState = BulletState.Flying;
-            bulletLifeTime = OriLifeTime;
+           //bulletLifeTime = OriLifeTime;
         }
     }
 }

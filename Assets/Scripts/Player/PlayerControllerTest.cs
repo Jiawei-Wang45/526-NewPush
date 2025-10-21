@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
-public class PlayerControllerTest : MonoBehaviour
+public class PlayerControllerTest : MonoBehaviour, IPausable
 {
     private Rigidbody2D rb;
     private PlayerStats stats;
@@ -156,20 +156,22 @@ public class PlayerControllerTest : MonoBehaviour
         rb.linearVelocity = movement * speed;
         if (isRecording)
         {
-            if (recordEquipAction)
-            {
-                recordedStates.Add(new ObjectState(rb.linearVelocity, rb.position, firePoint.rotation, recordFireAction, currentWeapon));
-                recordEquipAction = false;
+            //if (recordEquipAction)
+            //{
+            //    recordedStates.Add(new ObjectState(rb.linearVelocity, rb.position, firePoint.rotation, recordFireAction, currentWeapon));
+            //    recordEquipAction = false;
 
-            }
-            else
-            {
-                recordedStates.Add(new ObjectState(rb.linearVelocity, rb.position, firePoint.rotation, recordFireAction));
-            }
-            if (recordFireAction)
-            {
-                recordFireAction = false;
-            }
+            //}
+            //else
+            //{
+            //    recordedStates.Add(new ObjectState(rb.linearVelocity, rb.position, firePoint.rotation, recordFireAction));
+            //}
+            recordedStates.Add(new ObjectState(rb.linearVelocity, rb.position, firePoint.rotation, recordFireAction,currentWeapon));
+            recordFireAction = false;
+            //if (recordFireAction)
+            //{
+            //    recordFireAction = false;
+            //}
         }
     }
 
@@ -275,6 +277,11 @@ public class PlayerControllerTest : MonoBehaviour
     {
         stats.Reset();
         stats.ResetH();
+        StopAllCoroutines();
+        // clean up works for those corroutines that haven't been finished
+        ResumeRecording(isRecording);
+        ResumePause();
+
         transform.position = initialPosition;
         rb.linearVelocityX = 0;
         rb.linearVelocityY = 0;
@@ -282,7 +289,7 @@ public class PlayerControllerTest : MonoBehaviour
         hasFired = false;
         recordFireAction = false;
         fireTimer = 0;
-        recordedStates.Clear();
+        
     }
 
     public void UponWaveClear()
@@ -320,65 +327,82 @@ public class PlayerControllerTest : MonoBehaviour
     private void ActiveRecordGhost()
     {
         if (isRecording) return;
+        isRecording = true;
+        PauseAllPausable(5.0f, 20.0f);
+        recordedStates.Clear();
+        //Render Targets layers switching
         GetComponent<SpriteRenderer>().sortingOrder -= 3;
-        returnPositionInstance = Instantiate(ReturnPosition, transform.position, transform.rotation);
         StandShape.SetActive(true);
         StandShape.GetComponent<SpriteRenderer>().sortingOrder += 3;
         HitboxShape.SetActive(true);
         HitboxShape.GetComponent<SpriteRenderer>().sortingOrder += 3;
-        isRecording = true;
-        recordedStates.Clear();
-        recordedStates.Add(new ObjectState(rb.linearVelocity, savedPosition, savedRotation, currentWeapon));
-        PauseAllPausable(5.0f, 20.0f);
+
+        //a label for starting point
+        returnPositionInstance = Instantiate(ReturnPosition, transform.position, transform.rotation);
+        savedPosition = transform.position;
+        savedRotation = transform.rotation;
         StartCoroutine(RecordingCoroutine());
     }
 
     private IEnumerator RecordingCoroutine()
     {
-        savedPosition = transform.position;
-        savedRotation = transform.rotation;
         yield return new WaitForSeconds(5.0f);
-        List<ObjectState> playerStates = sendStates();
-        Destroy(returnPositionInstance.gameObject);
-        GetComponent<SpriteRenderer>().sortingOrder += 3;
-        StandShape.SetActive(false);
-        StandShape.GetComponent<SpriteRenderer>().sortingOrder -= 3;
-        HitboxShape.SetActive(false);
-        HitboxShape.GetComponent<SpriteRenderer>().sortingOrder -= 3;
+        //List<ObjectState> playerStates = sendStates();
+        //Destroy(returnPositionInstance.gameObject);
         ShieldGhost newGhost = Instantiate(ghost);
-        newGhost.InitializeGhost(savedPosition, playerStates);
-        transform.position = savedPosition;
-        transform.rotation = savedRotation;
-        isRecording = false;
+        newGhost.InitializeGhost(savedPosition, recordedStates);
+        ResumeRecording(true);
     }
-
+    private void ResumeRecording(bool hasRecorded)
+    {
+        if (hasRecorded)
+        {
+            transform.position = savedPosition;
+            transform.rotation = savedRotation;
+            GetComponent<SpriteRenderer>().sortingOrder += 3;
+            StandShape.SetActive(false);
+            StandShape.GetComponent<SpriteRenderer>().sortingOrder -= 3;
+            HitboxShape.SetActive(false);
+            HitboxShape.GetComponent<SpriteRenderer>().sortingOrder -= 3;
+            Destroy(returnPositionInstance.gameObject);
+            isRecording = false;
+        }  
+        
+    }
     //********************************Pause All Pausable********************************
     public void PauseAllPausable(float pauseDuration, float pauseStrength)
     {
         GameObject[] pausableObjects = GameObject.FindGameObjectsWithTag("Pausable");
         foreach (GameObject obj in pausableObjects)
         {
-            Bullet_Default bullet = obj.GetComponent<Bullet_Default>();
-            if (bullet != null)
+            IPausable pausable = obj.GetComponent<IPausable>();
+            if (pausable != null)
             {
-                bullet.PauseBullet(pauseDuration, pauseStrength);
+                pausable.Pause(pauseDuration, pauseStrength);
             }
+            //IDamageable damageable = other.GetComponent<IDamageable>();
+            //Bullet_Default bullet = obj.GetComponent<Bullet_Default>();
+            //if (bullet != null)
+            //{
+            //    bullet.PauseBullet(pauseDuration, pauseStrength);
+            //}
 
-            EnemyController enemy = obj.GetComponent<EnemyController>();
-            if (enemy != null)
-            {
-                enemy.PauseEnemy(pauseDuration, pauseStrength);
-            }
+            //EnemyController enemy = obj.GetComponent<EnemyController>();
+            //if (enemy != null)
+            //{
+            //    enemy.PauseEnemy(pauseDuration, pauseStrength);
+            //}
 
-            PlayerControllerTest player = obj.GetComponent<PlayerControllerTest>();
-            if (player != null)
-            {
-                player.PausePlayer(pauseDuration);
-            }
+            //PlayerControllerTest player = obj.GetComponent<PlayerControllerTest>();
+            //if (player != null)
+            //{
+            //    player.PausePlayer(pauseDuration);
+            //}
         }
     }
     //********************************Player Pause********************************
-    public void PausePlayer(float pauseDuration)
+    // so far it's useless
+    public void Pause(float pauseDuration, float pauseStrength)
     {
         if (!isPaused)
         {
@@ -396,10 +420,10 @@ public class PlayerControllerTest : MonoBehaviour
 
         yield return new WaitForSeconds(pauseDuration);
 
-        ResumePlayer();
+        ResumePause();
     }
 
-    public void ResumePlayer()
+    public void ResumePause()
     {
         if (isPaused)
         {

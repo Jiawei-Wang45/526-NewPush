@@ -1,0 +1,34 @@
+[33m4c5465b[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mtimeSlowed[m[33m, [m[1;31morigin/timeSlowed[m[33m)[m Added shield ghost
+[33m4d8e69a[m Added case switch for ability triggering
+[33m619095e[m Update
+[33m021e7ea[m add time slowed function(press Q to activate)
+[33m65c9087[m[33m ([m[1;31morigin/OnlyHSL+GhostTwist[m[33m)[m HSL+Ghost
+[33m550f19d[m[33m ([m[1;32mGhostTwist[m[33m)[m Added score counter in endgame
+[33mc7faa8a[m increased difficulty between waves
+[33mc63f091[m Fix merge
+[33m7acaf48[m Merge branch 'GhostTwist' of https://github.com/Jiawei-Wang45/526-NewPush into GhostTwist
+[33m36332ea[m Repair merge conflicts and main menu bugfix
+[33md226d35[m clear ghosts between waves
+[33mf7773ef[m Merge branch 'GhostTwist' of https://github.com/Jiawei-Wang45/526-NewPush into GhostTwist
+[33mb3be9d6[m changed UI to better show twist
+[33m9669810[m alpha prototype built
+[33m8c62ca5[m Bug fixes for the progress check level
+[33ma7247ff[m Alpha Progress Check build
+[33m74f0d92[m give random seed to spawner, let ghost's bullet be semi-transparent
+[33ma84a2c4[m fixed some ghost bugs
+[33m0fd75af[m basic ghost functionality implemented
+[33m6e6da82[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/Alpha-Progress-Build[m[33m, [m[1;32mmain[m[33m)[m Sample Map Update
+[33m5ed7faa[m sample map update
+[33m5d4bb5d[m Added a console log to see how many times we have to regenerate random walk target when enemy runs into wall
+[33m81f25df[m Merge branch 'main' of https://github.com/Jiawei-Wang45/526-NewPush
+[33m36c7975[m Added enemy Movement logic and scriptable objects for designing enemy movement patterns
+[33m0468797[m Merge branch 'main' of https://github.com/Jiawei-Wang45/526-NewPush
+[33m47ed97e[m added check for enemy weapon
+[33mbc49cfd[m fixed weapons for real this time
+[33mfa96274[m fixed small bug with enemy weapon fire rate
+[33me46ca67[m created weapon api, weapon testing scene, some example weapons
+[33m4e81327[m Integrate GameAnalytics SDK and Google EDM
+[33mbc1af64[m updated attributes
+[33m0667a88[m update attributes
+[33mdf7e8b0[m update
+[33mfa2eb64[m fixed
