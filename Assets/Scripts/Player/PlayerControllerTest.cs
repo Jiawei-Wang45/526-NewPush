@@ -395,7 +395,7 @@ public class PlayerControllerTest : MonoBehaviour, IPausable, IDamagable
         savedPosition = transform.position;
         savedRotation = transform.rotation;
         StartCoroutine(RecordingCoroutine());
-        //ability_1.GetComponent<Animator>().SetTrigger("Play");
+        ability_2.GetComponent<Animator>().SetTrigger("Play");
     }
 
     private IEnumerator RecordingCoroutine()
