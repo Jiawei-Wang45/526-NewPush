@@ -22,6 +22,8 @@ public class GameManager : MonoBehaviour
     public TMP_Text infoText;
     public TMP_Text displayScoreText;
     private int waveCount = 1;
+    // expose current wave as a read-only property to other scripts
+    public int CurrentWave => waveCount;
 
     /*
         void OnEnable()
