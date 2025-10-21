@@ -23,6 +23,8 @@ public class PlayerStats : MonoBehaviour
 
     public float reloadTime = 2f;
     private bool isReloading = false;
+    // expose reload state to other scripts (read-only)
+    public bool IsReloading { get { return isReloading; } }
 
     public float hRecoverySpeed = 1f;
     public float hRecoveryDelay = 2f; 
