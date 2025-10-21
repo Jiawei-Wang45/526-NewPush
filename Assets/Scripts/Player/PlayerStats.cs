@@ -1,11 +1,9 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class PlayerStats : MonoBehaviour
 {
-
-
-
     public float movementSpeed = 10f;
     public float maxHealth = 100.0f;
     public float health;
@@ -18,27 +16,28 @@ public class PlayerStats : MonoBehaviour
     public float originalH;
 
     public float weaponTypeThreshold = 15f;
-    public float maxAmmo = 100f;
-    public float currentAmmo;
+    public int maxAmmo;
+    public int currentAmmo;
 
-    public float reloadTime = 2f;
+    public float reloadTime = 1.5f;
     private bool isReloading = false;
 
     public float hRecoverySpeed = 1f;
     public float hRecoveryDelay = 2f; 
     public float hRecoveryTimer = 0f;
     public bool isRecoveringH = false;
-  
 
-
+    public GameObject reloadBar;
+    public GameObject handle;
+    public float targetOffsetX;
 
     private void Start()
     {
         health = maxHealth;
+        maxAmmo = GetComponent<PlayerControllerTest>().currentWeapon.maxAmmoNums;
         currentAmmo = maxAmmo;
         originalH = playerColor.H;
-
-        
+        reloadBar.SetActive(false);
     }
     public void TakeDamage(float damage)
     {
@@ -81,12 +80,31 @@ public class PlayerStats : MonoBehaviour
     private IEnumerator ReloadCoroutine()
     {
         isReloading = true;
-        yield return new WaitForSeconds(reloadTime);
+        reloadBar.SetActive(true);
+        float accumulateTime = 0;
+        while(true)
+        {
+            setHandleOffsetX(accumulateTime / reloadTime);
+            accumulateTime += Time.deltaTime;
+            if (accumulateTime > reloadTime)
+                break;
+            yield return null;
+        }
         currentAmmo = maxAmmo;
         playerColor.S = 100f;
+        ResetReload();
+    }
+    public void ResetReload()
+    {
+        reloadBar.SetActive(false);
         isReloading = false;
     }
-    
+    private void setHandleOffsetX(float percent)
+    {
+        Vector3 handleLocalPos = handle.transform.localPosition;
+        handleLocalPos.x = (percent-0.5f) * targetOffsetX;
+        handle.transform.localPosition = handleLocalPos;
+    }
     private void StartHRecovery()
     {
         hRecoveryTimer = 0f;
@@ -107,6 +125,7 @@ public class PlayerStats : MonoBehaviour
     public void Reset(){
         health = maxHealth;
         ResetH();
+        ResetReload();
     }
 
     public bool CanFire()
@@ -144,9 +163,15 @@ public class PlayerStats : MonoBehaviour
         }
     }
 
-    public void ConsumeAmmo(float amount)
+    public void ConsumeAmmo(int amount)
     {
         currentAmmo -= amount;
         playerColor.S = (currentAmmo / maxAmmo) * 100f;
+    }
+    public void OnWeaponChanged(PlayerWeapon newWeapon)
+    {
+        maxAmmo = newWeapon.maxAmmoNums;
+        currentAmmo = maxAmmo;
+        //TODO: May change reloadTime for different types of weapons
     }
 }

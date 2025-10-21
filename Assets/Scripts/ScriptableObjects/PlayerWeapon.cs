@@ -15,9 +15,10 @@ public class PlayerWeapon : ScriptableObject
 
     //weapon attributes
     public float weaponFireSpeed;    //times per second
-    public int weaponBulletAmount;
+    public int weaponBulletInOneShot;  
     public float weaponFiringAngle;
     public float weaponBulletSpread;
+    public int maxAmmoNums;
 
     public string weaponName;
     public GameObject bulletType;  //type of the bullet we are gonna use

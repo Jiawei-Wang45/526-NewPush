@@ -5,7 +5,6 @@ using System.Collections;
 public class PlayerControllerTest : MonoBehaviour, IPausable, IDamagable
 {
     private Rigidbody2D rb;
-    private Collider2D cl;
     private PlayerStats stats;
     public PlayerInput playerInput;
     public ShieldGhost ghost;
@@ -24,7 +23,7 @@ public class PlayerControllerTest : MonoBehaviour, IPausable, IDamagable
     private bool hasFired = false;
 
     private bool recordFireAction = false;
-    private bool recordEquipAction = false;
+    //private bool recordEquipAction = false;
 
     private List<ObjectState> recordedStates = new List<ObjectState>();
 
@@ -47,6 +46,7 @@ public class PlayerControllerTest : MonoBehaviour, IPausable, IDamagable
     private bool isRecording = false;
     private Vector2 savedPosition;
     private Quaternion savedRotation;
+
     public void RefreshStats()
     {
         cachedSpeed = speed = stats.movementSpeed;
@@ -98,7 +98,6 @@ public class PlayerControllerTest : MonoBehaviour, IPausable, IDamagable
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        cl = GetComponent<Collider2D>();
         stats = GetComponent<PlayerStats>();
         initialPosition = transform.position;
         RefreshStats();
@@ -147,7 +146,7 @@ public class PlayerControllerTest : MonoBehaviour, IPausable, IDamagable
                 //{
                 //    isFiring = false;
                 //}
-                if (isFiring && fireTimer >= 1 / currentWeapon.weaponBulletSpeed)
+                if (isFiring && fireTimer >= 1 / currentWeapon.weaponFireRate)
                 {
                     Fire();
                     recordFireAction = true;
@@ -169,7 +168,7 @@ public class PlayerControllerTest : MonoBehaviour, IPausable, IDamagable
                 //    isFiring = false;
                 //    hasFired = false;
                 //} 
-                if (isFiring && !hasFired && fireTimer >= 1 / currentWeapon.weaponBulletSpeed)
+                if (isFiring && !hasFired && fireTimer >= 1 / currentWeapon.weaponFireRate)
                 {
                     Fire();
                     recordFireAction = true;
@@ -213,12 +212,17 @@ public class PlayerControllerTest : MonoBehaviour, IPausable, IDamagable
     private void Fire()
     {
 
-        if (!stats.CanFire()) return;
+        if (!stats.CanFire())
+        {
+            //assume the reason why we can't fire is depleting the bullets
+            stats.StartReload();
+            return;
+        }
 
-        stats.ConsumeAmmo(1f);
+        stats.ConsumeAmmo(1);
 
-        float bulletTiltAngle = -(currentWeapon.weaponBulletAmount - 1) * currentWeapon.weaponFiringAngle / 2;
-        for (int i = 0; i < currentWeapon.weaponBulletAmount; i++)
+        float bulletTiltAngle = -(currentWeapon.weaponBulletInOneShot - 1) * currentWeapon.weaponFiringAngle / 2;
+        for (int i = 0; i < currentWeapon.weaponBulletInOneShot; i++)
         {
             GameObject spawnedBullet = Instantiate(currentWeapon.bulletType, firePoint.position, firePoint.rotation);
             Bullet_Default bulletAttributes = spawnedBullet.GetComponent<Bullet_Default>();
@@ -235,7 +239,9 @@ public class PlayerControllerTest : MonoBehaviour, IPausable, IDamagable
     {
         Debug.Log("Player equipping weapon");
         currentWeapon = weapon;
-        recordEquipAction = true;
+        stats.OnWeaponChanged(weapon);
+
+        //recordEquipAction = true;
     }
     public void TakeDamage(float damage, HSLColor bulletColor)
     {
@@ -313,10 +319,9 @@ public class PlayerControllerTest : MonoBehaviour, IPausable, IDamagable
         stats.Reset();
         StopAllCoroutines();
         // clean up works for those corroutines that haven't been finished
-        ResumeRecording(isRecording);
-        ResumePause();
-        ResumeGhostDash();
-
+        ResetRecording(isRecording);
+        ResetPause();
+        ResetGhostDash();
         transform.position = initialPosition;
         rb.linearVelocityX = 0;
         rb.linearVelocityY = 0;
@@ -324,7 +329,7 @@ public class PlayerControllerTest : MonoBehaviour, IPausable, IDamagable
         hasFired = false;
         recordFireAction = false;
         fireTimer = 0;
-        
+       
     }
 
     public void UponWaveClear()
@@ -395,9 +400,9 @@ public class PlayerControllerTest : MonoBehaviour, IPausable, IDamagable
         //Destroy(returnPositionInstance.gameObject);
         ShieldGhost newGhost = Instantiate(ghost);
         newGhost.InitializeGhost(savedPosition, recordedStates);
-        ResumeRecording(true);
+        ResetRecording(true);
     }
-    private void ResumeRecording(bool hasRecorded)
+    private void ResetRecording(bool hasRecorded)
     {
         if (hasRecorded)
         {
@@ -464,10 +469,10 @@ public class PlayerControllerTest : MonoBehaviour, IPausable, IDamagable
 
         yield return new WaitForSeconds(pauseDuration);
 
-        ResumePause();
+        ResetPause();
     }
 
-    public void ResumePause()
+    public void ResetPause()
     {
         if (isPaused)
         {
@@ -506,9 +511,9 @@ public class PlayerControllerTest : MonoBehaviour, IPausable, IDamagable
 
         // start cooldown wait
         yield return new WaitForSeconds(dashCooldown);
-        ResumeGhostDash();
+        ResetGhostDash();
     }
-    private void ResumeGhostDash()
+    private void ResetGhostDash()
     {
         if (!CanDash)
         {

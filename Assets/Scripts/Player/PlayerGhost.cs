@@ -77,8 +77,8 @@ public class GhostController : MonoBehaviour
 
     private void Fire()
     {
-        float bulletTiltAngle = -(currentWeapon.weaponBulletAmount - 1) * currentWeapon.weaponFiringAngle / 2;
-        for (int i = 0;i<currentWeapon.weaponBulletAmount;i++)
+        float bulletTiltAngle = -(currentWeapon.weaponBulletInOneShot - 1) * currentWeapon.weaponFiringAngle / 2;
+        for (int i = 0;i<currentWeapon.weaponBulletInOneShot;i++)
         {
             GameObject spawnedBullet=Instantiate(currentWeapon.bulletType, firePoint.position, firePoint.rotation);
             Bullet_Default bulletAttributes = spawnedBullet.GetComponent<Bullet_Default>();
