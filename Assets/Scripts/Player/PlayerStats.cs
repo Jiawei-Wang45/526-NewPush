@@ -34,10 +34,15 @@ public class PlayerStats : MonoBehaviour
     private void Start()
     {
         health = maxHealth;
-        maxAmmo = GetComponent<PlayerControllerTest>().currentWeapon.maxAmmoNums;
-        currentAmmo = maxAmmo;
         originalH = playerColor.H;
-        reloadBar.SetActive(false);
+        if (!isGhost)
+        {
+            maxAmmo = GetComponent<PlayerControllerTest>().currentWeapon.maxAmmoNums;
+            currentAmmo = maxAmmo;
+            reloadBar.SetActive(false);
+        }
+        
+        
     }
     public void TakeDamage(float damage)
     {

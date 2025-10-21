@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
+using UnityEngine.UI;
 public class PlayerControllerTest : MonoBehaviour, IPausable, IDamagable
 {
     private Rigidbody2D rb;
@@ -46,6 +47,9 @@ public class PlayerControllerTest : MonoBehaviour, IPausable, IDamagable
     private bool isRecording = false;
     private Vector2 savedPosition;
     private Quaternion savedRotation;
+
+    public Image ability_1;
+    public Image ability_2;
 
     public void RefreshStats()
     {
@@ -391,6 +395,7 @@ public class PlayerControllerTest : MonoBehaviour, IPausable, IDamagable
         savedPosition = transform.position;
         savedRotation = transform.rotation;
         StartCoroutine(RecordingCoroutine());
+        //ability_1.GetComponent<Animator>().SetTrigger("Play");
     }
 
     private IEnumerator RecordingCoroutine()
@@ -418,6 +423,8 @@ public class PlayerControllerTest : MonoBehaviour, IPausable, IDamagable
         }  
         
     }
+
+   
     //********************************Pause All Pausable********************************
     public void PauseAllPausable(float pauseDuration, float pauseStrength)
     {
