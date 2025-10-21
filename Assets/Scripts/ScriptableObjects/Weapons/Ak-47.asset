@@ -22,7 +22,7 @@ MonoBehaviour:
   weaponAmmo: 30
   weaponFiringAngle: 0
   weaponBulletSpread: 5
-  reloadTime: 1
+  reloadTime: 0.6
   weaponName: AK-47
   bulletType: {fileID: 8604903965720594084, guid: 2904f1b643d26f24ea817c2a40263281, type: 3}
   weaponImage: {fileID: 0}

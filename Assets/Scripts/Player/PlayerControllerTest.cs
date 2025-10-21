@@ -307,6 +307,7 @@ public class PlayerControllerTest : MonoBehaviour
         {
             ObjectState stateToChange = recordedStates[0];
             stateToChange.usingNewWeapon = currentWeapon;
+            GetComponent<PlayerStats>().currentWeapon = currentWeapon;
             recordedStates[0] = stateToChange;
         }
         Debug.Log($"Sending state list of size {recordedStates.Count}");

@@ -24,7 +24,6 @@ public class GhostController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         initialPosition = transform.position;
         initialColor = sr.color;
-
     }
     
     public virtual void InitializeGhost(Vector2 position, List<ObjectState> playerStates)

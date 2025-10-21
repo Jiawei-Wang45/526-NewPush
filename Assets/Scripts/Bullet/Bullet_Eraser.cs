@@ -8,7 +8,7 @@ public class Bullet_Eraser: Bullet_Default
     }
     protected override void Start()
     {
-        rb.linearVelocity = transform.right * 80;
+        rb.linearVelocity = transform.right * 50;
         currentState = BulletState.Flying;
 
         Destroy(gameObject, 0.5f);
@@ -42,7 +42,7 @@ public class Bullet_Eraser: Bullet_Default
         base.FixedUpdate();
         if (transform.localScale.x < 12f)
         {
-            transform.localScale *= 1.12f;
+            transform.localScale *= 1.05f;
         }
     }
 }
