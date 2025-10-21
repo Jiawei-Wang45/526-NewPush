@@ -1,10 +1,10 @@
 using UnityEngine;
 
-public class Shield : MonoBehaviour
+public class Shield : MonoBehaviour, IDamagable
 {
     public float shieldHealth = 30.0f;
 
-    public void takeDamage(float damage)
+    public void TakeDamage(float damage, HSLColor bulletColor)
     {
         shieldHealth -= damage;
         Debug.Log("Shield health: " + shieldHealth);

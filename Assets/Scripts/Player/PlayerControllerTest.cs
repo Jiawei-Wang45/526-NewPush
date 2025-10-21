@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
-public class PlayerControllerTest : MonoBehaviour, IPausable
+public class PlayerControllerTest : MonoBehaviour, IPausable, IDamagable
 {
     private Rigidbody2D rb;
     private Collider2D cl;
@@ -237,9 +237,10 @@ public class PlayerControllerTest : MonoBehaviour, IPausable
         currentWeapon = weapon;
         recordEquipAction = true;
     }
-    public void TakeDamage(float damage)
+    public void TakeDamage(float damage, HSLColor bulletColor)
     {
         stats.TakeDamage(damage);
+        stats.ChangeWeaponType(bulletColor.H, 0.01f);
     }
     private void OnMoveTriggered(InputAction.CallbackContext context)
     {
@@ -307,7 +308,6 @@ public class PlayerControllerTest : MonoBehaviour, IPausable
 
         //Debug.Log($"Player Color - H:{stats.playerColor.H:F1}, S:{stats.playerColor.S:F1}, L:{stats.playerColor.L:F1}");
     }
-
     public void Reset()
     {
         stats.Reset();

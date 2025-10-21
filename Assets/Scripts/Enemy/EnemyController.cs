@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyController : MonoBehaviour, IPausable
+public class EnemyController : MonoBehaviour, IPausable, IDamagable
 {
 
     public PlayerControllerTest pcTest;
@@ -33,7 +33,7 @@ public class EnemyController : MonoBehaviour, IPausable
     private bool isReplayingActions = false;
 
 
-    public bool isAttacking;
+    //public bool isAttacking;
 
     private bool isPaused = false;
     private Vector2 savedVelocity;
@@ -95,10 +95,10 @@ public class EnemyController : MonoBehaviour, IPausable
             }
 
 
-            if (isAttacking)
-            {
-                pcTest.TakeDamage(enemyStats.enemyDamage);
-            }
+            //if (isAttacking)
+            //{
+            //    pcTest.TakeDamage(enemyStats.enemyDamage);
+            //}
         }
     }
     private void FixedUpdate()
@@ -202,20 +202,20 @@ public class EnemyController : MonoBehaviour, IPausable
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.gameObject.TryGetComponent<PlayerControllerTest>(out PlayerControllerTest pcScript))
-        {
-            isAttacking = true;
-        }
-    }
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (collision.gameObject.TryGetComponent<PlayerControllerTest>(out PlayerControllerTest pcScript))
-        {
-            isAttacking = false;
-        }
-    }
+    //private void OnTriggerEnter2D(Collider2D collision)
+    //{
+    //    if (collision.gameObject.TryGetComponent<PlayerControllerTest>(out PlayerControllerTest pcScript))
+    //    {
+    //        isAttacking = true;
+    //    }
+    //}
+    //private void OnTriggerExit2D(Collider2D collision)
+    //{
+    //    if (collision.gameObject.TryGetComponent<PlayerControllerTest>(out PlayerControllerTest pcScript))
+    //    {
+    //        isAttacking = false;
+    //    }
+    //}
 
     IEnumerator LeashPlayer()
     {
@@ -404,6 +404,9 @@ public class EnemyController : MonoBehaviour, IPausable
             slowFactor = 1.0f;
         }
     }    
-
+    public void TakeDamage(float damage, HSLColor bulletColor)
+    {
+        enemyStats.TakeDamage(damage);
+    }
     
 }

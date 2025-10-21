@@ -10,6 +10,8 @@ public class Bullet_Default: MonoBehaviour, IPausable
 
     public string bulletType;
 
+    public GameObject ClusterBullet;
+
     public enum BulletState
 {
     Flying,
@@ -72,45 +74,51 @@ public class Bullet_Default: MonoBehaviour, IPausable
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if(collision.collider.gameObject.layer == LayerMask.NameToLayer("Shield"))
+        IDamagable damagable = collision.gameObject.GetComponent<IDamagable>();
+        if (damagable != null)
         {
-            Shield shield = collision.collider.gameObject.GetComponent<Shield>();
-            shield.takeDamage(bulletDamage);
-        }
-        if (collision.collider.gameObject.layer == LayerMask.NameToLayer("Enemy") && bulletType == "player")
-        {
-            EnemyStats enemyStats = collision.gameObject.GetComponent<EnemyStats>();
-            enemyStats.takeDamage(bulletDamage);
-        }
-        if (collision.collider.gameObject.layer == LayerMask.NameToLayer("Player") && bulletType == "enemy")
-        {
-            PlayerStats playerStats = collision.gameObject.GetComponent<PlayerStats>();
-
-            //if (playerStats.isInvincible)
-            //{
-            //    Collider2D myCol = GetComponent<Collider2D>();
-            //    Collider2D playerCol = collision.collider as Collider2D;
-            //    if (myCol != null && playerCol != null)
-            //    {
-            //        Physics2D.IgnoreCollision(myCol, playerCol);
-            //    }
-
-            //    if (rb != null)
-            //    {
-            //        rb.linearVelocity = lastVelocity;
-            //    }
-                
-            //    // don't apply damage or destroy the bullet; let it pass through
-            //    return;
-            //}
-
-            playerStats.TakeDamage(bulletDamage);
-
-            float influence = 0.01f;
-            playerStats.ChangeWeaponType(bulletColor.H, influence);
-
+            damagable.TakeDamage(bulletDamage, bulletColor);
         }
         Destroy(gameObject);
+        //if(collision.collider.gameObject.layer == LayerMask.NameToLayer("Shield"))
+        //{
+        //    Shield shield = collision.collider.gameObject.GetComponent<Shield>();
+        //    shield.TakeDamage(bulletDamage);
+        //}
+        //if (collision.collider.gameObject.layer == LayerMask.NameToLayer("Enemy") && bulletType == "player")
+        //{
+        //    EnemyStats enemyStats = collision.gameObject.GetComponent<EnemyStats>();
+        //    enemyStats.takeDamage(bulletDamage);
+        //}
+        //if (collision.collider.gameObject.layer == LayerMask.NameToLayer("Player") && bulletType == "enemy")
+        //{
+        //    PlayerStats playerStats = collision.gameObject.GetComponent<PlayerStats>();
+
+        //    //if (playerStats.isInvincible)
+        //    //{
+        //    //    Collider2D myCol = GetComponent<Collider2D>();
+        //    //    Collider2D playerCol = collision.collider as Collider2D;
+        //    //    if (myCol != null && playerCol != null)
+        //    //    {
+        //    //        Physics2D.IgnoreCollision(myCol, playerCol);
+        //    //    }
+
+        //    //    if (rb != null)
+        //    //    {
+        //    //        rb.linearVelocity = lastVelocity;
+        //    //    }
+
+        //    //    // don't apply damage or destroy the bullet; let it pass through
+        //    //    return;
+        //    //}
+
+        //    playerStats.TakeDamage(bulletDamage);
+
+        //    float influence = 0.01f;
+        //    playerStats.ChangeWeaponType(bulletColor.H, influence);
+
+        //}
+
     }
     //********************************Bullet Pause********************************
     public void Pause(float pauseDuration, float pauseStrength)

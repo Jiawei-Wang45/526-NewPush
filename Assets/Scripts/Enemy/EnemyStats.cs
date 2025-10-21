@@ -19,7 +19,7 @@ public class EnemyStats : MonoBehaviour
 
         spawner = FindFirstObjectByType<EnemySpawner>();
     }
-    public void takeDamage(float damage)
+    public void TakeDamage(float damage)
     {
         health -= damage;
         enemyColor.L = 50f + (health / maxHealth) * 40f;
