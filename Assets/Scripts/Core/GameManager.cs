@@ -12,6 +12,8 @@ public class GameManager : MonoBehaviour
     public GameObject InGamePauseMenu;
     public GameObject InGameEndingMenu;
     public GameObject InGameWinMenu;
+    public GameObject AbilitySelectionMenu;
+    public GameObject EraserMessage;
     public PlayerControllerTest player;
     public GhostController ghost;
     public EnemySpawner enemySpawner;
@@ -99,6 +101,7 @@ public class GameManager : MonoBehaviour
 
     public void WaveClear()
     {
+        Time.timeScale = 0;
         // Calculate wave duration
         float waveDuration = Time.time - waveStartTime;
 
@@ -120,15 +123,24 @@ public class GameManager : MonoBehaviour
         {
             Destroy(g.gameObject);
         }
-    
+
 
         resetsRemaining = 2;
-        resetsRemainingText.text = $"<size=20><color=#FF0000>Resets Remaining: </color>{resetsRemaining}</size>";
-        infoText.text = "<size=20><color=#FF0000>Wave Clear!</color></size>\nLives and ghosts restored";
+        resetsRemainingText.text = $"<size=20><color=#FF0000>Lives Remaining: </color>{resetsRemaining}</size>";
+        infoText.text = "<size=20><color=#FF0000>Wave Clear!</color></size>\nLives restored";
+        AbilitySelectionMenu.SetActive(true);
+    }
+    
+    public void StartNewWave(int newAbilityEnum)
+    {
+        Time.timeScale = 1;
+        AbilitySelectionMenu.SetActive(false);
         player.UponWaveClear();
+        player.abilityEnum = newAbilityEnum;
         waveCount++;
         waveStartTime = Time.time; // Update wave start time for next wave
         StartCoroutine(WaveStartMessage());
+        enemySpawner.StartNewWave();
     }
 
      IEnumerator WaveStartMessage()
@@ -203,6 +215,12 @@ public class GameManager : MonoBehaviour
         }
 
     }
+
+    public void DisplayEraserMessage(bool isDisplayed)
+    {
+        EraserMessage.SetActive(isDisplayed);
+    }
+
     private void InitializePauseStat()
     {
         //isPaused = false;

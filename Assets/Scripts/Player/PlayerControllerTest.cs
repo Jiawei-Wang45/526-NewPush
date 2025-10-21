@@ -119,6 +119,12 @@ public class PlayerControllerTest : MonoBehaviour
 
         playerInput.Default.PauseBullets.performed += OnAbilityTriggered;
         playerInput.Default.FireEraser.performed += OnFireEraser;
+        if (currentWeapon)
+        {
+            fireTimer = currentWeapon.weaponFireRate;
+            stats.currentWeapon = currentWeapon;
+            stats.currentAmmo = currentWeapon.weaponAmmo;
+        }
 
     }
 
@@ -152,15 +158,11 @@ public class PlayerControllerTest : MonoBehaviour
                 //{
                 //    isFiring = false;
                 //}
-                if (isFiring && fireTimer >= 1 / currentWeapon.weaponBulletSpeed)
+                if (isFiring && fireTimer >= 1 / currentWeapon.weaponFireRate)
                 {
                     Fire();
                     recordFireAction = true;
                     fireTimer = 0;
-                }
-                else
-                {
-                    fireTimer += Time.fixedDeltaTime;
                 }
             }
             else if (currentWeapon.triggerType == TriggerType.SemiAutomatic)
@@ -174,7 +176,7 @@ public class PlayerControllerTest : MonoBehaviour
                 //    isFiring = false;
                 //    hasFired = false;
                 //} 
-                if (isFiring && !hasFired && fireTimer >= 1 / currentWeapon.weaponBulletSpeed)
+                if (isFiring && !hasFired && fireTimer >=  1 / currentWeapon.weaponFireRate)
                 {
                     Fire();
                     recordFireAction = true;
@@ -216,6 +218,10 @@ public class PlayerControllerTest : MonoBehaviour
         {
             pausedTimeRemaining = Math.Max(0, pausedTimeRemaining - Time.deltaTime);
         }
+        if(currentWeapon.triggerType == TriggerType.Automatic)
+        {
+            fireTimer = fireTimer < currentWeapon.weaponFireRate ? fireTimer + Time.fixedDeltaTime : fireTimer;
+        }
     }
     private void Fire(string fireType = "bullet")
     {
@@ -227,7 +233,7 @@ public class PlayerControllerTest : MonoBehaviour
 
         if (!stats.CanFire()) return;
 
-        stats.ConsumeAmmo(1f);
+        stats.ConsumeAmmo(1);
 
         float bulletTiltAngle = -(currentWeapon.weaponBulletAmount - 1) * currentWeapon.weaponFiringAngle / 2;
         for (int i = 0; i < currentWeapon.weaponBulletAmount; i++)
@@ -236,9 +242,8 @@ public class PlayerControllerTest : MonoBehaviour
             Bullet_Default bulletAttributes = spawnedBullet.GetComponent<Bullet_Default>();
 
             //float timeScaleFactor = isPaused ? 0.5f : 1.0f;
-
-            bulletAttributes.InitBullet(currentWeapon.weaponBulletSpeed, pausedTimeRemaining > 0 ? pausedTimeRemaining : currentWeapon.weaponBulletLifeTime, currentWeapon.weaponBulletDamage, "player", stats.playerColor);
             spawnedBullet.transform.Rotate(0, 0, bulletTiltAngle + UnityEngine.Random.Range(-currentWeapon.weaponBulletSpread, currentWeapon.weaponBulletSpread));
+            bulletAttributes.InitBullet(currentWeapon.weaponBulletSpeed, pausedTimeRemaining > 0 ? pausedTimeRemaining : currentWeapon.weaponBulletLifeTime, currentWeapon.weaponBulletDamage, "player", stats.playerColor);
             bulletTiltAngle += currentWeapon.weaponFiringAngle;
         }
 
@@ -280,6 +285,7 @@ public class PlayerControllerTest : MonoBehaviour
         {
             recordAbility = "eraser";
             eraserUsed = true;
+            gameManager.DisplayEraserMessage(false);
             Fire("eraser");
         }
     }
@@ -401,6 +407,7 @@ public class PlayerControllerTest : MonoBehaviour
             HitboxShape.GetComponent<SpriteRenderer>().sortingOrder += 3;
         } else
         {
+            gameManager.DisplayEraserMessage(true);
             eraserUsed = false;
         }
         isRecording = true;
@@ -417,6 +424,7 @@ public class PlayerControllerTest : MonoBehaviour
         savedRotation = transform.rotation;
         yield return new WaitForSeconds(5.0f);
         eraserUsed = true;
+        gameManager.DisplayEraserMessage(false);
         List<ObjectState> playerStates = sendStates();
         Destroy(returnPositionInstance.gameObject);
         GetComponent<SpriteRenderer>().sortingOrder += 3;

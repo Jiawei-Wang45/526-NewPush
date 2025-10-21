@@ -88,8 +88,7 @@ public class EnemySpawner : MonoBehaviour
 
     private void Start()
     {
-        InitializeNewWave();
-        SpawnWave();
+        StartNewWave();
     }
 
     private void WaveCleared()
@@ -101,9 +100,13 @@ public class EnemySpawner : MonoBehaviour
         }
         enemiesInWave.Clear();
         spawnBudget += 10;
+        gameManager.WaveClear();
+    }
+
+    public void StartNewWave()
+    {
         InitializeNewWave();
         SpawnWave();
-        gameManager.WaveClear();
     }
 
 

@@ -15,13 +15,14 @@ MonoBehaviour:
   weaponType: 0
   triggerType: 0
   weaponBulletLifeTime: 2
-  weaponBulletDamage: 1
+  weaponBulletDamage: 2
   weaponBulletSpeed: 25
-  weaponFireRate: 0.07
-  weaponFireSpeed: 2
+  weaponFireRate: 8
   weaponBulletAmount: 1
+  weaponAmmo: 30
   weaponFiringAngle: 0
-  weaponBulletSpread: 20
+  weaponBulletSpread: 5
+  reloadTime: 1
   weaponName: AK-47
   bulletType: {fileID: 8604903965720594084, guid: 2904f1b643d26f24ea817c2a40263281, type: 3}
   weaponImage: {fileID: 0}
