@@ -28,7 +28,7 @@ public class HSLColor
     {
         // 将HSL值归一化
         float h = Mathf.Clamp(H, 0f, 360f) / 360f;
-        float s = Mathf.Clamp(S, 0f, 100f) / 100f;
+        float s = Mathf.Clamp(S, 10f, 100f) / 100f;
         float l = Mathf.Clamp(L, 0f, 100f) / 100f;
 
         // HSL转RGB算法

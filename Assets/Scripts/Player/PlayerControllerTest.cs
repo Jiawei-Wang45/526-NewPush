@@ -364,6 +364,7 @@ public class PlayerControllerTest : MonoBehaviour
         stats.health = stats.maxHealth;
         recordedStates.Clear();
         initialPosition = transform.position;
+        stats.ResetH();
     }
 
     private void OnAbilityTriggered(InputAction.CallbackContext context)
