@@ -27,6 +27,7 @@ public class GameManager : MonoBehaviour
     // expose current wave as a read-only property to other scripts
     public int CurrentWave => waveCount;
 
+    private const int abilityEnum=0;
     /*
         void OnEnable()
         {
@@ -138,10 +139,16 @@ public class GameManager : MonoBehaviour
         }
     }
     // Main Menu button's functions
-    public void NewGame()
+    public void NewGame_ShieldGhost()
     {
+        player.abilityEnum = 3;
         SceneManager.LoadScene("AlphaProgressCheck");
         //InitializePauseStat();
+    }
+    public void NewGame_GhostDash()
+    {
+        player.abilityEnum = 4;
+        SceneManager.LoadScene("AlphaProgressCheck");
     }
     public void Exit()
     {

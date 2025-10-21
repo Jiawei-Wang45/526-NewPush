@@ -15,6 +15,6 @@ public enum TriggerType
 public enum AbilityType
 {
     ShieldGhost,
-    DashGhost,
+    GhostDash,
     None
 }
