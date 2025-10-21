@@ -18,11 +18,13 @@ public class PlayerStats : MonoBehaviour
     public float originalH;
 
     public float weaponTypeThreshold = 15f;
-    public int currentAmmo;
+    public float maxAmmo = 100f;
+    public float currentAmmo;
 
-    public PlayerWeapon currentWeapon;
-
+    public float reloadTime = 2f;
     private bool isReloading = false;
+    // expose reload state to other scripts (read-only)
+    public bool IsReloading { get { return isReloading; } }
 
     public float hRecoverySpeed = 1f;
     public float hRecoveryDelay = 2f; 
@@ -35,6 +37,7 @@ public class PlayerStats : MonoBehaviour
     private void Start()
     {
         health = maxHealth;
+        currentAmmo = maxAmmo;
         originalH = playerColor.H;
 
         
@@ -80,8 +83,8 @@ public class PlayerStats : MonoBehaviour
     private IEnumerator ReloadCoroutine()
     {
         isReloading = true;
-        yield return new WaitForSeconds(currentWeapon.reloadTime);
-        currentAmmo = currentWeapon.weaponAmmo;
+        yield return new WaitForSeconds(reloadTime);
+        currentAmmo = maxAmmo;
         playerColor.S = 100f;
         isReloading = false;
     }
@@ -143,9 +146,9 @@ public class PlayerStats : MonoBehaviour
         }
     }
 
-    public void ConsumeAmmo(int amount)
+    public void ConsumeAmmo(float amount)
     {
         currentAmmo -= amount;
-        playerColor.S = ((float)currentAmmo / (float)currentWeapon.weaponAmmo) * 100f;
+        playerColor.S = (currentAmmo / maxAmmo) * 100f;
     }
 }
