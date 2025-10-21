@@ -104,7 +104,6 @@ public class PlayerStats : MonoBehaviour
         isRecoveringH = false;
         hRecoveryTimer = 0f;
 
-
     }
 
     public void Reset(){
