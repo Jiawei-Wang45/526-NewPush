@@ -13,6 +13,7 @@ public class PlayerControllerTest : MonoBehaviour
     public GameObject StandShape;
     public GameObject HitboxShape;
     public GameObject ReturnPosition;
+    public GameObject AbilityHint;
     private GameObject returnPositionInstance;
     private float speed;
     private Vector2 movement;
@@ -44,9 +45,15 @@ public class PlayerControllerTest : MonoBehaviour
     public float dashMultiplier = 2.0f; // how many times faster during dash
     public float dashDuration = 3.0f; // seconds the dash lasts
     public float dashCooldown = 3.0f; // seconds before dash can be used again
-    public GameObject dashEffectPrefab; // optional visual effect instantiated during dash
     private bool isDashing = false;
-    private bool dashOnCooldown = false;
+
+    [Header("Ghost Recording")]
+    public float ghostRecordingDuration = 5.0f;
+
+    public float ghostRecordingCooldown = 10.0f;
+
+    public GameObject dashEffectPrefab; // optional visual effect instantiated during dash
+    private bool abilityOnCooldown = false;
 
     private Vector2 savedVelocity;
     private bool savedIsFiring;
@@ -195,6 +202,7 @@ public class PlayerControllerTest : MonoBehaviour
     private void FixedUpdate()
     {
         //if (isPaused) return;
+        AbilityHint.SetActive(!abilityOnCooldown);
         rb.linearVelocity = movement * speed;
         if (isRecording)
         {
@@ -218,7 +226,7 @@ public class PlayerControllerTest : MonoBehaviour
         {
             pausedTimeRemaining = Math.Max(0, pausedTimeRemaining - Time.deltaTime);
         }
-        if(currentWeapon.triggerType == TriggerType.Automatic)
+        if (currentWeapon.triggerType == TriggerType.Automatic)
         {
             fireTimer = fireTimer < currentWeapon.weaponFireRate ? fireTimer + Time.fixedDeltaTime : fireTimer;
         }
@@ -397,33 +405,37 @@ public class PlayerControllerTest : MonoBehaviour
 
     private void ActiveRecordGhost(string ghostType)
     {
-        if (isRecording) return;
-        GetComponent<SpriteRenderer>().sortingOrder -= 3;
-        returnPositionInstance = Instantiate(ReturnPosition, transform.position, transform.rotation);
-        if (ghostType == "shield")
+        if (!abilityOnCooldown)
         {
-            StandShape.SetActive(true);
-            StandShape.GetComponent<SpriteRenderer>().sortingOrder += 3;
-            HitboxShape.SetActive(true);
-            HitboxShape.GetComponent<SpriteRenderer>().sortingOrder += 3;
-        } else
-        {
-            gameManager.DisplayEraserMessage(true);
-            eraserUsed = false;
+            abilityOnCooldown = true;
+            if (isRecording) return;
+            GetComponent<SpriteRenderer>().sortingOrder -= 3;
+            returnPositionInstance = Instantiate(ReturnPosition, transform.position, transform.rotation);
+            if (ghostType == "shield")
+            {
+                StandShape.SetActive(true);
+                StandShape.GetComponent<SpriteRenderer>().sortingOrder += 3;
+                HitboxShape.SetActive(true);
+                HitboxShape.GetComponent<SpriteRenderer>().sortingOrder += 3;
+            } else
+            {
+                gameManager.DisplayEraserMessage(true);
+                eraserUsed = false;
+            }
+            isRecording = true;
+            recordedStates.Clear();
+            recordedStates.Add(new ObjectState(rb.linearVelocity, savedPosition, savedRotation, currentWeapon));
+            PauseAllPausable(ghostRecordingDuration, 20.0f);
+            pausedTimeRemaining = ghostRecordingDuration;
+            StartCoroutine(RecordingCoroutine(ghostType));
         }
-        isRecording = true;
-        recordedStates.Clear();
-        recordedStates.Add(new ObjectState(rb.linearVelocity, savedPosition, savedRotation, currentWeapon));
-        PauseAllPausable(5.0f, 20.0f);
-        pausedTimeRemaining = 5.0f;
-        StartCoroutine(RecordingCoroutine(ghostType));
     }
 
     private IEnumerator RecordingCoroutine(string ghostType)
     {
         savedPosition = transform.position;
         savedRotation = transform.rotation;
-        yield return new WaitForSeconds(5.0f);
+        yield return new WaitForSeconds(ghostRecordingDuration);
         eraserUsed = true;
         gameManager.DisplayEraserMessage(false);
         List<ObjectState> playerStates = sendStates();
@@ -447,6 +459,9 @@ public class PlayerControllerTest : MonoBehaviour
         transform.position = savedPosition;
         transform.rotation = savedRotation;
         isRecording = false;
+
+        yield return new WaitForSeconds(ghostRecordingDuration + ghostRecordingCooldown);
+        abilityOnCooldown = false;
     }
 
     //********************************Pause All Pausable********************************
@@ -510,13 +525,13 @@ public class PlayerControllerTest : MonoBehaviour
     public void GhostDash()
     {
         // Prevent starting another dash while on cooldown or already dashing
-        if (dashOnCooldown || isDashing) return;
+        if (abilityOnCooldown || isDashing) return;
         StartCoroutine(GhostDashCoroutine());
     }
 
     private IEnumerator GhostDashCoroutine()
     {
-        dashOnCooldown = true;
+        abilityOnCooldown = true;
         isDashing = true;
 
         // save current speed so we can restore it later
@@ -539,6 +554,6 @@ public class PlayerControllerTest : MonoBehaviour
 
         // start cooldown wait
         yield return new WaitForSeconds(dashCooldown);
-        dashOnCooldown = false;
+        abilityOnCooldown = false;
     }
 }
