@@ -2997,6 +2997,7 @@ GameObject:
   m_Component:
   - component: {fileID: 850232883}
   - component: {fileID: 850232882}
+  - component: {fileID: 850232884}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -3044,6 +3045,23 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &850232884
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 850232881}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ce1e833126436c46b530ea443d5ab5f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  URL: https://docs.google.com/forms/u/2/d/e/1FAIpQLSdMv2OjR-wEv6eOubeQ4n7LzH69-5BVpZs1KIMNYE3fg0vl1w/formResponse
+  WaveURL: https://docs.google.com/forms/u/2/d/e/1FAIpQLScablE3Fmg8MNJkDhF9fbZDj89CHzYVwf_-R3rmSS9B7a0Fgg/formResponse
+  GameSummaryURL: https://docs.google.com/forms/u/2/d/e/1FAIpQLSeW9pjkvfOi6P7DYz_Q80-lzYAGcoV1tygJCieJoyRDpaES4Q/formResponse
+  currentWave: 0
+  requestTimeoutSeconds: 10
 --- !u!1 &865761080
 GameObject:
   m_ObjectHideFlags: 0
@@ -4174,6 +4192,7 @@ MonoBehaviour:
   ReturnPosition: {fileID: 3640288586839963322, guid: 1b237f2327867df49a2821fc0c06cbf5, type: 3}
   initialPosition: {x: 0, y: 0}
   abilityEnum: 5
+  sendToGoogle: {fileID: 0}
   eraserAbility: {fileID: 2406691718891669079, guid: c9094f034ce614d549c56e99eec05024, type: 3}
   gameManager: {fileID: 850232882}
   firePoint: {fileID: 50638741}

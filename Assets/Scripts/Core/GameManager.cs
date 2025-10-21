@@ -22,6 +22,10 @@ public class GameManager : MonoBehaviour
     public TMP_Text infoText;
     public TMP_Text displayScoreText;
     private int waveCount = 1;
+    private float waveStartTime;
+    private SendToGoogle sendToGoogle;
+    // expose current wave as a read-only property to other scripts
+    public int CurrentWave => waveCount;
 
     /*
         void OnEnable()
@@ -41,9 +45,11 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        sendToGoogle = FindFirstObjectByType<SendToGoogle>();
         if (isInLevel)
         {
             levelStartTime = Time.time;
+            waveStartTime = Time.time; // Initialize wave start time
             InGamePauseMenu.SetActive(false);
             InGameEndingMenu.SetActive(false);
             InGameWinMenu.SetActive(false);
@@ -93,6 +99,14 @@ public class GameManager : MonoBehaviour
 
     public void WaveClear()
     {
+        // Calculate wave duration
+        float waveDuration = Time.time - waveStartTime;
+
+        if (sendToGoogle != null)
+        {
+            sendToGoogle.SendWaveData(waveDuration, waveCount);
+        }
+
         //clear bullets
         Bullet_Default[] bullets = FindObjectsByType<Bullet_Default>(FindObjectsInactive.Include, FindObjectsSortMode.None);
         foreach (Bullet_Default b in bullets)
@@ -113,6 +127,7 @@ public class GameManager : MonoBehaviour
         infoText.text = "<size=20><color=#FF0000>Wave Clear!</color></size>\nLives and ghosts restored";
         player.UponWaveClear();
         waveCount++;
+        waveStartTime = Time.time; // Update wave start time for next wave
         StartCoroutine(WaveStartMessage());
     }
 
@@ -130,12 +145,21 @@ public class GameManager : MonoBehaviour
         InGameEndingMenu.SetActive(true);
         displayScoreText.text = $"<size=20><color=#FF0000>Waves Cleared: </color>{waveCount - 1}</size>";
 
+        // Send game summary
+        if (sendToGoogle != null)
+        {
+            float totalSurvivalTime = Time.time - levelStartTime;
+            int finalWaveCount = waveCount - 1;
+            sendToGoogle.SendGameSummary(totalSurvivalTime, finalWaveCount);
+        }
     }
     // Main Menu button's functions
     public void NewGame()
     {
         SceneManager.LoadScene("AlphaProgressCheck");
         //InitializePauseStat();
+        levelStartTime = Time.time;
+        waveStartTime = Time.time; // Initialize wave start time
     }
     public void Exit()
     {
@@ -202,6 +226,14 @@ public class GameManager : MonoBehaviour
         if (gaManager != null)
         {
             gaManager.SendLevelCompletedEvent(levelName, completionTime);
+        }
+
+        // Send game summary
+        if (sendToGoogle != null)
+        {
+            float totalSurvivalTime = Time.time - levelStartTime;
+            int finalWaveCount = waveCount - 1; // Assuming waveCount is the next wave, so completed waves are waveCount - 1
+            sendToGoogle.SendGameSummary(totalSurvivalTime, finalWaveCount);
         }
     }
 
