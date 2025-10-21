@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 950036092586290458}
   m_Layer: 0
   m_Name: EnemySpawnIndicator
-  m_TagString: Untagged
+  m_TagString: Pausible
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -125,5 +125,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnAnimation: {fileID: 0}
   enemyToSpawn: {fileID: 0}
-  enemyBoundHealthbar: {fileID: 7869302362511925162, guid: 3e42b41c175a32a4b9b8697391c7dbde, type: 3}
   animPlaySpeed: 1

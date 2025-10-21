@@ -20,6 +20,6 @@ public class EnemyHealthbar : MonoBehaviour
     }
     private void LateUpdate()
     {
-        transform.position = enemy.transform.position + new Vector3(offsetX, offsetY, 0);
+        transform.position = enemy.transform.position + new Vector3(0, offsetY, 0);
     }
 }

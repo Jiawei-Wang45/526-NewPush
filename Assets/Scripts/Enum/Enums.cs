@@ -11,3 +11,10 @@ public enum TriggerType
     SemiAutomatic,
     None
 }
+
+public enum AbilityType
+{
+    ShieldGhost,
+    DashGhost,
+    None
+}

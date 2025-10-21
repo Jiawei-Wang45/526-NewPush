@@ -3,11 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyController : MonoBehaviour
+public class EnemyController : MonoBehaviour, IPausable, IDamagable
 {
 
     public PlayerControllerTest pcTest;
     public EnemyStats enemyStats;
+    public int challengeLevel;
 
     public EnemyWeaponData weapon;
     public EnemyMovementPattern movementPattern;
@@ -18,7 +19,7 @@ public class EnemyController : MonoBehaviour
     public float enemySpeed;
     public float comfortableDistance = 5.0f;
 
-    
+
     private Vector2 movement;
     private float timeToFire = 0;
     private bool currentlyFiring = false;
@@ -27,9 +28,18 @@ public class EnemyController : MonoBehaviour
     private LayerMask terrainMask;
     private float checkInterval = 0.1f;
     private Vector3 randomTarget;
+    private List<ObjectState> recordedStates = new List<ObjectState>();
+    private int stateIndex = 0;
+    private bool isReplayingActions = false;
 
-    public bool isAttacking;
 
+    //public bool isAttacking;
+
+    private bool isPaused = false;
+    private Vector2 savedVelocity;
+    private float slowFactor = 1.0f;
+    private float timeintoslow = 0.0f;
+    private float slowDuration;
 
     private void Start()
     {
@@ -41,6 +51,7 @@ public class EnemyController : MonoBehaviour
         RefreshStats();
         timeToFire = weapon.fireRate - 0.6f;
         randomTarget = transform.position;
+        isAlive(false);
     }
     public void RefreshStats()
     {
@@ -50,80 +61,120 @@ public class EnemyController : MonoBehaviour
     }
     private void Update()
     {
-        if (gameManager.isPlayerAlive)
+        if (isPaused)
+        {
+            timeintoslow += Time.deltaTime;
+        }
+        UpdateEnemyColor();
+        if (!isReplayingActions && gameManager.isPlayerAlive)
         {
             RaycastHit2D hit = Physics2D.Linecast(transform.position, pcTest.transform.position, terrainMask);
-            if(hit.collider != null){
-                if(hit.collider.transform.position == pcTest.transform.position){
+            if (hit.collider != null)
+            {
+                if (hit.collider.transform.position == pcTest.transform.position)
+                {
                     foundPlayer = true;
                     canSeePlayer = true;
                     Vector2 direction = pcTest.transform.position - transform.position;
                     float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
                     Quaternion targetRotation = Quaternion.AngleAxis(angle, Vector3.forward);
-                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.deltaTime);
-                } else {
+                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.deltaTime/slowFactor);
+                }
+                else
+                {
                     canSeePlayer = false;
-                    if(movementPattern.LeashTime > 0)
+                    if (movementPattern.LeashTime > 0)
                     {
                         StartCoroutine(LeashPlayer());
                     }
                 }
             }
-            else{
+            else
+            {
                 foundPlayer = false;
             }
 
 
-            if (isAttacking)
-            {
-                pcTest.TakeDamage(enemyStats.enemyDamage);
-            }
+            //if (isAttacking)
+            //{
+            //    pcTest.TakeDamage(enemyStats.enemyDamage);
+            //}
         }
     }
     private void FixedUpdate()
     {
-        if (gameManager.isPlayerAlive)
+        if (isReplayingActions)
         {
-            if (foundPlayer)
-            {
-                float factor = 1.0f;
-                if(canSeePlayer){
-                    factor = (transform.position - pcTest.transform.position).magnitude > comfortableDistance ? 1.0f : -1.0f * movementPattern.BackoffSpeedFactor;
-                }
-                rb.linearVelocity = factor * transform.right * enemySpeed;
-            } else {
-                switch(movementPattern.idleBehavior)
-                {
-                    case EnemyMovementPattern.idleBehaviors.Stops:
-                        rb.linearVelocity = Vector2.zero;
-                        break;
-                    case EnemyMovementPattern.idleBehaviors.RandomWalk:
-                        if((randomTarget - transform.position).magnitude < 0.1f){
-                            Vector2 offset = UnityEngine.Random.insideUnitCircle.normalized * 5.0f;
-                            randomTarget = transform.position + new Vector3(offset.x, offset.y, 0);
-                        }
-                        Vector2 direction = randomTarget - transform.position;
-                        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-                        Quaternion targetRotation = Quaternion.AngleAxis(angle, Vector3.forward);
-                        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.deltaTime);
-                        rb.linearVelocity = transform.right * enemySpeed;
-                        break;
-                }
-            }
-        }
-
-        if(canSeePlayer){
+            ObjectState currentState = recordedStates[stateIndex];
+            rb.linearVelocity = currentState.currentVelocity;
+            transform.rotation = currentState.currentRotation;
             if (!currentlyFiring)
             {
-                timeToFire += Time.deltaTime;
+                timeToFire += Time.fixedDeltaTime;
             }
-            if (timeToFire >= weapon.fireRate)
+            if (currentState.currentlyFiring)
             {
                 timeToFire = 0;
                 StartCoroutine(BeginFiringSequence());
             }
+            stateIndex++;
+            if (stateIndex == recordedStates.Count)
+            {
+                isReplayingActions = false;
+            }
         }
+        else
+        {
+            bool firedThisTick = false;
+            if (gameManager.isPlayerAlive)
+            {
+                if (foundPlayer)
+                {
+                    float factor = 1.0f;
+                    if (canSeePlayer)
+                    {
+                        factor = (transform.position - pcTest.transform.position).magnitude > comfortableDistance ? 1.0f : -1.0f * movementPattern.BackoffSpeedFactor;
+                    }
+                    rb.linearVelocity = factor * transform.right * enemySpeed/ slowFactor;
+                }
+                else
+                {
+                    switch (movementPattern.idleBehavior)
+                    {
+                        case EnemyMovementPattern.idleBehaviors.Stops:
+                            rb.linearVelocity = Vector2.zero;
+                            break;
+                        case EnemyMovementPattern.idleBehaviors.RandomWalk:
+                            if ((randomTarget - transform.position).magnitude < 0.1f)
+                            {
+                                Vector2 offset = UnityEngine.Random.insideUnitCircle.normalized * 5.0f;
+                                randomTarget = transform.position + new Vector3(offset.x, offset.y, 0);
+                            }
+                            Vector2 direction = randomTarget - transform.position;
+                            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+                            Quaternion targetRotation = Quaternion.AngleAxis(angle, Vector3.forward);
+                            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.fixedDeltaTime/slowFactor);
+                            rb.linearVelocity = transform.right * enemySpeed/slowFactor;
+                            break;
+                    }
+                }
+            }
 
+            if (canSeePlayer)
+            {
+                if (!currentlyFiring)
+                {
+                    timeToFire += Time.fixedDeltaTime/slowFactor;
+                }
+                if (timeToFire >= weapon.fireRate)
+                {
+                    firedThisTick = true;
+                    timeToFire = 0;
+                    StartCoroutine(BeginFiringSequence());
+                }
+            }
+            recordedStates.Add(new ObjectState(rb.linearVelocity, transform.position, transform.rotation, firedThisTick));
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -151,20 +202,20 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.gameObject.TryGetComponent<PlayerControllerTest>(out PlayerControllerTest pcScript))
-        {
-            isAttacking = true;
-        }
-    }
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (collision.gameObject.TryGetComponent<PlayerControllerTest>(out PlayerControllerTest pcScript))
-        {
-            isAttacking = false;
-        }
-    }
+    //private void OnTriggerEnter2D(Collider2D collision)
+    //{
+    //    if (collision.gameObject.TryGetComponent<PlayerControllerTest>(out PlayerControllerTest pcScript))
+    //    {
+    //        isAttacking = true;
+    //    }
+    //}
+    //private void OnTriggerExit2D(Collider2D collision)
+    //{
+    //    if (collision.gameObject.TryGetComponent<PlayerControllerTest>(out PlayerControllerTest pcScript))
+    //    {
+    //        isAttacking = false;
+    //    }
+    //}
 
     IEnumerator LeashPlayer()
     {
@@ -199,7 +250,7 @@ public class EnemyController : MonoBehaviour
             FireOnce(i);
             if (i < weapon.bulletPattern.fireCount - 1)
             {
-                yield return new WaitForSeconds(weapon.bulletPattern.timeBetweenFiring);
+                yield return new WaitForSeconds(weapon.bulletPattern.timeBetweenFiring * slowFactor);
             }
         }
         currentlyFiring = false;
@@ -279,8 +330,83 @@ public class EnemyController : MonoBehaviour
         Quaternion rotation = Quaternion.Euler(0, 0, angle);
         GameObject spawnedBullet = Instantiate(weapon.bulletType, spawnPosition, rotation);
         Bullet_Default bulletAttributes = spawnedBullet.GetComponent<Bullet_Default>();
-        bulletAttributes.InitBullet(weapon.bulletSpeed, weapon.bulletLifeTime, weapon.bulletDamage, "enemy");
+        
+        bulletAttributes.InitBullet(weapon.bulletSpeed, weapon.bulletLifeTime, weapon.bulletDamage, "enemy",enemyStats.enemyColor);
+        if(isPaused) bulletAttributes.Pause(slowDuration - timeintoslow, slowFactor);
     }
 
+    public void isAlive(bool status)
+    {
+        gameObject.SetActive(status);
+        BoundHealthbar.SetActive(status);
+    }
+
+    public void Erase()
+    {
+        Destroy(BoundHealthbar);
+        Destroy(gameObject);
+    }
+
+    public void Reset()
+    {
+        Debug.Log($"Enemy state count: {recordedStates.Count}");
+        stateIndex = 0;
+        StopAllCoroutines();
+        RefreshStats();
+        enemyStats.Reset();
+        timeToFire = weapon.fireRate - 0.6f;
+        randomTarget = transform.position;
+        rb.linearVelocityX = 0;
+        rb.linearVelocityY = 0;
+        ResumePause();
+        isAlive(false);
+    }
+
+    private void UpdateEnemyColor()
+    {
+
+        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.color = enemyStats.enemyColor.ToRGB();
+        }
+        
+
+        //Debug.Log($"Enemy Color - H:{enemyStats.enemyColor.H:F1}, S:{enemyStats.enemyColor.S:F1}, L:{enemyStats.enemyColor.L:F1}");
+    }
+    //********************************Enemy Pause********************************
+    public void Pause(float pauseDuration, float pauseStrength)
+    {
+        if (!isPaused)
+        {
+            isPaused = true;
+            savedVelocity = rb.linearVelocity;
+            //rb.linearVelocity /= pauseStrength;
+            slowDuration=pauseDuration;
+            slowFactor = pauseStrength;
+            timeintoslow = 0.0f;
+            StartCoroutine(PauseCoroutine(pauseDuration));
+        }
+    }
+    
+    private IEnumerator PauseCoroutine(float pauseDuration)
+    {
+        yield return new WaitForSeconds(pauseDuration);
+        ResumePause();
+    }
+    
+    public void ResumePause()
+    {
+        if (isPaused)
+        {
+            rb.linearVelocity = savedVelocity;
+            isPaused = false;
+            slowFactor = 1.0f;
+        }
+    }    
+    public void TakeDamage(float damage, HSLColor bulletColor)
+    {
+        enemyStats.TakeDamage(damage);
+    }
     
 }

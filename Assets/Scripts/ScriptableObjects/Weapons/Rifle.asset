@@ -17,10 +17,12 @@ MonoBehaviour:
   weaponBulletLifeTime: 2
   weaponBulletDamage: 10
   weaponBulletSpeed: 20
+  weaponFireRate: 5
   weaponFireSpeed: 2
-  weaponBulletAmount: 5
+  weaponBulletInOneShot: 1
   weaponFiringAngle: 5
   weaponBulletSpread: 0
+  maxAmmoNums: 5
   weaponName: Rifle
   bulletType: {fileID: 8604903965720594084, guid: 2904f1b643d26f24ea817c2a40263281, type: 3}
   weaponImage: {fileID: 0}

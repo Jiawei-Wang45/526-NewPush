@@ -22,7 +22,7 @@ public class Inventory: MonoBehaviour
         else if (other.gameObject.name == "treasure_1")
         {
             weapons.Add(other.gameObject.GetComponent<PropsList>().playerWeapon);
-            pcTest.currentWeapon = weapons.Last();
+            pcTest.EquipWeapon(weapons.Last());
             Destroy(other.gameObject);
         }
     }

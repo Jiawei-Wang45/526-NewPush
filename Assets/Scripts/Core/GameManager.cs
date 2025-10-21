@@ -1,6 +1,9 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using System.Collections;
+using System.Collections.Generic;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -9,19 +12,49 @@ public class GameManager : MonoBehaviour
     public GameObject InGamePauseMenu;
     public GameObject InGameEndingMenu;
     public GameObject InGameWinMenu;
+    public PlayerControllerTest player;
+    public GhostController ghost;
+    public EnemySpawner enemySpawner;
     public bool isInLevel;
     public float levelStartTime;
+    private int resetsRemaining = 2;
+    public TMP_Text resetsRemainingText;
+    public TMP_Text infoText;
+    public TMP_Text displayScoreText;
+    private int waveCount = 1;
+    private float waveStartTime;
+    private SendToGoogle sendToGoogle;
+    // expose current wave as a read-only property to other scripts
+    public int CurrentWave => waveCount;
+
+    /*
+        void OnEnable()
+        {
+            InputSystem.actions["Reset"].performed += OnReset;
+        }
+
+        void OnDisable()
+        {
+            InputSystem.actions["Reset"].performed -= OnReset;
+
+        }
+        */
+
+    private void OnReset(InputAction.CallbackContext ctx) => ResetWithGhost();
+
 
     private void Start()
     {
         if (isInLevel)
         {
             levelStartTime = Time.time;
+            waveStartTime = Time.time; // Initialize wave start time
             InGamePauseMenu.SetActive(false);
             InGameEndingMenu.SetActive(false);
             InGameWinMenu.SetActive(false);
             PlayerControllerTest pcTest = FindFirstObjectByType<PlayerControllerTest>();
             pcTest.playerInput.Default.Escape.performed += OnEscapeTriggered;
+            sendToGoogle = FindFirstObjectByType<SendToGoogle>();
         }
         Time.timeScale = 1.0f;
     }
@@ -33,17 +66,81 @@ public class GameManager : MonoBehaviour
     //    }
     //}
 
-    public void PlayerDead()
+    public void PlayerDestroyed()
     {
+        if (resetsRemaining == 0)
+        {
+            GameOver();
+        }
+        else
+        {
+            resetsRemaining -= 1;
+            resetsRemainingText.text = $"<size=20><color=#FF0000>Resets Remaining: </color>{resetsRemaining}</size>";
+            Reset();
+        }
+    }
+
+    public void WaveClear()
+    {
+        // Calculate wave duration
+        float waveDuration = Time.time - waveStartTime;
+
+        // Send wave data
+        if (sendToGoogle != null)
+        {
+            sendToGoogle.SendWaveData(waveDuration, waveCount);
+        }
+
+        //clear bullets
+        Bullet_Default[] bullets = FindObjectsByType<Bullet_Default>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        foreach (Bullet_Default b in bullets)
+        {
+            Destroy(b.gameObject);
+        }
+
+        //reset ghosts
+        GhostController[] ghosts = FindObjectsByType<GhostController>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        foreach (GhostController g in ghosts)
+        {
+            Destroy(g.gameObject);
+        }
+    
+
+        resetsRemaining = 2;
+        resetsRemainingText.text = $"<size=20><color=#FF0000>Resets Remaining: </color>{resetsRemaining}</size>";
+        infoText.text = "<size=20><color=#FF0000>Wave Clear!</color></size>\nLives and ghosts restored";
+        player.UponWaveClear();
+        waveCount++;
+        waveStartTime = Time.time; // Update wave start time for next wave
+        StartCoroutine(WaveStartMessage());
+    }
+
+     IEnumerator WaveStartMessage()
+    {
+        yield return new WaitForSeconds(1.5f);
+        infoText.text = $"<size=30><color=#FF0000>Wave {waveCount}</color></size>";
+    }
+    
+    public void GameOver()
+    {
+        //player.gameObject.SetActive(false);
         isPlayerAlive = false;
         Time.timeScale = 0;
         InGameEndingMenu.SetActive(true);
+        displayScoreText.text = $"<size=20><color=#FF0000>Waves Cleared: </color>{waveCount - 1}</size>";
 
+        // Send game summary
+        if (sendToGoogle != null)
+        {
+            float totalSurvivalTime = Time.time - levelStartTime;
+            int finalWaveCount = waveCount - 1;
+            sendToGoogle.SendGameSummary(totalSurvivalTime, finalWaveCount);
+        }
     }
     // Main Menu button's functions
     public void NewGame()
     {
-        SceneManager.LoadScene("Level_0");
+        SceneManager.LoadScene("AlphaProgressCheck");
         //InitializePauseStat();
     }
     public void Exit()
@@ -112,5 +209,56 @@ public class GameManager : MonoBehaviour
         {
             gaManager.SendLevelCompletedEvent(levelName, completionTime);
         }
+
+        // Send game summary
+        if (sendToGoogle != null)
+        {
+            float totalSurvivalTime = Time.time - levelStartTime;
+            int finalWaveCount = waveCount - 1; // Assuming waveCount is the next wave, so completed waves are waveCount - 1
+            sendToGoogle.SendGameSummary(totalSurvivalTime, finalWaveCount);
+        }
+    }
+
+    public void ResetWithGhost()
+    {
+        List<ObjectState> playerStates = new List<ObjectState>(player.sendStates());
+        Reset();
+        GhostController newGhost = Instantiate(ghost);
+        newGhost.InitializeGhost(player.initialPosition, playerStates);
+
+    }
+
+    public void Reset()
+    {
+
+        player.Reset();
+
+        GhostController[] ghosts = FindObjectsByType<GhostController>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        foreach (GhostController g in ghosts)
+        {
+                g.Reset();
+        }
+    
+        EnemyController[] enemyObjects = FindObjectsByType<EnemyController>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        foreach (EnemyController e in enemyObjects)
+        {
+            e.Reset();
+        }
+        
+        // Destroy all enemy spawn indicators to prevent spawning during reset
+        EnemySpawnIndicator[] indicators = FindObjectsByType<EnemySpawnIndicator>(FindObjectsInactive.Include, FindObjectsSortMode.None); 
+        foreach (EnemySpawnIndicator i in indicators)
+        {
+                Destroy(i.gameObject);
+        }
+
+        Bullet_Default[] bullets = FindObjectsByType<Bullet_Default>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        foreach (Bullet_Default b in bullets)
+        {
+            Destroy(b.gameObject);
+        }
+
+        enemySpawner.SpawnWave();
+
     }
 }
