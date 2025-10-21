@@ -1,5 +1,8 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -73,15 +76,38 @@ public class SendToGoogle : MonoBehaviour
 
     private IEnumerator PostAbility(string sessionID, string time, string wave, string position)
     {
-        WWWForm form = new WWWForm();
-
-        form.AddField(FIELD_SESSION, sessionID);
-        form.AddField(FIELD_TIME, time);
-        form.AddField(FIELD_WAVE, wave);
-        form.AddField(FIELD_POSITION, position);
+        // Build a simple dictionary of fields so we can either POST via XHR (UnityWebRequest)
+        // or submit a native HTML form via JS in WebGL builds (to avoid CORS).
+        var fields = new Dictionary<string, string>() {
+            { FIELD_SESSION, sessionID },
+            { FIELD_TIME, time },
+            { FIELD_WAVE, wave },
+            { FIELD_POSITION, position }
+        };
 
         // Log form contents
         Debug.Log($"[SendToGoogle] Posting to {URL} with fields: {FIELD_SESSION}={sessionID}, {FIELD_TIME}={time}, {FIELD_WAVE}={wave}, {FIELD_POSITION}={position}");
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+        // In WebGL builds, use a small JavaScript bridge to create and submit a normal HTML form
+        // (this avoids XHR/fetch which triggers CORS and is blocked by Google Forms).
+        try
+        {
+            var keys = new StringArray { items = fields.Keys.ToArray() };
+            var vals = new StringArray { items = fields.Values.ToArray() };
+            string keysJson = JsonUtility.ToJson(keys);
+            string valsJson = JsonUtility.ToJson(vals);
+            SubmitFormJS(URL, keysJson, valsJson);
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[SendToGoogle] WebGL JS submit failed: {e}");
+        }
+        yield break;
+#else
+        WWWForm form = new WWWForm();
+        foreach (var kv in fields)
+            form.AddField(kv.Key, kv.Value);
 
         using (UnityWebRequest www = UnityWebRequest.Post(URL, form))
         {
@@ -105,22 +131,38 @@ public class SendToGoogle : MonoBehaviour
                 Debug.Log($"[SendToGoogle] Form upload complete! statusCode: {www.responseCode}");
             }
         }
+#endif
     }
 
     private IEnumerator PostWave(string sessionID, string duration, string wave)
     {
-        WWWForm form = new WWWForm();
+        var fields = new Dictionary<string, string>() {
+            { FIELD_SESSION, sessionID },
+            { FIELD_WAVE_DURATION, duration },
+            { FIELD_WAVE_NUMBER, wave }
+        };
 
-        form.AddField(FIELD_SESSION, sessionID);
-        form.AddField(FIELD_WAVE_DURATION, duration);
-        form.AddField(FIELD_WAVE_NUMBER, wave);
-
-        // Log form contents
         Debug.Log($"[SendToGoogle] Posting wave to {WaveURL} with fields: {FIELD_SESSION}={sessionID}, {FIELD_WAVE_DURATION}={duration}, {FIELD_WAVE_NUMBER}={wave}");
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+        try
+        {
+            var keys = new StringArray { items = fields.Keys.ToArray() };
+            var vals = new StringArray { items = fields.Values.ToArray() };
+            SubmitFormJS(WaveURL, JsonUtility.ToJson(keys), JsonUtility.ToJson(vals));
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[SendToGoogle] WebGL Wave JS submit failed: {e}");
+        }
+        yield break;
+#else
+        WWWForm form = new WWWForm();
+        foreach (var kv in fields)
+            form.AddField(kv.Key, kv.Value);
 
         using (UnityWebRequest www = UnityWebRequest.Post(WaveURL, form))
         {
-            // set timeout (Unity 2020.1+ supports timeout property)
             try { www.timeout = requestTimeoutSeconds; } catch { }
             yield return www.SendWebRequest();
 
@@ -131,7 +173,6 @@ public class SendToGoogle : MonoBehaviour
 #endif
             {
                 Debug.LogError($"[SendToGoogle] Wave post failed: {www.error}  statusCode: {www.responseCode}");
-                // also log response text if any (may be empty)
                 string resp = www.downloadHandler != null ? www.downloadHandler.text : "<no-downloadHandler>";
                 Debug.LogWarning($"[SendToGoogle] response body: {resp}");
             }
@@ -140,22 +181,38 @@ public class SendToGoogle : MonoBehaviour
                 Debug.Log($"[SendToGoogle] Wave form upload complete! statusCode: {www.responseCode}");
             }
         }
+#endif
     }
 
     private IEnumerator PostGameSummary(string sessionID, string totalTime, string finalWave)
     {
-        WWWForm form = new WWWForm();
+        var fields = new Dictionary<string, string>() {
+            { FIELD_SESSION, sessionID },
+            { FIELD_TOTAL_SURVIVAL_TIME, totalTime },
+            { FIELD_FINAL_WAVE_COUNT, finalWave }
+        };
 
-        form.AddField(FIELD_SESSION, sessionID);
-        form.AddField(FIELD_TOTAL_SURVIVAL_TIME, totalTime);
-        form.AddField(FIELD_FINAL_WAVE_COUNT, finalWave);
-
-        // Log form contents
         Debug.Log($"[SendToGoogle] Posting game summary to {GameSummaryURL} with fields: {FIELD_SESSION}={sessionID}, {FIELD_TOTAL_SURVIVAL_TIME}={totalTime}, {FIELD_FINAL_WAVE_COUNT}={finalWave}");
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+        try
+        {
+            var keys = new StringArray { items = fields.Keys.ToArray() };
+            var vals = new StringArray { items = fields.Values.ToArray() };
+            SubmitFormJS(GameSummaryURL, JsonUtility.ToJson(keys), JsonUtility.ToJson(vals));
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[SendToGoogle] WebGL GameSummary JS submit failed: {e}");
+        }
+        yield break;
+#else
+        WWWForm form = new WWWForm();
+        foreach (var kv in fields)
+            form.AddField(kv.Key, kv.Value);
 
         using (UnityWebRequest www = UnityWebRequest.Post(GameSummaryURL, form))
         {
-            // set timeout (Unity 2020.1+ supports timeout property)
             try { www.timeout = requestTimeoutSeconds; } catch { }
             yield return www.SendWebRequest();
 
@@ -166,7 +223,6 @@ public class SendToGoogle : MonoBehaviour
 #endif
             {
                 Debug.LogError($"[SendToGoogle] Game summary post failed: {www.error}  statusCode: {www.responseCode}");
-                // also log response text if any (may be empty)
                 string resp = www.downloadHandler != null ? www.downloadHandler.text : "<no-downloadHandler>";
                 Debug.LogWarning($"[SendToGoogle] response body: {resp}");
             }
@@ -175,5 +231,14 @@ public class SendToGoogle : MonoBehaviour
                 Debug.Log($"[SendToGoogle] Game summary form upload complete! statusCode: {www.responseCode}");
             }
         }
+#endif
     }
+
+    [Serializable]
+    private class StringArray { public string[] items; }
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+    [DllImport("__Internal")]
+    private static extern void SubmitFormJS(string urlJson, string keysJson, string valsJson);
+#endif
 }
