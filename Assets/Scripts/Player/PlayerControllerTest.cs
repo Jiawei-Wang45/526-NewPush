@@ -5,6 +5,7 @@ using System.Collections;
 public class PlayerControllerTest : MonoBehaviour, IPausable
 {
     private Rigidbody2D rb;
+    private Collider2D cl;
     private PlayerStats stats;
     public PlayerInput playerInput;
     public ShieldGhost ghost;
@@ -36,9 +37,9 @@ public class PlayerControllerTest : MonoBehaviour, IPausable
     public float dashMultiplier = 2.0f; // how many times faster during dash
     public float dashDuration = 3.0f; // seconds the dash lasts
     public float dashCooldown = 3.0f; // seconds before dash can be used again
+    private float cachedSpeed;
     public GameObject dashEffectPrefab; // optional visual effect instantiated during dash
-    private bool isDashing = false;
-    private bool dashOnCooldown = false;
+    private bool CanDash = true;
 
     private Vector2 savedVelocity;
     private bool savedIsFiring;
@@ -48,7 +49,7 @@ public class PlayerControllerTest : MonoBehaviour, IPausable
     private Quaternion savedRotation;
     public void RefreshStats()
     {
-        speed = stats.movementSpeed;
+        cachedSpeed = speed = stats.movementSpeed;
     }
 
     private void Awake()
@@ -97,6 +98,7 @@ public class PlayerControllerTest : MonoBehaviour, IPausable
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        cl = GetComponent<Collider2D>();
         stats = GetComponent<PlayerStats>();
         initialPosition = transform.position;
         RefreshStats();
@@ -309,11 +311,11 @@ public class PlayerControllerTest : MonoBehaviour, IPausable
     public void Reset()
     {
         stats.Reset();
-        stats.ResetH();
         StopAllCoroutines();
         // clean up works for those corroutines that haven't been finished
         ResumeRecording(isRecording);
         ResumePause();
+        ResumeGhostDash();
 
         transform.position = initialPosition;
         rb.linearVelocityX = 0;
@@ -479,35 +481,41 @@ public class PlayerControllerTest : MonoBehaviour, IPausable
     public void GhostDash()
     {
         // Prevent starting another dash while on cooldown or already dashing
-        if (dashOnCooldown || isDashing) return;
+        if (!CanDash) return;
         StartCoroutine(GhostDashCoroutine());
     }
 
     private IEnumerator GhostDashCoroutine()
     {
-        dashOnCooldown = true;
-        isDashing = true;
+        CanDash = false;
+        // save it as a number variable
 
-        // save current speed so we can restore it later
-        float savedSpeed = speed;
 
         // apply dash speed
-        speed = stats != null ? stats.movementSpeed * dashMultiplier : speed * dashMultiplier;
-
+        speed = cachedSpeed * dashMultiplier;
         // make player invincible during dash
+        gameObject.layer = LayerMask.NameToLayer("Invincible");
         stats.isInvincible = true;
         PauseAllPausable(dashDuration, 5.0f);
-
         yield return new WaitForSeconds(dashDuration);
 
-        // end dash
-        isDashing = false;
         stats.isInvincible = false;
+        gameObject.layer = LayerMask.NameToLayer("Player");
         // restore speed (use current stats.movementSpeed in case it changed while dashing)
-        speed = stats != null ? stats.movementSpeed : savedSpeed;
+        speed = cachedSpeed;
 
         // start cooldown wait
         yield return new WaitForSeconds(dashCooldown);
-        dashOnCooldown = false;
+        ResumeGhostDash();
+    }
+    private void ResumeGhostDash()
+    {
+        if (!CanDash)
+        {
+            stats.isInvincible = false;
+            speed = cachedSpeed;
+            CanDash = true;
+            gameObject.layer = LayerMask.NameToLayer("Player");
+        }
     }
 }

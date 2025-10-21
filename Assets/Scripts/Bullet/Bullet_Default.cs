@@ -86,23 +86,23 @@ public class Bullet_Default: MonoBehaviour, IPausable
         {
             PlayerStats playerStats = collision.gameObject.GetComponent<PlayerStats>();
 
-            if (playerStats.isInvincible)
-            {
-                Collider2D myCol = GetComponent<Collider2D>();
-                Collider2D playerCol = collision.collider as Collider2D;
-                if (myCol != null && playerCol != null)
-                {
-                    Physics2D.IgnoreCollision(myCol, playerCol);
-                }
+            //if (playerStats.isInvincible)
+            //{
+            //    Collider2D myCol = GetComponent<Collider2D>();
+            //    Collider2D playerCol = collision.collider as Collider2D;
+            //    if (myCol != null && playerCol != null)
+            //    {
+            //        Physics2D.IgnoreCollision(myCol, playerCol);
+            //    }
 
-                if (rb != null)
-                {
-                    rb.linearVelocity = lastVelocity;
-                }
+            //    if (rb != null)
+            //    {
+            //        rb.linearVelocity = lastVelocity;
+            //    }
                 
-                // don't apply damage or destroy the bullet; let it pass through
-                return;
-            }
+            //    // don't apply damage or destroy the bullet; let it pass through
+            //    return;
+            //}
 
             playerStats.TakeDamage(bulletDamage);
 

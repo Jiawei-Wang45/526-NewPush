@@ -3059,6 +3059,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   URL: https://docs.google.com/forms/u/2/d/e/1FAIpQLSdMv2OjR-wEv6eOubeQ4n7LzH69-5BVpZs1KIMNYE3fg0vl1w/formResponse
   currentWave: 0
+  requestTimeoutSeconds: 10
 --- !u!1 &865761080
 GameObject:
   m_ObjectHideFlags: 0

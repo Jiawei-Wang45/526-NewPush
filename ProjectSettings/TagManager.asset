@@ -8,6 +8,7 @@ TagManager:
   - Bullet
   - Pausable
   - Shield
+  - Pausible
   layers:
   - Default
   - TransparentFX
@@ -20,7 +21,7 @@ TagManager:
   - PlayerBullet
   - EnemyBullet
   - Shield
-  - 
+  - Invincible
   - 
   - 
   - 

@@ -71,7 +71,8 @@ public class GhostController : MonoBehaviour
         }
 
         sr.color = new Color(initialColor.r, initialColor.g, initialColor.b, 0f);
-        gameObject.SetActive(false);
+        // just let it die
+        Destroy(gameObject);
     }
 
     private void Fire()
@@ -97,13 +98,14 @@ public class GhostController : MonoBehaviour
     }
     public void Reset()
     {
-        rb.linearVelocityX = 0;
-        rb.linearVelocityY = 0;
-        StopAllCoroutines();
-        gameObject.SetActive(true);
-        stateIndex = 0;
-        transform.position = initialPosition;
-        sr.color = initialColor;
+        Destroy(gameObject);
+        //rb.linearVelocityX = 0;
+        //rb.linearVelocityY = 0;
+        //StopAllCoroutines();
+        //gameObject.SetActive(true);
+        //stateIndex = 0;
+        //transform.position = initialPosition;
+        //sr.color = initialColor;
     }
 
 
