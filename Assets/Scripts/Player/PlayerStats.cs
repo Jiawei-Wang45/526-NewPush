@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class PlayerStats : MonoBehaviour
 {
     public float movementSpeed = 10f;
-    public float maxHealth = 100.0f;
+    public float maxHealth = 5.0f;
     public float health;
     public bool isGhost = false;
 
@@ -44,14 +44,16 @@ public class PlayerStats : MonoBehaviour
         
         
     }
-    public void TakeDamage(float damage)
+    public void TakeDamage(float damage, HSLColor bulletColor)
     {
         if (isInvincible) return;
 
-        health -= damage;
+        health = Mathf.Clamp(health - damage,0, maxHealth);
 
         playerColor.L = 50f + (1-(health / maxHealth)) * 40f;
-
+        playerColor.H = Mathf.Lerp(playerColor.H, bulletColor.H, 0.01f);
+        // start to recover the Hvalue
+        StartHRecovery();
         if (health <= 0)
         {
             if (!isGhost)
@@ -64,14 +66,6 @@ public class PlayerStats : MonoBehaviour
             }
 
         }
-    }
-
-    public void ChangeWeaponType(float newH, float influence)
-    {
-        playerColor.H = Mathf.Lerp(playerColor.H, newH, influence);
-        
-        // 开始H值恢复计时
-        StartHRecovery();
     }
 
     public void StartReload()
@@ -135,8 +129,7 @@ public class PlayerStats : MonoBehaviour
 
     public bool CanFire()
     {
-        return currentAmmo > 0 && !isReloading && 
-               Mathf.Abs(playerColor.H - originalH) < weaponTypeThreshold;
+        return currentAmmo > 0 && !isReloading;
     }
 
 

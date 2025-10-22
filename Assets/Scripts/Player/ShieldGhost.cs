@@ -15,6 +15,6 @@ public class ShieldGhost : GhostController
     {
         base.InitializeGhost(position, playerStates);
         Instantiate(shield, position, new Quaternion(), transform);
-        shield.gameObject.layer = LayerMask.NameToLayer("Shield");
+        //shield.gameObject.layer = LayerMask.NameToLayer("Shield");
     }
 }

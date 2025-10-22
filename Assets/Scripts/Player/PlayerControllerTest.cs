@@ -244,13 +244,11 @@ public class PlayerControllerTest : MonoBehaviour, IPausable, IDamagable
         Debug.Log("Player equipping weapon");
         currentWeapon = weapon;
         stats.OnWeaponChanged(weapon);
-
         //recordEquipAction = true;
     }
     public void TakeDamage(float damage, HSLColor bulletColor)
     {
-        stats.TakeDamage(damage);
-        stats.ChangeWeaponType(bulletColor.H, 0.01f);
+        stats.TakeDamage(damage, bulletColor);
     }
     private void OnMoveTriggered(InputAction.CallbackContext context)
     {

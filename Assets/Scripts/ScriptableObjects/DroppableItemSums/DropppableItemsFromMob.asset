@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f49d034f847844a40bfdd3e511581df2, type: 3}
+  m_Name: DropppableItemsFromMob
+  m_EditorClassIdentifier: 
+  ConsumableList:
+  - {fileID: 3316196583160692378, guid: ac4f09f0e0559394d9fb016337b05c31, type: 3}
+  weaponList:
+  - {fileID: 11400000, guid: 7481820eab20f8646afcd29e563dbc9f, type: 2}
+  - {fileID: 11400000, guid: 46b8e77856f68c746af6d34c954edb55, type: 2}
+  - {fileID: 11400000, guid: 04da8ad25b5aefd4ea7516018b5870b9, type: 2}

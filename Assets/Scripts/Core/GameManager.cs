@@ -141,13 +141,14 @@ public class GameManager : MonoBehaviour
     // Main Menu button's functions
     public void NewGame_ShieldGhost()
     {
-        player.abilityEnum = 3;
+        //PlayerPrefs.SetInt()
+        //abilityEnum = 3;
         SceneManager.LoadScene("AlphaProgressCheck");
         //InitializePauseStat();
     }
     public void NewGame_GhostDash()
     {
-        player.abilityEnum = 4;
+        //abilityEnum = 4;
         SceneManager.LoadScene("AlphaProgressCheck");
     }
     public void Exit()

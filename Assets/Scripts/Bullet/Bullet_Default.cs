@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using UnityEditor.UIElements;
 
 public class Bullet_Default: MonoBehaviour, IPausable
 {
@@ -74,7 +75,9 @@ public class Bullet_Default: MonoBehaviour, IPausable
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        IDamagable damagable = collision.gameObject.GetComponent<IDamagable>();
+        //Debug.Log("Object is " + collision.gameObject.name+ "Collider is " + collision.collider.name+ "Bullet layer is " + gameObject.layer+"collision layer is "+ collision.gameObject.layer);
+        //collision represents the parent gameobject, while the collider stands for the actual collision object the bullet hits, take care!
+        IDamagable damagable = collision.collider.gameObject.GetComponent<IDamagable>();
         if (damagable != null)
         {
             damagable.TakeDamage(bulletDamage, bulletColor);
