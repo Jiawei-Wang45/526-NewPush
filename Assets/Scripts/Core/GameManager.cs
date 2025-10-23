@@ -41,7 +41,7 @@ public class GameManager : MonoBehaviour
         }
         */
 
-    private void OnReset(InputAction.CallbackContext ctx) => ResetWithGhost();
+    //private void OnReset(InputAction.CallbackContext ctx) => ResetWithGhost();
 
 
     private void Start()
@@ -227,14 +227,14 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void ResetWithGhost()
-    {
-        List<ObjectState> playerStates = new List<ObjectState>(player.sendStates());
-        Reset();
-        GhostController newGhost = Instantiate(ghost);
-        newGhost.InitializeGhost(player.initialPosition, playerStates);
+    //public void ResetWithGhost()
+    //{
+    //    List<ObjectState> playerStates = new List<ObjectState>(player.sendStates());
+    //    Reset();
+    //    GhostController newGhost = Instantiate(ghost);
+    //    newGhost.InitializeGhost(player.initialPosition, playerStates);
 
-    }
+    //}
 
     public void Reset()
     {

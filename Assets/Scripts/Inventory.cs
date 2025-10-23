@@ -14,17 +14,6 @@ public class Inventory: MonoBehaviour
     }
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.name == "treasure_2")
-        {
-            hasKey = true;
-            Destroy(other.gameObject);
-        }
-        else if (other.gameObject.name == "treasure_1")
-        {
-            weapons.Add(other.gameObject.GetComponent<PropsList>().playerWeapon);
-            pcTest.EquipWeapon(weapons.Last());
-            Destroy(other.gameObject);
-        }
     }
     
     public bool HasKey()

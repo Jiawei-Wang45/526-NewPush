@@ -212,6 +212,7 @@ MonoBehaviour:
     H: 0
     S: 100
     L: 50
+  droppableItems: {fileID: 11400000, guid: a6bab4fc5fbd71c49a5f65af40143fd8, type: 2}
 --- !u!114 &3966506979569408143
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -235,7 +236,6 @@ MonoBehaviour:
   RotationSpeed: 15
   enemySpeed: 0
   comfortableDistance: 5
-  isAttacking: 0
 --- !u!1 &9195187841401722624
 GameObject:
   m_ObjectHideFlags: 0

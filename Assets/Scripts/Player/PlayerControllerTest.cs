@@ -20,17 +20,17 @@ public class PlayerControllerTest : MonoBehaviour, IPausable, IDamagable
     [Header("Analytics")]
     [SerializeField] private SendToGoogle sendToGoogle;
 
-    private bool isFiring = false;
-    private bool hasFired = false;
+    //private bool isFiring = false;
+    //private bool hasFired = false;
 
-    private bool recordFireAction = false;
+    //private bool recordFireAction = false;
     //private bool recordEquipAction = false;
 
-    private List<ObjectState> recordedStates = new List<ObjectState>();
+    //private List<ObjectState> recordedStates = new List<ObjectState>();
 
-    private float fireTimer;
-    public Transform firePoint;
-    public PlayerWeapon currentWeapon;
+    //private float fireTimer;
+    //public Transform firePoint;
+    //public PlayerWeapon currentWeapon;
 
     //healthbar
     public PlayerHealthbar healthbar;
@@ -44,15 +44,16 @@ public class PlayerControllerTest : MonoBehaviour, IPausable, IDamagable
     public GameObject dashEffectPrefab; // optional visual effect instantiated during dash
     private bool CanDash = true;
 
-    private Vector2 savedVelocity;
-    private bool savedIsFiring;
+    //private Vector2 savedVelocity;
+    //private bool savedIsFiring;
     private bool isPaused = false;
     private bool isRecording = false;
     private Vector2 savedPosition;
-    private Quaternion savedRotation;
+    //private Quaternion savedRotation;
 
-    public Image ability_1;
-    public Image ability_2;
+
+    public delegate void RestCalledDelegate();
+    public event RestCalledDelegate OnResetCalled;
 
 
     //pause variables
@@ -66,9 +67,7 @@ public class PlayerControllerTest : MonoBehaviour, IPausable, IDamagable
 
     private void Awake()
     {
-        // initialize input
         playerInput = new PlayerInput();
-
         // ensure sendToGoogle is assigned
         if (sendToGoogle == null)
         {
@@ -119,11 +118,11 @@ public class PlayerControllerTest : MonoBehaviour, IPausable, IDamagable
         playerInput.Default.Move.performed += OnMoveTriggered;
         playerInput.Default.Move.canceled += OnMoveTriggered;
 
-        //fire input binding
-        playerInput.Default.Fire.performed += OnFireTriggered;
-        playerInput.Default.Fire.canceled += OnFireTriggered;
+        ////fire input binding
+        //playerInput.Default.Fire.performed += OnFireTriggered;
+        //playerInput.Default.Fire.canceled += OnFireTriggered;
 
-        playerInput.Default.Reload.performed += OnReloadTriggered;
+        //playerInput.Default.Reload.performed += OnReloadTriggered;
 
         playerInput.Default.PauseBullets.performed += OnAbilityTriggered;
 
@@ -144,126 +143,126 @@ public class PlayerControllerTest : MonoBehaviour, IPausable, IDamagable
         }
         UpdatePlayerColor();
 
-        if (currentWeapon == null)
-            return;
-        if (currentWeapon.weaponType == WeaponType.Passive)
-        {
-            Fire();
-            recordFireAction = true;
-        }
-        else
-        {
-            if (currentWeapon.triggerType == TriggerType.Automatic)
-            {
-                //if (Input.GetMouseButtonDown(0))
-                //{
-                //    isFiring = true;
-                //}
-                //if (Input.GetMouseButtonUp(0))
-                //{
-                //    isFiring = false;
-                //}
-                if (isFiring && fireTimer >= 1 / currentWeapon.weaponFireRate)
-                {
-                    Fire();
-                    recordFireAction = true;
-                    fireTimer = 0;
-                }
-                else
-                {
-                    fireTimer += Time.deltaTime;
-                }
-            }
-            else if (currentWeapon.triggerType == TriggerType.SemiAutomatic)
-            {
-                //if (Input.GetMouseButtonDown(0))
-                //{
-                //    isFiring = true;
-                //}
-                //if (Input.GetMouseButtonUp(0))
-                //{
-                //    isFiring = false;
-                //    hasFired = false;
-                //} 
-                if (isFiring && !hasFired && fireTimer >= 1 / currentWeapon.weaponFireRate)
-                {
-                    Fire();
-                    recordFireAction = true;
-                    fireTimer = 0;
-                    hasFired = true;
-                }
-                else
-                {
-                    fireTimer += Time.deltaTime;
-                }
-            }
-        }
-        Debug.DrawLine(firePoint.position, firePoint.position + firePoint.transform.right, Color.red, 0);
+        //if (currentWeapon == null)
+        //    return;
+        //if (currentWeapon.weaponType == WeaponType.Passive)
+        //{
+        //    Fire();
+        //    recordFireAction = true;
+        //}
+        //else
+        //{
+        //    if (currentWeapon.triggerType == TriggerType.Automatic)
+        //    {
+        //        //if (Input.GetMouseButtonDown(0))
+        //        //{
+        //        //    isFiring = true;
+        //        //}
+        //        //if (Input.GetMouseButtonUp(0))
+        //        //{
+        //        //    isFiring = false;
+        //        //}
+        //        if (isFiring && fireTimer >= 1 / currentWeapon.weaponFireRate)
+        //        {
+        //            Fire();
+        //            recordFireAction = true;
+        //            fireTimer = 0;
+        //        }
+        //        else
+        //        {
+        //            fireTimer += Time.deltaTime;
+        //        }
+        //    }
+        //    else if (currentWeapon.triggerType == TriggerType.SemiAutomatic)
+        //    {
+        //        //if (Input.GetMouseButtonDown(0))
+        //        //{
+        //        //    isFiring = true;
+        //        //}
+        //        //if (Input.GetMouseButtonUp(0))
+        //        //{
+        //        //    isFiring = false;
+        //        //    hasFired = false;
+        //        //} 
+        //        if (isFiring && !hasFired && fireTimer >= 1 / currentWeapon.weaponFireRate)
+        //        {
+        //            Fire();
+        //            recordFireAction = true;
+        //            fireTimer = 0;
+        //            hasFired = true;
+        //        }
+        //        else
+        //        {
+        //            fireTimer += Time.deltaTime;
+        //        }
+        //    }
+        //}
+        //Debug.DrawLine(firePoint.position, firePoint.position + firePoint.transform.right, Color.red, 0);
     }
 
     private void FixedUpdate()
     {
         //if (isPaused) return;
         rb.linearVelocity = movement * speed;
-        if (isRecording)
-        {
-            //if (recordEquipAction)
-            //{
-            //    recordedStates.Add(new ObjectState(rb.linearVelocity, rb.position, firePoint.rotation, recordFireAction, currentWeapon));
-            //    recordEquipAction = false;
+        //if (isRecording)
+        //{
+        //    //if (recordEquipAction)
+        //    //{
+        //    //    recordedStates.Add(new ObjectState(rb.linearVelocity, rb.position, firePoint.rotation, recordFireAction, currentWeapon));
+        //    //    recordEquipAction = false;
 
-            //}
-            //else
-            //{
-            //    recordedStates.Add(new ObjectState(rb.linearVelocity, rb.position, firePoint.rotation, recordFireAction));
-            //}
-            recordedStates.Add(new ObjectState(rb.linearVelocity, rb.position, firePoint.rotation, recordFireAction,currentWeapon));
-            recordFireAction = false;
-            //if (recordFireAction)
-            //{
-            //    recordFireAction = false;
-            //}
-        }
+        //    //}
+        //    //else
+        //    //{
+        //    //    recordedStates.Add(new ObjectState(rb.linearVelocity, rb.position, firePoint.rotation, recordFireAction));
+        //    //}
+        //    recordedStates.Add(new ObjectState(rb.linearVelocity, rb.position, firePoint.rotation, recordFireAction,currentWeapon));
+        //    recordFireAction = false;
+        //    //if (recordFireAction)
+        //    //{
+        //    //    recordFireAction = false;
+        //    //}
+        //}
     }
 
-    private void Fire()
-    {
+    //private void Fire()
+    //{
 
-        if (!stats.CanFire())
-        {
-            //assume the reason why we can't fire is depleting the bullets
-            stats.StartReload();
-            return;
-        }
+    //    if (!stats.CanFire())
+    //    {
+    //        //assume the reason why we can't fire is depleting the bullets
+    //        stats.StartReload();
+    //        return;
+    //    }
 
-        stats.ConsumeAmmo(1);
+    //    stats.ConsumeAmmo(1);
 
-        float bulletTiltAngle = -(currentWeapon.weaponBulletInOneShot - 1) * currentWeapon.weaponFiringAngle / 2;
-        for (int i = 0; i < currentWeapon.weaponBulletInOneShot; i++)
-        {
+    //    float bulletTiltAngle = -(currentWeapon.weaponBulletInOneShot - 1) * currentWeapon.weaponFiringAngle / 2;
+    //    for (int i = 0; i < currentWeapon.weaponBulletInOneShot; i++)
+    //    {
 
 
-            GameObject spawnedBullet = Instantiate(currentWeapon.bulletType, firePoint.position, firePoint.rotation*Quaternion.Euler(0,0, bulletTiltAngle + Random.Range(-currentWeapon.weaponBulletSpread, currentWeapon.weaponBulletSpread)));
-            Bullet_Default bulletAttributes = spawnedBullet.GetComponent<Bullet_Default>();
+    //        GameObject spawnedBullet = Instantiate(currentWeapon.bulletType, firePoint.position, firePoint.rotation*Quaternion.Euler(0,0, bulletTiltAngle + Random.Range(-currentWeapon.weaponBulletSpread, currentWeapon.weaponBulletSpread)));
+    //        Bullet_Default bulletAttributes = spawnedBullet.GetComponent<Bullet_Default>();
 
-            //float timeScaleFactor = isPaused ? 0.5f : 1.0f;
-            bulletAttributes.InitBullet(currentWeapon.weaponBulletSpeed, currentWeapon.weaponBulletLifeTime, currentWeapon.weaponBulletDamage, "player", stats.playerColor);
-            if (isPaused)
-            {
-                bulletAttributes.Pause(slowDuration - slowTimeElapsing, slowFactor);
-            }
-            //spawnedBullet.transform.Rotate(0, 0, bulletTiltAngle + Random.Range(-currentWeapon.weaponBulletSpread, currentWeapon.weaponBulletSpread));
-            bulletTiltAngle += currentWeapon.weaponFiringAngle;
-        }
+    //        //float timeScaleFactor = isPaused ? 0.5f : 1.0f;
+    //        bulletAttributes.InitBullet(currentWeapon.weaponBulletSpeed, currentWeapon.weaponBulletLifeTime, currentWeapon.weaponBulletDamage, "player", stats.playerColor);
+    //        if (isPaused)
+    //        {
+    //            bulletAttributes.Pause(slowDuration - slowTimeElapsing, slowFactor);
+    //        }
+    //        //spawnedBullet.transform.Rotate(0, 0, bulletTiltAngle + Random.Range(-currentWeapon.weaponBulletSpread, currentWeapon.weaponBulletSpread));
+    //        bulletTiltAngle += currentWeapon.weaponFiringAngle;
+    //    }
 
-    }
-    public void EquipWeapon(PlayerWeapon weapon)
-    {
-        Debug.Log("Player equipping weapon");
-        currentWeapon = weapon;
-        stats.OnWeaponChanged(weapon);
-        //recordEquipAction = true;
-    }
+    //}
+    //public void EquipWeapon(PlayerWeapon weapon)
+    //{
+    //    Debug.Log("Player equipping weapon");
+    //    currentWeapon = weapon;
+    //    stats.OnWeaponChanged(weapon);
+    //    //recordEquipAction = true;
+    //}
     public void TakeDamage(float damage, HSLColor bulletColor)
     {
         stats.TakeDamage(damage, bulletColor);
@@ -273,44 +272,44 @@ public class PlayerControllerTest : MonoBehaviour, IPausable, IDamagable
         movement = context.ReadValue<Vector2>();
     }
 
-    private void OnFireTriggered(InputAction.CallbackContext context)
-    {
-        if (currentWeapon == null) return;
-        switch (context.phase)
-        {
-            case InputActionPhase.Performed:
-                isFiring = true;
-                break;
-            case InputActionPhase.Canceled:
-                isFiring = false;
-                if (currentWeapon.triggerType == TriggerType.SemiAutomatic)
-                    hasFired = false;
-                break;
-        }
-    }
+    //private void OnFireTriggered(InputAction.CallbackContext context)
+    //{
+    //    if (currentWeapon == null) return;
+    //    switch (context.phase)
+    //    {
+    //        case InputActionPhase.Performed:
+    //            isFiring = true;
+    //            break;
+    //        case InputActionPhase.Canceled:
+    //            isFiring = false;
+    //            if (currentWeapon.triggerType == TriggerType.SemiAutomatic)
+    //                hasFired = false;
+    //            break;
+    //    }
+    //}
 
-    private void OnReloadTriggered(InputAction.CallbackContext context)
-    {
+    //private void OnReloadTriggered(InputAction.CallbackContext context)
+    //{
 
-        if (context.performed)
-        {
-            stats.StartReload();
-        }
-    }
+    //    if (context.performed)
+    //    {
+    //        stats.StartReload();
+    //    }
+    //}
 
 
 
-    public List<ObjectState> sendStates()
-    {
-        if (currentWeapon)
-        {
-            ObjectState stateToChange = recordedStates[0];
-            stateToChange.usingNewWeapon = currentWeapon;
-            recordedStates[0] = stateToChange;
-        }
-        Debug.Log($"Sending state list of size {recordedStates.Count}");
-        return recordedStates;
-    }
+    //public List<ObjectState> sendStates()
+    //{
+    //    if (currentWeapon)
+    //    {
+    //        ObjectState stateToChange = recordedStates[0];
+    //        stateToChange.usingNewWeapon = currentWeapon;
+    //        recordedStates[0] = stateToChange;
+    //    }
+    //    Debug.Log($"Sending state list of size {recordedStates.Count}");
+    //    return recordedStates;
+    //}
 
     private void UpdatePlayerColor()
     {
@@ -345,10 +344,10 @@ public class PlayerControllerTest : MonoBehaviour, IPausable, IDamagable
         transform.position = initialPosition;
         rb.linearVelocityX = 0;
         rb.linearVelocityY = 0;
-        isFiring = false;
-        hasFired = false;
-        recordFireAction = false;
-        fireTimer = 0;
+        //isFiring = false;
+        //hasFired = false;
+        //recordFireAction = false;
+        //fireTimer = 0;
        
     }
 
@@ -393,12 +392,12 @@ public class PlayerControllerTest : MonoBehaviour, IPausable, IDamagable
         }
     }
 
-    private void ActiveRecordGhost()
+    public void ActiveRecordGhost()
     {
         if (isRecording) return;
         isRecording = true;
         PauseAllPausable(5.0f, 20.0f);
-        recordedStates.Clear();
+        //recordedStates.Clear();   **later recover it
         //Render Targets layers switching
         GetComponent<SpriteRenderer>().sortingOrder -= 3;
         StandShape.SetActive(true);
@@ -409,9 +408,7 @@ public class PlayerControllerTest : MonoBehaviour, IPausable, IDamagable
         //a label for starting point
         returnPositionInstance = Instantiate(ReturnPosition, transform.position, transform.rotation);
         savedPosition = transform.position;
-        savedRotation = transform.rotation;
         StartCoroutine(RecordingCoroutine());
-        ability_2.GetComponent<Animator>().SetTrigger("Play");
     }
 
     private IEnumerator RecordingCoroutine()
@@ -420,7 +417,7 @@ public class PlayerControllerTest : MonoBehaviour, IPausable, IDamagable
         //List<ObjectState> playerStates = sendStates();
         //Destroy(returnPositionInstance.gameObject);
         ShieldGhost newGhost = Instantiate(ghost);
-        newGhost.InitializeGhost(savedPosition, recordedStates);
+        //newGhost.InitializeGhost(savedPosition, recordedStates);  **later recover it
         ResetRecording(true);
     }
     private void ResetRecording(bool hasRecorded)
@@ -428,7 +425,7 @@ public class PlayerControllerTest : MonoBehaviour, IPausable, IDamagable
         if (hasRecorded)
         {
             transform.position = savedPosition;
-            transform.rotation = savedRotation;
+            //transform.rotation = savedRotation;
             GetComponent<SpriteRenderer>().sortingOrder += 3;
             StandShape.SetActive(false);
             StandShape.GetComponent<SpriteRenderer>().sortingOrder -= 3;

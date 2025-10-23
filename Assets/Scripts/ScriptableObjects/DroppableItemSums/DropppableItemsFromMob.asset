@@ -12,9 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f49d034f847844a40bfdd3e511581df2, type: 3}
   m_Name: DropppableItemsFromMob
   m_EditorClassIdentifier: 
-  ConsumableList:
+  consumableList:
   - {fileID: 3316196583160692378, guid: ac4f09f0e0559394d9fb016337b05c31, type: 3}
+  consumableDropProbability: 1
   weaponList:
   - {fileID: 11400000, guid: 7481820eab20f8646afcd29e563dbc9f, type: 2}
   - {fileID: 11400000, guid: 46b8e77856f68c746af6d34c954edb55, type: 2}
   - {fileID: 11400000, guid: 04da8ad25b5aefd4ea7516018b5870b9, type: 2}
+  weaponDropProbability: 0

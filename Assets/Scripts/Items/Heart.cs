@@ -39,6 +39,7 @@ public class Heart : BaseItem
         if (player != null)
         {
             player.TakeDamage(-healAmount, new HSLColor());
+            AudioManager.instance.PlaySound("heal");
             Destroy(gameObject);
         }
     }

@@ -11,7 +11,7 @@ public class EnemyStats : MonoBehaviour
     public HSLColor enemyColor = new HSLColor();
     public delegate void HealthChangedDelegate();
     public event HealthChangedDelegate OnHealthChanged;
-
+    public DroppableItems droppableItems;
     private void Start()
     {
         health = maxHealth;
@@ -26,6 +26,7 @@ public class EnemyStats : MonoBehaviour
         enemyColor.L = 50f + (health / maxHealth) * 40f;
         if (health <= 0)
         {
+            RandomDropItems();
             GetComponent<EnemyController>().isAlive(false);
             spawner.EnemyDestroyed();
         }
@@ -40,5 +41,15 @@ public class EnemyStats : MonoBehaviour
     {
         SetHealth(maxHealth);
         OnHealthChanged?.Invoke();
+    }
+    private void RandomDropItems()
+    {
+        if (!droppableItems) return;
+        if (Random.value< droppableItems.consumableDropProbability)
+        {
+            int index = Random.Range(0, droppableItems.consumableList.Count);
+            Instantiate(droppableItems.consumableList[index], transform.position, new Quaternion());
+        }
+        //TODO:drop weapons
     }
 }
