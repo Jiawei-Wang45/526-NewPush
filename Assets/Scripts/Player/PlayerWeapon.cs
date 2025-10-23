@@ -11,12 +11,12 @@ public class PlayerWeapon : ScriptableObject
     public float weaponBulletLifeTime;
     public float weaponBulletDamage;
     public float weaponBulletSpeed;
-    public float weaponFireRate = 0.2f;
+
 
     //weapon attributes
-    public float weaponFireSpeed;    //times per second
+    public float weaponFireRate;    //times per second
     public int weaponBulletInOneShot;  
-    public float weaponFiringAngle;
+    public float weaponFiringAngle;  //scattering angle between bullets, is useless if weaponBulletInOneShot=1
     public float weaponBulletSpread;
     public int maxAmmoNums;
 

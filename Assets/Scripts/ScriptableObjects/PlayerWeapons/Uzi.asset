@@ -14,10 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponType: 0
   triggerType: 0
-  weaponFireSpeed: 0
-  weaponDamage: 0
-  weaponBulletSpeed: 0
+  weaponBulletLifeTime: 2
+  weaponBulletDamage: 2
+  weaponBulletSpeed: 35
+  weaponFireRate: 7
+  weaponBulletInOneShot: 1
+  weaponFiringAngle: 0
   weaponBulletSpread: 0
-  weaponBulletAmount: 0
-  weaponName: 
+  maxAmmoNums: 25
+  weaponName: Uzi
+  bulletType: {fileID: 8604903965720594084, guid: 2904f1b643d26f24ea817c2a40263281, type: 3}
   weaponImage: {fileID: 0}

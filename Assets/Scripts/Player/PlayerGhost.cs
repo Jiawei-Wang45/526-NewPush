@@ -80,18 +80,12 @@ public class GhostController : MonoBehaviour
         float bulletTiltAngle = -(currentWeapon.weaponBulletInOneShot - 1) * currentWeapon.weaponFiringAngle / 2;
         for (int i = 0;i<currentWeapon.weaponBulletInOneShot;i++)
         {
-            GameObject spawnedBullet=Instantiate(currentWeapon.bulletType, firePoint.position, firePoint.rotation);
+            GameObject spawnedBullet=Instantiate(currentWeapon.bulletType, firePoint.position, firePoint.rotation*Quaternion.Euler(0,0, bulletTiltAngle + Random.Range(-currentWeapon.weaponBulletSpread, currentWeapon.weaponBulletSpread)));
             Bullet_Default bulletAttributes = spawnedBullet.GetComponent<Bullet_Default>();
             HSLColor tempColor = new HSLColor(200f,100f,50f);
             bulletAttributes.InitBullet(currentWeapon.weaponBulletSpeed, currentWeapon.weaponBulletLifeTime, currentWeapon.weaponBulletDamage, "player", tempColor);
-            spawnedBullet.transform.Rotate(0, 0, bulletTiltAngle+Random.Range(-currentWeapon.weaponBulletSpread,currentWeapon.weaponBulletSpread));
             // Make the bullet semi-transparent like the ghost
-            SpriteRenderer bulletSr = spawnedBullet.GetComponent<SpriteRenderer>();
-            if (bulletSr != null)
-            {
-                Color bulletColor = bulletSr.color;
-                bulletSr.color = new Color(bulletColor.r, bulletColor.g, bulletColor.b, 0.5f);
-            }
+            bulletAttributes.ChangeBulletAlpha(0.5f);
             bulletTiltAngle += currentWeapon.weaponFiringAngle;
         }
         

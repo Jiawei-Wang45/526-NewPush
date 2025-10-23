@@ -31,6 +31,8 @@ public class PlayerStats : MonoBehaviour
     public GameObject handle;
     public float targetOffsetX;
 
+    public delegate void HealthChangedDelegate();
+    public event HealthChangedDelegate OnHealthChanged;
     private void Start()
     {
         health = maxHealth;
@@ -47,9 +49,7 @@ public class PlayerStats : MonoBehaviour
     public void TakeDamage(float damage, HSLColor bulletColor)
     {
         if (isInvincible) return;
-
-        health = Mathf.Clamp(health - damage,0, maxHealth);
-
+        ChangeHealth(Mathf.Clamp(health - damage, 0, maxHealth));
         playerColor.L = 50f + (1-(health / maxHealth)) * 40f;
         playerColor.H = Mathf.Lerp(playerColor.H, bulletColor.H, 0.01f);
         // start to recover the Hvalue
@@ -67,7 +67,11 @@ public class PlayerStats : MonoBehaviour
 
         }
     }
-
+    public void ChangeHealth(float newHealth)
+    {
+        health = newHealth;
+        OnHealthChanged?.Invoke();
+    }
     public void StartReload()
     {
         if (!isReloading)
@@ -122,7 +126,8 @@ public class PlayerStats : MonoBehaviour
     }
 
     public void Reset(){
-        health = maxHealth;
+        ChangeHealth(maxHealth);
+        OnHealthChanged?.Invoke();
         ResetH();
         ResetReload();
     }

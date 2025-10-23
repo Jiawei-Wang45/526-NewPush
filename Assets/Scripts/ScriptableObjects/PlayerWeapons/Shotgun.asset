@@ -10,18 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1460bd2a199a59e498f68ec5804284d0, type: 3}
-  m_Name: Ak-47
+  m_Name: Shotgun
   m_EditorClassIdentifier: 
   weaponType: 0
-  triggerType: 0
+  triggerType: 1
   weaponBulletLifeTime: 2
-  weaponBulletDamage: 2.5
-  weaponBulletSpeed: 35
-  weaponFireRate: 5
-  weaponBulletInOneShot: 1
-  weaponFiringAngle: 0
-  weaponBulletSpread: 20
-  maxAmmoNums: 20
-  weaponName: AK-47
+  weaponBulletDamage: 10
+  weaponBulletSpeed: 20
+  weaponFireRate: 2
+  weaponBulletInOneShot: 5
+  weaponFiringAngle: 10
+  weaponBulletSpread: 0
+  maxAmmoNums: 7
+  weaponName: Shotgun
   bulletType: {fileID: 8604903965720594084, guid: 2904f1b643d26f24ea817c2a40263281, type: 3}
   weaponImage: {fileID: 0}

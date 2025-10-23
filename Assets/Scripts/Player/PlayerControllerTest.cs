@@ -32,6 +32,9 @@ public class PlayerControllerTest : MonoBehaviour, IPausable, IDamagable
     public Transform firePoint;
     public PlayerWeapon currentWeapon;
 
+    //healthbar
+    public PlayerHealthbar healthbar;
+
     // Ghost dash settings
     [Header("Ghost Dash")]
     public float dashMultiplier = 2.0f; // how many times faster during dash
@@ -51,6 +54,11 @@ public class PlayerControllerTest : MonoBehaviour, IPausable, IDamagable
     public Image ability_1;
     public Image ability_2;
 
+
+    //pause variables
+    private float slowTimeElapsing = 0.0f;
+    private float slowDuration;
+    private float slowFactor = 1.0f;
     public void RefreshStats()
     {
         cachedSpeed = speed = stats.movementSpeed;
@@ -103,6 +111,7 @@ public class PlayerControllerTest : MonoBehaviour, IPausable, IDamagable
     {
         rb = GetComponent<Rigidbody2D>();
         stats = GetComponent<PlayerStats>();
+        stats.OnHealthChanged += healthbar.HandleHealthChanged;
         initialPosition = transform.position;
         RefreshStats();
 
@@ -129,6 +138,10 @@ public class PlayerControllerTest : MonoBehaviour, IPausable, IDamagable
 
         // branch between active and passive weapons
         //if (isPaused) return;
+        if (isPaused)
+        {
+            slowTimeElapsing += Time.deltaTime;
+        }
         UpdatePlayerColor();
 
         if (currentWeapon == null)
@@ -158,7 +171,7 @@ public class PlayerControllerTest : MonoBehaviour, IPausable, IDamagable
                 }
                 else
                 {
-                    fireTimer += Time.fixedDeltaTime;
+                    fireTimer += Time.deltaTime;
                 }
             }
             else if (currentWeapon.triggerType == TriggerType.SemiAutomatic)
@@ -181,7 +194,7 @@ public class PlayerControllerTest : MonoBehaviour, IPausable, IDamagable
                 }
                 else
                 {
-                    fireTimer += Time.fixedDeltaTime;
+                    fireTimer += Time.deltaTime;
                 }
             }
         }
@@ -228,13 +241,18 @@ public class PlayerControllerTest : MonoBehaviour, IPausable, IDamagable
         float bulletTiltAngle = -(currentWeapon.weaponBulletInOneShot - 1) * currentWeapon.weaponFiringAngle / 2;
         for (int i = 0; i < currentWeapon.weaponBulletInOneShot; i++)
         {
-            GameObject spawnedBullet = Instantiate(currentWeapon.bulletType, firePoint.position, firePoint.rotation);
+
+
+            GameObject spawnedBullet = Instantiate(currentWeapon.bulletType, firePoint.position, firePoint.rotation*Quaternion.Euler(0,0, bulletTiltAngle + Random.Range(-currentWeapon.weaponBulletSpread, currentWeapon.weaponBulletSpread)));
             Bullet_Default bulletAttributes = spawnedBullet.GetComponent<Bullet_Default>();
 
-            float timeScaleFactor = isPaused ? 0.5f : 1.0f;
-
-            bulletAttributes.InitBullet(currentWeapon.weaponBulletSpeed * timeScaleFactor, currentWeapon.weaponBulletLifeTime, currentWeapon.weaponBulletDamage, "player", stats.playerColor);
-            spawnedBullet.transform.Rotate(0, 0, bulletTiltAngle + Random.Range(-currentWeapon.weaponBulletSpread, currentWeapon.weaponBulletSpread));
+            //float timeScaleFactor = isPaused ? 0.5f : 1.0f;
+            bulletAttributes.InitBullet(currentWeapon.weaponBulletSpeed, currentWeapon.weaponBulletLifeTime, currentWeapon.weaponBulletDamage, "player", stats.playerColor);
+            if (isPaused)
+            {
+                bulletAttributes.Pause(slowDuration - slowTimeElapsing, slowFactor);
+            }
+            //spawnedBullet.transform.Rotate(0, 0, bulletTiltAngle + Random.Range(-currentWeapon.weaponBulletSpread, currentWeapon.weaponBulletSpread));
             bulletTiltAngle += currentWeapon.weaponFiringAngle;
         }
 
@@ -336,8 +354,8 @@ public class PlayerControllerTest : MonoBehaviour, IPausable, IDamagable
 
     public void UponWaveClear()
     {
-        stats.health = stats.maxHealth;
-        recordedStates.Clear();
+        stats.ChangeHealth(stats.maxHealth);
+        //recordedStates.Clear();
         initialPosition = transform.position;
     }
 
@@ -460,18 +478,21 @@ public class PlayerControllerTest : MonoBehaviour, IPausable, IDamagable
     {
         if (!isPaused)
         {
-            StartCoroutine(PauseCoroutine(pauseDuration));
+            StartCoroutine(PauseCoroutine(pauseDuration,pauseStrength));
         }
     }
 
-    private IEnumerator PauseCoroutine(float pauseDuration)
+    private IEnumerator PauseCoroutine(float pauseDuration, float pauseStrength)
     {
         //savedVelocity = rb.linearVelocity;
         //savedIsFiring = isFiring;
         //rb.linearVelocity = Vector2.zero;
         //isFiring = false;
         isPaused = true;
-
+        slowDuration = pauseDuration;
+        slowTimeElapsing = 0;
+        //hard coded for the bullet to function correctly
+        slowFactor = 2;
         yield return new WaitForSeconds(pauseDuration);
 
         ResetPause();
@@ -484,6 +505,7 @@ public class PlayerControllerTest : MonoBehaviour, IPausable, IDamagable
             //rb.linearVelocity = savedVelocity;
             //isFiring = savedIsFiring;
             isPaused = false;
+            slowFactor = 1;
         }
     }
 

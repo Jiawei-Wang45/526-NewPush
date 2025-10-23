@@ -1161,7 +1161,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &373476907
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4464,7 +4464,8 @@ MonoBehaviour:
   abilityEnum: 3
   sendToGoogle: {fileID: 0}
   firePoint: {fileID: 50638741}
-  currentWeapon: {fileID: 11400000, guid: 5f786e869e4946a4db125a3b36a5b841, type: 2}
+  currentWeapon: {fileID: 11400000, guid: c77634c28d420b74e8cd29f62f1f25b1, type: 2}
+  healthbar: {fileID: 1445568365}
   dashMultiplier: 2
   dashDuration: 3
   dashCooldown: 3

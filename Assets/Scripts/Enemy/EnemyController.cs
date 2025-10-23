@@ -45,6 +45,7 @@ public class EnemyController : MonoBehaviour, IPausable, IDamagable
     {
         pcTest = FindFirstObjectByType<PlayerControllerTest>();
         enemyStats = GetComponent<EnemyStats>();
+        enemyStats.OnHealthChanged += BoundHealthbar.GetComponentInChildren<EnemyHealthbar>().HandleHealthChanged;
         rb = GetComponent<Rigidbody2D>();
         terrainMask = LayerMask.GetMask("Wall", "Player");
         gameManager = FindFirstObjectByType<GameManager>();

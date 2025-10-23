@@ -9,7 +9,8 @@ public class EnemyStats : MonoBehaviour
     private EnemySpawner spawner;
 
     public HSLColor enemyColor = new HSLColor();
-
+    public delegate void HealthChangedDelegate();
+    public event HealthChangedDelegate OnHealthChanged;
 
     private void Start()
     {
@@ -21,7 +22,7 @@ public class EnemyStats : MonoBehaviour
     }
     public void TakeDamage(float damage)
     {
-        health -= damage;
+        SetHealth(health-damage);
         enemyColor.L = 50f + (health / maxHealth) * 40f;
         if (health <= 0)
         {
@@ -29,10 +30,15 @@ public class EnemyStats : MonoBehaviour
             spawner.EnemyDestroyed();
         }
     }
-    
+    public void SetHealth(float newHealth)
+    {
+        health = newHealth;
+        OnHealthChanged?.Invoke();
+    }
     public void Reset()
     
     {
-        health = maxHealth;
+        SetHealth(maxHealth);
+        OnHealthChanged?.Invoke();
     }
 }

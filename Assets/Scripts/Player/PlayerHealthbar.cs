@@ -12,12 +12,16 @@ public class PlayerHealthbar : MonoBehaviour
         playerStats = FindFirstObjectByType<PlayerControllerTest>().GetComponent<PlayerStats>();
         healthbarImage = GetComponent<UnityEngine.UI.Image>();
     }
-    private void Update()
-    {
-        if (gameManager.isPlayerAlive)
-        {
-            healthbarImage.fillAmount = playerStats.health / playerStats.maxHealth;
-        }
+    //private void Update()
+    //{
+    //    if (gameManager.isPlayerAlive)
+    //    {
+    //        healthbarImage.fillAmount = playerStats.health / playerStats.maxHealth;
+    //    }
         
+    //}
+    public void HandleHealthChanged()
+    {
+        healthbarImage.fillAmount = playerStats.health / playerStats.maxHealth;
     }
 }

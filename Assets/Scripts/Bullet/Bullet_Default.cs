@@ -13,21 +13,20 @@ public class Bullet_Default: MonoBehaviour, IPausable
 
     public GameObject ClusterBullet;
 
-    public enum BulletState
-{
-    Flying,
-    Paused
-}   
+//    public enum BulletState
+//{
+//    Flying,
+//    Paused
+//}   
 
     public HSLColor bulletColor = new HSLColor(); 
-    public BulletState currentState;
-    private Vector2 savedVelocity;
+    //public BulletState currentState;
+    //private Vector2 savedVelocity;
     // store last velocity before physics step so we can restore it if a collision is ignored
-    private Vector2 lastVelocity;
+    //private Vector2 lastVelocity;
 
     private float pausedTime;
 
-    //private float OriLifeTime;
 
     
 
@@ -39,7 +38,7 @@ public class Bullet_Default: MonoBehaviour, IPausable
         this.bulletDamage = bulletDamage;
         this.bulletType = bulletType;
         this.bulletColor = color;
-        currentState = BulletState.Flying;
+        //currentState = BulletState.Flying;
     }
 
     private void Awake()
@@ -54,14 +53,14 @@ public class Bullet_Default: MonoBehaviour, IPausable
         //Destroy(gameObject, bulletLifeTime);
     }
 
-    private void FixedUpdate()
-    {
-        // keep track of the last velocity before any collision resolution
-        if (rb != null)
-        {
-            lastVelocity = rb.linearVelocity;
-        }
-    }
+    //private void FixedUpdate()
+    //{
+    //    // keep track of the last velocity before any collision resolution
+    //    if (rb != null)
+    //    {
+    //        lastVelocity = rb.linearVelocity;
+    //    }
+    //}
 
     private void UpdateBulletColor()
     {
@@ -72,7 +71,13 @@ public class Bullet_Default: MonoBehaviour, IPausable
             spriteRenderer.color = bulletColor.ToRGB();
         }
     }
-
+    public void ChangeBulletAlpha(float alpha)
+    {
+        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+        Color color= spriteRenderer.color;
+        color.a= alpha;
+        spriteRenderer.color = color;
+    }
     private void OnCollisionEnter2D(Collision2D collision)
     {
         //Debug.Log("Object is " + collision.gameObject.name+ "Collider is " + collision.collider.name+ "Bullet layer is " + gameObject.layer+"collision layer is "+ collision.gameObject.layer);
@@ -126,17 +131,18 @@ public class Bullet_Default: MonoBehaviour, IPausable
     //********************************Bullet Pause********************************
     public void Pause(float pauseDuration, float pauseStrength)
     {
-        if (currentState == BulletState.Flying)
-        {
-            StartCoroutine(PauseCoroutine(pauseDuration, pauseStrength));
-        }
+        //if (currentState == BulletState.Flying)
+        //{
+        //    StartCoroutine(PauseCoroutine(pauseDuration, pauseStrength));
+        //}
+        StartCoroutine(PauseCoroutine(pauseDuration, pauseStrength));
     }
 
     private IEnumerator PauseCoroutine(float pauseDuration, float pauseStrength)
     {
-        savedVelocity = rb.linearVelocity;
+        //savedVelocity = rb.linearVelocity;
         rb.linearVelocity /= pauseStrength;
-        currentState = BulletState.Paused;
+        //currentState = BulletState.Paused;
 
         yield return new WaitForSeconds(pauseDuration);
 
@@ -145,11 +151,11 @@ public class Bullet_Default: MonoBehaviour, IPausable
 
     public void ResumeBullet()
     {
-        if (currentState == BulletState.Paused)
-        {
-            rb.linearVelocity = savedVelocity;
-            currentState = BulletState.Flying;
-           //bulletLifeTime = OriLifeTime;
-        }
+        //if (currentState == BulletState.Paused)
+        //{
+        //    rb.linearVelocity = savedVelocity;
+        //    currentState = BulletState.Flying;
+        //}
+        rb.linearVelocity = transform.right * bulletSpeed;
     }
 }

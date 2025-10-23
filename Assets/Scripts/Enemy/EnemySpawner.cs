@@ -32,26 +32,31 @@ public class EnemySpawner : MonoBehaviour
     public void InitializeNewWave()
     {
         int pointsToSpend = spawnBudget;
-        List<(int cost, int index)> costIndexList = new List<(int, int)>();
-        for (int i = 0; i < difficultyCosts.Count; i++)
-        {
-            costIndexList.Add((difficultyCosts[i], i));
-        }
-        costIndexList = costIndexList.OrderByDescending(t => t.Item1).ToList();
+        //List<(int cost, int index)> costIndexList = new List<(int, int)>();
+        //for (int i = 0; i < difficultyCosts.Count; i++)
+        //{
+        //    costIndexList.Add((difficultyCosts[i], i));
+        //}
+        //costIndexList = costIndexList.OrderByDescending(t => t.Item1).ToList();
         while (pointsToSpend > 0)
         {
-            (int, int) chosenIndex = costIndexList[Random.Range(0, costIndexList.Count)];
-            pointsToSpend -= chosenIndex.Item1;
-            enemiesInWave.Add(InstantiateNewEnemy(enemySpawnList[chosenIndex.Item2]));
+            //(int, int) chosenIndex = costIndexList[Random.Range(0, costIndexList.Count)];
+            //pointsToSpend -= chosenIndex.Item1;
+            //enemiesInWave.Add(InstantiateNewEnemy(enemySpawnList[chosenIndex.Item2]));
+            //spawnPositions.Add(GetRandomSpawnPoint());
+            //while (pointsToSpend < costIndexList[0].Item1 && costIndexList.Count > 0 && pointsToSpend > 0)
+            //{
+            //    costIndexList.RemoveAt(0);
+            //}
+            //if (costIndexList.Count == 0)
+            //{
+            //    break;
+            //}
+
+            int index = Random.Range(0, enemySpawnList.Length);
+            pointsToSpend -= difficultyCosts[index];
+            enemiesInWave.Add(InstantiateNewEnemy(enemySpawnList[index]));
             spawnPositions.Add(GetRandomSpawnPoint());
-            while (pointsToSpend < costIndexList[0].Item1 && costIndexList.Count > 0 && pointsToSpend > 0)
-            {
-                costIndexList.RemoveAt(0);
-            }
-            if (costIndexList.Count == 0)
-            {
-                break;
-            }
         }
     }
 

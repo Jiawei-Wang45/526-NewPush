@@ -17,8 +17,7 @@ MonoBehaviour:
   weaponBulletLifeTime: 2
   weaponBulletDamage: 5
   weaponBulletSpeed: 20
-  weaponFireRate: 3
-  weaponFireSpeed: 2
+  weaponFireRate: 4
   weaponBulletInOneShot: 1
   weaponFiringAngle: 0
   weaponBulletSpread: 0
