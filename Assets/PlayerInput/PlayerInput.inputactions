@@ -43,9 +43,27 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "PauseBullets",
+                    "name": "Pause",
                     "type": "Button",
                     "id": "b9fa7f91-1ccd-45f7-ba1e-73e5e7eb46a7",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ShieldGhost",
+                    "type": "Button",
+                    "id": "0ae8a37b-0205-4416-a34d-e977966df830",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Invincible",
+                    "type": "Button",
+                    "id": "869a7e1a-7068-400d-9cc9-73946aa8f26f",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -144,11 +162,33 @@
                 {
                     "name": "",
                     "id": "08883500-994f-4b06-a0d1-2c520dd72e42",
-                    "path": "<Keyboard>/q",
+                    "path": "<Keyboard>/1",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "PauseBullets",
+                    "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e93f46bf-7532-417a-8cac-d12a66d91a60",
+                    "path": "<Keyboard>/2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ShieldGhost",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "06ba6bde-8f44-479f-af1e-f45e6e3ad49d",
+                    "path": "<Keyboard>/3",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Invincible",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

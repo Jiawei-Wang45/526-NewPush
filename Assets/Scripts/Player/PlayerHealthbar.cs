@@ -2,15 +2,17 @@ using UnityEngine;
 using UnityEngine.UIElements;
 public class PlayerHealthbar : MonoBehaviour
 {
-    public GameManager gameManager;
+    
     public PlayerStats playerStats;
     public UnityEngine.UI.Image healthbarImage;
-
+    private void Awake()
+    {
+        healthbarImage = GetComponent<UnityEngine.UI.Image>();
+    }
     private void Start()
     {
-        gameManager = FindFirstObjectByType<GameManager>();
-        playerStats = FindFirstObjectByType<PlayerControllerTest>().GetComponent<PlayerStats>();
-        healthbarImage = GetComponent<UnityEngine.UI.Image>();
+        playerStats = PlayerControllerTest.instance.stats;
+        playerStats.OnHealthChanged += HandleHealthChanged;
     }
     //private void Update()
     //{

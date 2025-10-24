@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
 
-public class GhostController : MonoBehaviour
+public class PlayerGhost : MonoBehaviour
 {
 
     private int stateIndex = 0;
@@ -44,7 +44,7 @@ public class GhostController : MonoBehaviour
             if (currentState.usingNewWeapon)
             {
                 currentWeapon = currentState.usingNewWeapon;
-                Debug.Log("Equipping weapon");
+                //Debug.Log("Equipping weapon");
             }
             if (currentState.currentlyFiring && currentWeapon)
             {
@@ -53,7 +53,7 @@ public class GhostController : MonoBehaviour
             stateIndex++;
         } else
         {
-            Debug.Log("Disappearing");
+            //Debug.Log("Disappearing");
             StartCoroutine(Disappear(0.4f));
         }
     }
@@ -83,7 +83,7 @@ public class GhostController : MonoBehaviour
             GameObject spawnedBullet=Instantiate(currentWeapon.bulletType, firePoint.position, firePoint.rotation*Quaternion.Euler(0,0, bulletTiltAngle + Random.Range(-currentWeapon.weaponBulletSpread, currentWeapon.weaponBulletSpread)));
             Bullet_Default bulletAttributes = spawnedBullet.GetComponent<Bullet_Default>();
             HSLColor tempColor = new HSLColor(200f,100f,50f);
-            bulletAttributes.InitBullet(currentWeapon.weaponBulletSpeed, currentWeapon.weaponBulletLifeTime, currentWeapon.weaponBulletDamage, "player", tempColor);
+            bulletAttributes.InitBullet(currentWeapon.weaponBulletSpeed, currentWeapon.weaponBulletDamage,tempColor);
             // Make the bullet semi-transparent like the ghost
             bulletAttributes.ChangeBulletAlpha(0.5f);
             bulletTiltAngle += currentWeapon.weaponFiringAngle;

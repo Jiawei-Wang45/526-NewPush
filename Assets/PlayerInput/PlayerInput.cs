@@ -129,9 +129,27 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""PauseBullets"",
+                    ""name"": ""Pause"",
                     ""type"": ""Button"",
                     ""id"": ""b9fa7f91-1ccd-45f7-ba1e-73e5e7eb46a7"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ShieldGhost"",
+                    ""type"": ""Button"",
+                    ""id"": ""0ae8a37b-0205-4416-a34d-e977966df830"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Invincible"",
+                    ""type"": ""Button"",
+                    ""id"": ""869a7e1a-7068-400d-9cc9-73946aa8f26f"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -230,11 +248,33 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""08883500-994f-4b06-a0d1-2c520dd72e42"",
-                    ""path"": ""<Keyboard>/q"",
+                    ""path"": ""<Keyboard>/1"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""PauseBullets"",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e93f46bf-7532-417a-8cac-d12a66d91a60"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShieldGhost"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""06ba6bde-8f44-479f-af1e-f45e6e3ad49d"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Invincible"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -249,7 +289,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         m_Default_Fire = m_Default.FindAction("Fire", throwIfNotFound: true);
         m_Default_Escape = m_Default.FindAction("Escape", throwIfNotFound: true);
         m_Default_Reload = m_Default.FindAction("Reload", throwIfNotFound: true);
-        m_Default_PauseBullets = m_Default.FindAction("PauseBullets", throwIfNotFound: true);
+        m_Default_Pause = m_Default.FindAction("Pause", throwIfNotFound: true);
+        m_Default_ShieldGhost = m_Default.FindAction("ShieldGhost", throwIfNotFound: true);
+        m_Default_Invincible = m_Default.FindAction("Invincible", throwIfNotFound: true);
     }
 
     ~@PlayerInput()
@@ -334,7 +376,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Default_Fire;
     private readonly InputAction m_Default_Escape;
     private readonly InputAction m_Default_Reload;
-    private readonly InputAction m_Default_PauseBullets;
+    private readonly InputAction m_Default_Pause;
+    private readonly InputAction m_Default_ShieldGhost;
+    private readonly InputAction m_Default_Invincible;
     /// <summary>
     /// Provides access to input actions defined in input action map "Default".
     /// </summary>
@@ -363,9 +407,17 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @Reload => m_Wrapper.m_Default_Reload;
         /// <summary>
-        /// Provides access to the underlying input action "Default/PauseBullets".
+        /// Provides access to the underlying input action "Default/Pause".
         /// </summary>
-        public InputAction @PauseBullets => m_Wrapper.m_Default_PauseBullets;
+        public InputAction @Pause => m_Wrapper.m_Default_Pause;
+        /// <summary>
+        /// Provides access to the underlying input action "Default/ShieldGhost".
+        /// </summary>
+        public InputAction @ShieldGhost => m_Wrapper.m_Default_ShieldGhost;
+        /// <summary>
+        /// Provides access to the underlying input action "Default/Invincible".
+        /// </summary>
+        public InputAction @Invincible => m_Wrapper.m_Default_Invincible;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -404,9 +456,15 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @Reload.started += instance.OnReload;
             @Reload.performed += instance.OnReload;
             @Reload.canceled += instance.OnReload;
-            @PauseBullets.started += instance.OnPauseBullets;
-            @PauseBullets.performed += instance.OnPauseBullets;
-            @PauseBullets.canceled += instance.OnPauseBullets;
+            @Pause.started += instance.OnPause;
+            @Pause.performed += instance.OnPause;
+            @Pause.canceled += instance.OnPause;
+            @ShieldGhost.started += instance.OnShieldGhost;
+            @ShieldGhost.performed += instance.OnShieldGhost;
+            @ShieldGhost.canceled += instance.OnShieldGhost;
+            @Invincible.started += instance.OnInvincible;
+            @Invincible.performed += instance.OnInvincible;
+            @Invincible.canceled += instance.OnInvincible;
         }
 
         /// <summary>
@@ -430,9 +488,15 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @Reload.started -= instance.OnReload;
             @Reload.performed -= instance.OnReload;
             @Reload.canceled -= instance.OnReload;
-            @PauseBullets.started -= instance.OnPauseBullets;
-            @PauseBullets.performed -= instance.OnPauseBullets;
-            @PauseBullets.canceled -= instance.OnPauseBullets;
+            @Pause.started -= instance.OnPause;
+            @Pause.performed -= instance.OnPause;
+            @Pause.canceled -= instance.OnPause;
+            @ShieldGhost.started -= instance.OnShieldGhost;
+            @ShieldGhost.performed -= instance.OnShieldGhost;
+            @ShieldGhost.canceled -= instance.OnShieldGhost;
+            @Invincible.started -= instance.OnInvincible;
+            @Invincible.performed -= instance.OnInvincible;
+            @Invincible.canceled -= instance.OnInvincible;
         }
 
         /// <summary>
@@ -502,11 +566,25 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnReload(InputAction.CallbackContext context);
         /// <summary>
-        /// Method invoked when associated input action "PauseBullets" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "Pause" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnPauseBullets(InputAction.CallbackContext context);
+        void OnPause(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "ShieldGhost" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnShieldGhost(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Invincible" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnInvincible(InputAction.CallbackContext context);
     }
 }

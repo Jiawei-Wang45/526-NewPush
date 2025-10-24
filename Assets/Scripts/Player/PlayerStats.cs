@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 public class PlayerStats : MonoBehaviour
 {
+    public PlayerControllerTest pc;
     public float movementSpeed = 10f;
     public float maxHealth = 5.0f;
     public float health;
@@ -13,7 +14,7 @@ public class PlayerStats : MonoBehaviour
     public bool isInvincible = false;
 
     public HSLColor playerColor = new HSLColor();
-    public float originalH;
+    public float originalH=0;
 
     //public int maxAmmo;
     //public int currentAmmo;
@@ -32,10 +33,17 @@ public class PlayerStats : MonoBehaviour
 
     public delegate void HealthChangedDelegate();
     public event HealthChangedDelegate OnHealthChanged;
+    private void Awake()
+    {
+        pc= GetComponent<PlayerControllerTest>();
+    }
     private void Start()
     {
-        health = maxHealth;
-        originalH = playerColor.H;
+        ResetStates();
+        if (!isGhost)
+        {
+            pc.OnResetCalled += ResetStates;
+        }     
     }
     public void TakeDamage(float damage, HSLColor bulletColor)
     {
@@ -116,9 +124,9 @@ public class PlayerStats : MonoBehaviour
 
     }
 
-    public void Reset(){
+    public void ResetStates()
+    {
         ChangeHealth(maxHealth);
-        OnHealthChanged?.Invoke();
         ResetH();
         //ResetReload();
     }
@@ -156,16 +164,9 @@ public class PlayerStats : MonoBehaviour
             }
         }
     }
-
-    //public void ConsumeAmmo(int amount)
-    //{
-    //    currentAmmo -= amount;
-    //    playerColor.S = (currentAmmo / maxAmmo) * 100f;
-    //}
-    //public void OnWeaponChanged(PlayerWeapon newWeapon)
-    //{
-    //    maxAmmo = newWeapon.maxAmmoNums;
-    //    currentAmmo = maxAmmo;
-    //    //TODO: May change reloadTime for different types of weapons
-    //}
+    public void SetInvincible(bool Invincible)
+    {
+        isInvincible=Invincible;
+    }
+  
 }

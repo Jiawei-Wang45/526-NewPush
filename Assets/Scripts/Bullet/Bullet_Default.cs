@@ -2,14 +2,15 @@ using UnityEngine;
 using System.Collections;
 using UnityEditor.UIElements;
 
-public class Bullet_Default: MonoBehaviour, IPausable
+public class Bullet_Default: MonoBehaviour
 {
     private Rigidbody2D rb;
+    private PauseAbility playerPauseAbility;
     public float bulletSpeed;
-    public float bulletLifeTime;
+    //public float bulletLifeTime;
     public float bulletDamage;
 
-    public string bulletType;
+    //public string bulletType;
 
     public GameObject ClusterBullet;
 
@@ -20,37 +21,36 @@ public class Bullet_Default: MonoBehaviour, IPausable
 //}   
 
     public HSLColor bulletColor = new HSLColor(); 
-    //public BulletState currentState;
-    //private Vector2 savedVelocity;
-    // store last velocity before physics step so we can restore it if a collision is ignored
-    //private Vector2 lastVelocity;
-
-    private float pausedTime;
 
 
-    
-
-    public void InitBullet(float bulletSpeed, float bulletLifeTime, float bulletDamage, string bulletType, HSLColor color)
+    //SpeedFactor is used during pause time for the enemy to slow the bullets down, In other case it's 1 by default
+    public void InitBullet(float bulletSpeed, float bulletDamage, HSLColor color, float slowFactor=1.0f)
     {
         this.bulletSpeed = bulletSpeed;
-        rb.linearVelocity = transform.right * bulletSpeed;
-        this.bulletLifeTime = bulletLifeTime;
+        rb.linearVelocity = transform.right * bulletSpeed/ slowFactor;
         this.bulletDamage = bulletDamage;
-        this.bulletType = bulletType;
         this.bulletColor = color;
+        //this.bulletLifeTime = bulletLifeTime;
+        //this.bulletType = bulletType;
         //currentState = BulletState.Flying;
     }
 
     private void Awake()
     {
         rb= GetComponent<Rigidbody2D>();
+        PauseAbility.instance.OnPauseStart += PauseStart;
+        PauseAbility.instance.OnPauseEnd += PauseEnd;
     }
 
     private void Start()
     {
         UpdateBulletColor();
+        
+    }
 
-        //Destroy(gameObject, bulletLifeTime);
+    private void Instance_OnPauseEnd()
+    {
+        throw new System.NotImplementedException();
     }
 
     //private void FixedUpdate()
@@ -129,33 +129,46 @@ public class Bullet_Default: MonoBehaviour, IPausable
 
     }
     //********************************Bullet Pause********************************
-    public void Pause(float pauseDuration, float pauseStrength)
-    {
-        //if (currentState == BulletState.Flying)
-        //{
-        //    StartCoroutine(PauseCoroutine(pauseDuration, pauseStrength));
-        //}
-        StartCoroutine(PauseCoroutine(pauseDuration, pauseStrength));
-    }
+    //public void Pause(float pauseDuration, float pauseStrength)
+    //{
+    //    //if (currentState == BulletState.Flying)
+    //    //{
+    //    //    StartCoroutine(PauseCoroutine(pauseDuration, pauseStrength));
+    //    //}
+    //    StartCoroutine(PauseCoroutine(pauseDuration, pauseStrength));
+    //}
 
-    private IEnumerator PauseCoroutine(float pauseDuration, float pauseStrength)
+    //private IEnumerator PauseCoroutine(float pauseDuration, float pauseStrength)
+    //{
+    //    //savedVelocity = rb.linearVelocity;
+    //    rb.linearVelocity /= pauseStrength;
+    //    //currentState = BulletState.Paused;
+
+    //    yield return new WaitForSeconds(pauseDuration);
+
+    //    ResumeBullet();
+    //}
+
+    //public void ResumeBullet()
+    //{
+    //    //if (currentState == BulletState.Paused)
+    //    //{
+    //    //    rb.linearVelocity = savedVelocity;
+    //    //    currentState = BulletState.Flying;
+    //    //}
+    //    rb.linearVelocity = transform.right * bulletSpeed;
+    //}
+    public void PauseStart(float pauseStrength)
     {
-        //savedVelocity = rb.linearVelocity;
         rb.linearVelocity /= pauseStrength;
-        //currentState = BulletState.Paused;
-
-        yield return new WaitForSeconds(pauseDuration);
-
-        ResumeBullet();
     }
-
-    public void ResumeBullet()
+    public void PauseEnd()
     {
-        //if (currentState == BulletState.Paused)
-        //{
-        //    rb.linearVelocity = savedVelocity;
-        //    currentState = BulletState.Flying;
-        //}
         rb.linearVelocity = transform.right * bulletSpeed;
+    }
+    private void OnDestroy()
+    {
+        PauseAbility.instance.OnPauseStart -= PauseStart;
+        PauseAbility.instance.OnPauseEnd -= PauseEnd;
     }
 }

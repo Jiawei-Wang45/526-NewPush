@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour
     public GameObject InGameEndingMenu;
     public GameObject InGameWinMenu;
     public PlayerControllerTest player;
-    public GhostController ghost;
+    public PlayerGhost ghost;
     public EnemySpawner enemySpawner;
     public bool isInLevel;
     public float levelStartTime;
@@ -100,8 +100,8 @@ public class GameManager : MonoBehaviour
         }
 
         //reset ghosts
-        GhostController[] ghosts = FindObjectsByType<GhostController>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-        foreach (GhostController g in ghosts)
+        PlayerGhost[] ghosts = FindObjectsByType<PlayerGhost>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        foreach (PlayerGhost g in ghosts)
         {
             Destroy(g.gameObject);
         }
@@ -241,11 +241,11 @@ public class GameManager : MonoBehaviour
 
         player.Reset();
 
-        GhostController[] ghosts = FindObjectsByType<GhostController>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-        foreach (GhostController g in ghosts)
-        {
-                g.Reset();
-        }
+        //PlayerGhost[] ghosts = FindObjectsByType<PlayerGhost>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        //foreach (PlayerGhost g in ghosts)
+        //{
+        //        g.Reset();
+        //}
     
         EnemyController[] enemyObjects = FindObjectsByType<EnemyController>(FindObjectsInactive.Include, FindObjectsSortMode.None);
         foreach (EnemyController e in enemyObjects)

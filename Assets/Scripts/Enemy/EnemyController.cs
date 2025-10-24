@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyController : MonoBehaviour, IPausable, IDamagable
+public class EnemyController : MonoBehaviour, IDamagable
 {
 
     public PlayerControllerTest pcTest;
@@ -35,23 +35,26 @@ public class EnemyController : MonoBehaviour, IPausable, IDamagable
 
     //public bool isAttacking;
 
-    private bool isPaused = false;
-    private Vector2 savedVelocity;
+    //private bool isPaused = false;
     private float slowFactor = 1.0f;
-    private float timeintoslow = 0.0f;
-    private float slowDuration;
+    //private float timeintoslow = 0.0f;
+    //private float slowDuration;
 
     private void Start()
     {
-        pcTest = FindFirstObjectByType<PlayerControllerTest>();
-        enemyStats = GetComponent<EnemyStats>();
-        enemyStats.OnHealthChanged += BoundHealthbar.GetComponentInChildren<EnemyHealthbar>().HandleHealthChanged;
+        pcTest = PlayerControllerTest.instance;       
         rb = GetComponent<Rigidbody2D>();
         terrainMask = LayerMask.GetMask("Wall", "Player");
         gameManager = FindFirstObjectByType<GameManager>();
         RefreshStats();
         timeToFire = weapon.fireRate - 0.6f;
         randomTarget = transform.position;
+
+        enemyStats = GetComponent<EnemyStats>();
+        enemyStats.OnHealthChanged += BoundHealthbar.GetComponentInChildren<EnemyHealthbar>().HandleHealthChanged;
+        PauseAbility.instance.OnPauseStart += PauseStart;
+        PauseAbility.instance.OnPauseEnd += PauseEnd;
+
         isAlive(false);
     }
     public void RefreshStats()
@@ -62,10 +65,10 @@ public class EnemyController : MonoBehaviour, IPausable, IDamagable
     }
     private void Update()
     {
-        if (isPaused)
-        {
-            timeintoslow += Time.deltaTime;
-        }
+        //if (isPaused)
+        //{
+        //    timeintoslow += Time.deltaTime;
+        //}
         UpdateEnemyColor();
         if (!isReplayingActions && gameManager.isPlayerAlive)
         {
@@ -330,10 +333,8 @@ public class EnemyController : MonoBehaviour, IPausable, IDamagable
         Vector3 spawnPosition = transform.position + (Vector3)(spawnVector * offsetDistance);
         Quaternion rotation = Quaternion.Euler(0, 0, angle);
         GameObject spawnedBullet = Instantiate(weapon.bulletType, spawnPosition, rotation);
-        Bullet_Default bulletAttributes = spawnedBullet.GetComponent<Bullet_Default>();
-        
-        bulletAttributes.InitBullet(weapon.bulletSpeed, weapon.bulletLifeTime, weapon.bulletDamage, "enemy",enemyStats.enemyColor);
-        if(isPaused) bulletAttributes.Pause(slowDuration - timeintoslow, slowFactor);
+        Bullet_Default bulletAttributes = spawnedBullet.GetComponent<Bullet_Default>();   
+        bulletAttributes.InitBullet(weapon.bulletSpeed, weapon.bulletDamage,enemyStats.enemyColor,slowFactor);
     }
 
     public void isAlive(bool status)
@@ -359,7 +360,7 @@ public class EnemyController : MonoBehaviour, IPausable, IDamagable
         randomTarget = transform.position;
         rb.linearVelocityX = 0;
         rb.linearVelocityY = 0;
-        ResumePause();
+        //ResumePause();
         isAlive(false);
     }
 
@@ -376,38 +377,54 @@ public class EnemyController : MonoBehaviour, IPausable, IDamagable
         //Debug.Log($"Enemy Color - H:{enemyStats.enemyColor.H:F1}, S:{enemyStats.enemyColor.S:F1}, L:{enemyStats.enemyColor.L:F1}");
     }
     //********************************Enemy Pause********************************
-    public void Pause(float pauseDuration, float pauseStrength)
-    {
-        if (!isPaused)
-        {
-            isPaused = true;
-            savedVelocity = rb.linearVelocity;
-            //rb.linearVelocity /= pauseStrength;
-            slowDuration=pauseDuration;
-            slowFactor = pauseStrength;
-            timeintoslow = 0.0f;
-            StartCoroutine(PauseCoroutine(pauseDuration));
-        }
-    }
+    //public void Pause(float pauseDuration, float pauseStrength)
+    //{
+    //    if (!isPaused)
+    //    {
+    //        isPaused = true;
+
+    //        //rb.linearVelocity /= pauseStrength;
+    //        slowDuration=pauseDuration;
+    //        slowFactor = pauseStrength;
+    //        timeintoslow = 0.0f;
+    //        StartCoroutine(PauseCoroutine(pauseDuration));
+    //    }
+    //}
     
-    private IEnumerator PauseCoroutine(float pauseDuration)
-    {
-        yield return new WaitForSeconds(pauseDuration);
-        ResumePause();
-    }
+    //private IEnumerator PauseCoroutine(float pauseDuration)
+    //{
+    //    yield return new WaitForSeconds(pauseDuration);
+    //    ResumePause();
+    //}
     
-    public void ResumePause()
+    //public void ResumePause()
+    //{
+    //    if (isPaused)
+    //    {
+
+    //        isPaused = false;
+    //        slowFactor = 1.0f;
+    //    }
+    //}    
+
+    public void PauseStart(float pauseStrength)
     {
-        if (isPaused)
-        {
-            rb.linearVelocity = savedVelocity;
-            isPaused = false;
-            slowFactor = 1.0f;
-        }
-    }    
+        slowFactor=pauseStrength;
+
+    }
+    public void PauseEnd()
+    {
+        slowFactor = 1;
+    }
+
+
     public void TakeDamage(float damage, HSLColor bulletColor)
     {
         enemyStats.TakeDamage(damage);
     }
-    
+    private void OnDestroy()
+    {
+        PauseAbility.instance.OnPauseStart -= PauseStart;
+        PauseAbility.instance.OnPauseEnd -= PauseEnd;
+    }
 }

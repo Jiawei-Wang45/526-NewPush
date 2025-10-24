@@ -5,9 +5,8 @@ using UnityEngine.InputSystem;
 
 public class FireAbility: MonoBehaviour
 {
-    public PlayerStats stats;
-    public PlayerControllerTest pc;
-    private Rigidbody2D rb;
+    private PlayerStats stats;
+    private PlayerControllerTest pc;
     private PlayerInput playerInput;
 
     // firing variables
@@ -27,15 +26,13 @@ public class FireAbility: MonoBehaviour
     public GameObject handle;
     public float targetOffsetX;
 
-    // trace back functionality(ghost) binds tighly with the firing ability, so just put here
-    private bool recordFireAction = false;
-    public bool isRecording = false;
-    private List<ObjectState> recordedStates = new List<ObjectState>();
+    //event declaration
+    public delegate void FireDelegate();
+    public event FireDelegate OnFire;
     private void Awake()
     {
         pc= GetComponent<PlayerControllerTest>();
         stats=GetComponent<PlayerStats>();
-        rb=GetComponent<Rigidbody2D>();
     }
     private void Start()
     {
@@ -96,14 +93,6 @@ public class FireAbility: MonoBehaviour
         }
     }
 
-    private void FixedUpdate()
-    {
-        if (isRecording)
-        {
-            recordedStates.Add(new ObjectState(rb.linearVelocity, rb.position, firePoint.rotation, recordFireAction, currentWeapon));
-            recordFireAction = false;
-        }
-    }
     #endregion
 
     #region Fire
@@ -111,17 +100,17 @@ public class FireAbility: MonoBehaviour
     {
         if (!CanFire() && !isReloading)
         {
-            StartReload();
+            ActivateReload();
             return;
         }
-        recordFireAction = true;
+        OnFire?.Invoke();
         ConsumeAmmo(1);
         float bulletTiltAngle = -(currentWeapon.weaponBulletInOneShot - 1) * currentWeapon.weaponFiringAngle / 2;
         for (int i = 0; i < currentWeapon.weaponBulletInOneShot; i++)
         {
             GameObject spawnedBullet = Instantiate(currentWeapon.bulletType, firePoint.position, firePoint.rotation * Quaternion.Euler(0, 0, bulletTiltAngle + Random.Range(-currentWeapon.weaponBulletSpread, currentWeapon.weaponBulletSpread)));
             Bullet_Default bulletAttributes = spawnedBullet.GetComponent<Bullet_Default>();
-            bulletAttributes.InitBullet(currentWeapon.weaponBulletSpeed, currentWeapon.weaponBulletLifeTime, currentWeapon.weaponBulletDamage, "player", stats.playerColor);     
+            bulletAttributes.InitBullet(currentWeapon.weaponBulletSpeed, currentWeapon.weaponBulletDamage,stats.playerColor);     
             bulletTiltAngle += currentWeapon.weaponFiringAngle;
         }
     }
@@ -154,22 +143,18 @@ public class FireAbility: MonoBehaviour
     #region Reload
     private void OnReloadTriggered(InputAction.CallbackContext context)
     {
-        if (context.performed)
-        {
-            StartReload();
-        }
+        ActivateReload();
     }
-    public void StartReload()
+    public void ActivateReload()
     {
-        if (!isReloading)
-        {
-            StartCoroutine(ReloadCoroutine());
-        }
+        if (isReloading) return;
+        isReloading = true;
+        StartCoroutine(ReloadCoroutine());
+    
     }
 
     private IEnumerator ReloadCoroutine()
     {
-        isReloading = true;
         reloadBar.SetActive(true);
         float accumulateTime = 0;
         while (true)
@@ -212,8 +197,6 @@ public class FireAbility: MonoBehaviour
         // firing variables reset
         isFiring = false;
         hasFired = false;
-        recordFireAction = false;
-
         ResetReload();
     }
     #endregion
