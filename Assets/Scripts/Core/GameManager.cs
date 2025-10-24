@@ -7,6 +7,7 @@ using TMPro;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager instance;
     public bool isPlayerAlive = true;
     public bool isPaused = false;
     public GameObject InGamePauseMenu;
@@ -24,10 +25,10 @@ public class GameManager : MonoBehaviour
     private int waveCount = 1;
     private float waveStartTime;
     private SendToGoogle sendToGoogle;
-    // expose current wave as a read-only property to other scripts
+    //delegate for reset states
+    public delegate void OnResetDelegate();
+    public OnResetDelegate onReset;
     public int CurrentWave => waveCount;
-
-    private const int abilityEnum=0;
     /*
         void OnEnable()
         {
@@ -43,7 +44,17 @@ public class GameManager : MonoBehaviour
 
     //private void OnReset(InputAction.CallbackContext ctx) => ResetWithGhost();
 
-
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(this);
+        }
+    }
     private void Start()
     {
         if (isInLevel)
@@ -241,18 +252,13 @@ public class GameManager : MonoBehaviour
 
         player.Reset();
 
-        //PlayerGhost[] ghosts = FindObjectsByType<PlayerGhost>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-        //foreach (PlayerGhost g in ghosts)
+
+        //EnemyController[] enemyObjects = FindObjectsByType<EnemyController>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        //foreach (EnemyController e in enemyObjects)
         //{
-        //        g.Reset();
+        //    e.ResetStates();
         //}
-    
-        EnemyController[] enemyObjects = FindObjectsByType<EnemyController>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-        foreach (EnemyController e in enemyObjects)
-        {
-            e.Reset();
-        }
-        
+        onReset?.Invoke();
         // Destroy all enemy spawn indicators to prevent spawning during reset
         EnemySpawnIndicator[] indicators = FindObjectsByType<EnemySpawnIndicator>(FindObjectsInactive.Include, FindObjectsSortMode.None); 
         foreach (EnemySpawnIndicator i in indicators)

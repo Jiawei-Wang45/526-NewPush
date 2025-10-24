@@ -28,33 +28,35 @@ public class EnemyController : MonoBehaviour, IDamagable
     private LayerMask terrainMask;
     private float checkInterval = 0.1f;
     private Vector3 randomTarget;
-    private List<ObjectState> recordedStates = new List<ObjectState>();
-    private int stateIndex = 0;
-    private bool isReplayingActions = false;
+    //private List<ObjectState> recordedStates = new List<ObjectState>();
+    //private int stateIndex = 0;
+    //private bool isReplayingActions = false;
 
-
-    //public bool isAttacking;
-
-    //private bool isPaused = false;
+    //affected by pause ability
     private float slowFactor = 1.0f;
-    //private float timeintoslow = 0.0f;
-    //private float slowDuration;
 
+    private void Awake()
+    {
+        rb = GetComponent<Rigidbody2D>();
+        enemyStats = GetComponent<EnemyStats>();
+        gameManager = GameManager.instance;
+        gameManager.onReset += ResetStates;
+    }
     private void Start()
     {
-        pcTest = PlayerControllerTest.instance;       
-        rb = GetComponent<Rigidbody2D>();
+        pcTest = PlayerControllerTest.instance;
+        
+
         terrainMask = LayerMask.GetMask("Wall", "Player");
-        gameManager = FindFirstObjectByType<GameManager>();
         RefreshStats();
         timeToFire = weapon.fireRate - 0.6f;
         randomTarget = transform.position;
 
-        enemyStats = GetComponent<EnemyStats>();
+        //call back bindings
         enemyStats.OnHealthChanged += BoundHealthbar.GetComponentInChildren<EnemyHealthbar>().HandleHealthChanged;
         PauseAbility.instance.OnPauseStart += PauseStart;
         PauseAbility.instance.OnPauseEnd += PauseEnd;
-
+        
         isAlive(false);
     }
     public void RefreshStats()
@@ -70,7 +72,8 @@ public class EnemyController : MonoBehaviour, IDamagable
         //    timeintoslow += Time.deltaTime;
         //}
         UpdateEnemyColor();
-        if (!isReplayingActions && gameManager.isPlayerAlive)
+        //if (!isReplayingActions && gameManager.isPlayerAlive)
+        if (gameManager.isPlayerAlive)
         {
             RaycastHit2D hit = Physics2D.Linecast(transform.position, pcTest.transform.position, terrainMask);
             if (hit.collider != null)
@@ -107,77 +110,123 @@ public class EnemyController : MonoBehaviour, IDamagable
     }
     private void FixedUpdate()
     {
-        if (isReplayingActions)
+        //if (isReplayingActions)
+        //{
+        //    ObjectState currentState = recordedStates[stateIndex];
+        //    rb.linearVelocity = currentState.currentVelocity;
+        //    transform.rotation = currentState.currentRotation;
+        //    if (!currentlyFiring)
+        //    {
+        //        timeToFire += Time.fixedDeltaTime;
+        //    }
+        //    if (currentState.currentlyFiring)
+        //    {
+        //        timeToFire = 0;
+        //        StartCoroutine(BeginFiringSequence());
+        //    }
+        //    stateIndex++;
+        //    if (stateIndex == recordedStates.Count)
+        //    {
+        //        isReplayingActions = false;
+        //    }
+        //}
+        //else
+        //{
+        //    bool firedThisTick = false;
+        //    if (gameManager.isPlayerAlive)
+        //    {
+        //        if (foundPlayer)
+        //        {
+        //            float factor = 1.0f;
+        //            if (canSeePlayer)
+        //            {
+        //                factor = (transform.position - pcTest.transform.position).magnitude > comfortableDistance ? 1.0f : -1.0f * movementPattern.BackoffSpeedFactor;
+        //            }
+        //            rb.linearVelocity = factor * transform.right * enemySpeed/ slowFactor;
+        //        }
+        //        else
+        //        {
+        //            switch (movementPattern.idleBehavior)
+        //            {
+        //                case EnemyMovementPattern.idleBehaviors.Stops:
+        //                    rb.linearVelocity = Vector2.zero;
+        //                    break;
+        //                case EnemyMovementPattern.idleBehaviors.RandomWalk:
+        //                    if ((randomTarget - transform.position).magnitude < 0.1f)
+        //                    {
+        //                        Vector2 offset = UnityEngine.Random.insideUnitCircle.normalized * 5.0f;
+        //                        randomTarget = transform.position + new Vector3(offset.x, offset.y, 0);
+        //                    }
+        //                    Vector2 direction = randomTarget - transform.position;
+        //                    float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        //                    Quaternion targetRotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        //                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.fixedDeltaTime/slowFactor);
+        //                    rb.linearVelocity = transform.right * enemySpeed/slowFactor;
+        //                    break;
+        //            }
+        //        }
+        //    }
+
+        //    if (canSeePlayer)
+        //    {
+        //        if (!currentlyFiring)
+        //        {
+        //            timeToFire += Time.fixedDeltaTime/slowFactor;
+        //        }
+        //        if (timeToFire >= weapon.fireRate)
+        //        {
+        //            firedThisTick = true;
+        //            timeToFire = 0;
+        //            StartCoroutine(BeginFiringSequence());
+        //        }
+        //    }
+        //    recordedStates.Add(new ObjectState(rb.linearVelocity, transform.position, transform.rotation, firedThisTick));
+        //}
+        if (gameManager.isPlayerAlive)
         {
-            ObjectState currentState = recordedStates[stateIndex];
-            rb.linearVelocity = currentState.currentVelocity;
-            transform.rotation = currentState.currentRotation;
+            if (foundPlayer)
+            {
+                float factor = 1.0f;
+                if (canSeePlayer)
+                {
+                    factor = (transform.position - pcTest.transform.position).magnitude > comfortableDistance ? 1.0f : -1.0f * movementPattern.BackoffSpeedFactor;
+                }
+                rb.linearVelocity = factor * transform.right * enemySpeed / slowFactor;
+            }
+            else
+            {
+                switch (movementPattern.idleBehavior)
+                {
+                    case EnemyMovementPattern.idleBehaviors.Stops:
+                        rb.linearVelocity = Vector2.zero;
+                        break;
+                    case EnemyMovementPattern.idleBehaviors.RandomWalk:
+                        if ((randomTarget - transform.position).magnitude < 0.1f)
+                        {
+                            Vector2 offset = UnityEngine.Random.insideUnitCircle.normalized * 5.0f;
+                            randomTarget = transform.position + new Vector3(offset.x, offset.y, 0);
+                        }
+                        Vector2 direction = randomTarget - transform.position;
+                        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+                        Quaternion targetRotation = Quaternion.AngleAxis(angle, Vector3.forward);
+                        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.fixedDeltaTime / slowFactor);
+                        rb.linearVelocity = transform.right * enemySpeed / slowFactor;
+                        break;
+                }
+            }
+        }
+
+        if (canSeePlayer)
+        {
             if (!currentlyFiring)
             {
-                timeToFire += Time.fixedDeltaTime;
+                timeToFire += Time.fixedDeltaTime / slowFactor;
             }
-            if (currentState.currentlyFiring)
+            if (timeToFire >= weapon.fireRate)
             {
                 timeToFire = 0;
                 StartCoroutine(BeginFiringSequence());
             }
-            stateIndex++;
-            if (stateIndex == recordedStates.Count)
-            {
-                isReplayingActions = false;
-            }
-        }
-        else
-        {
-            bool firedThisTick = false;
-            if (gameManager.isPlayerAlive)
-            {
-                if (foundPlayer)
-                {
-                    float factor = 1.0f;
-                    if (canSeePlayer)
-                    {
-                        factor = (transform.position - pcTest.transform.position).magnitude > comfortableDistance ? 1.0f : -1.0f * movementPattern.BackoffSpeedFactor;
-                    }
-                    rb.linearVelocity = factor * transform.right * enemySpeed/ slowFactor;
-                }
-                else
-                {
-                    switch (movementPattern.idleBehavior)
-                    {
-                        case EnemyMovementPattern.idleBehaviors.Stops:
-                            rb.linearVelocity = Vector2.zero;
-                            break;
-                        case EnemyMovementPattern.idleBehaviors.RandomWalk:
-                            if ((randomTarget - transform.position).magnitude < 0.1f)
-                            {
-                                Vector2 offset = UnityEngine.Random.insideUnitCircle.normalized * 5.0f;
-                                randomTarget = transform.position + new Vector3(offset.x, offset.y, 0);
-                            }
-                            Vector2 direction = randomTarget - transform.position;
-                            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-                            Quaternion targetRotation = Quaternion.AngleAxis(angle, Vector3.forward);
-                            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.fixedDeltaTime/slowFactor);
-                            rb.linearVelocity = transform.right * enemySpeed/slowFactor;
-                            break;
-                    }
-                }
-            }
-
-            if (canSeePlayer)
-            {
-                if (!currentlyFiring)
-                {
-                    timeToFire += Time.fixedDeltaTime/slowFactor;
-                }
-                if (timeToFire >= weapon.fireRate)
-                {
-                    firedThisTick = true;
-                    timeToFire = 0;
-                    StartCoroutine(BeginFiringSequence());
-                }
-            }
-            recordedStates.Add(new ObjectState(rb.linearVelocity, transform.position, transform.rotation, firedThisTick));
         }
     }
 
@@ -349,17 +398,14 @@ public class EnemyController : MonoBehaviour, IDamagable
         Destroy(gameObject);
     }
 
-    public void Reset()
+    public void ResetStates()
     {
-        Debug.Log($"Enemy state count: {recordedStates.Count}");
-        stateIndex = 0;
         StopAllCoroutines();
-        RefreshStats();
         enemyStats.Reset();
         timeToFire = weapon.fireRate - 0.6f;
-        randomTarget = transform.position;
-        rb.linearVelocityX = 0;
-        rb.linearVelocityY = 0;
+        //randomTarget = transform.position;
+        //rb.linearVelocityX = 0;
+        //rb.linearVelocityY = 0;
         //ResumePause();
         isAlive(false);
     }
@@ -376,37 +422,6 @@ public class EnemyController : MonoBehaviour, IDamagable
 
         //Debug.Log($"Enemy Color - H:{enemyStats.enemyColor.H:F1}, S:{enemyStats.enemyColor.S:F1}, L:{enemyStats.enemyColor.L:F1}");
     }
-    //********************************Enemy Pause********************************
-    //public void Pause(float pauseDuration, float pauseStrength)
-    //{
-    //    if (!isPaused)
-    //    {
-    //        isPaused = true;
-
-    //        //rb.linearVelocity /= pauseStrength;
-    //        slowDuration=pauseDuration;
-    //        slowFactor = pauseStrength;
-    //        timeintoslow = 0.0f;
-    //        StartCoroutine(PauseCoroutine(pauseDuration));
-    //    }
-    //}
-    
-    //private IEnumerator PauseCoroutine(float pauseDuration)
-    //{
-    //    yield return new WaitForSeconds(pauseDuration);
-    //    ResumePause();
-    //}
-    
-    //public void ResumePause()
-    //{
-    //    if (isPaused)
-    //    {
-
-    //        isPaused = false;
-    //        slowFactor = 1.0f;
-    //    }
-    //}    
-
     public void PauseStart(float pauseStrength)
     {
         slowFactor=pauseStrength;
@@ -426,5 +441,6 @@ public class EnemyController : MonoBehaviour, IDamagable
     {
         PauseAbility.instance.OnPauseStart -= PauseStart;
         PauseAbility.instance.OnPauseEnd -= PauseEnd;
+        gameManager.onReset -= ResetStates;
     }
 }

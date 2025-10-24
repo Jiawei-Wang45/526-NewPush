@@ -1,10 +1,11 @@
 using UnityEngine;
+using static UnityEngine.ParticleSystem;
 
 public class EnemyStats : MonoBehaviour
 {
     public float maxHealth;
     public float enemyMovementSpeed;
-    public float enemyDamage;
+    //public float enemyDamage;
     public float health;
     private EnemySpawner spawner;
 
@@ -12,6 +13,8 @@ public class EnemyStats : MonoBehaviour
     public delegate void HealthChangedDelegate();
     public event HealthChangedDelegate OnHealthChanged;
     public DroppableItems droppableItems;
+    //particle effect
+    public GameObject dyingEffect;
     private void Start()
     {
         health = maxHealth;
@@ -27,6 +30,12 @@ public class EnemyStats : MonoBehaviour
         if (health <= 0)
         {
             RandomDropItems();
+
+            GameObject particle=Instantiate(dyingEffect, transform.position, new Quaternion());
+
+            var main = particle.GetComponent<ParticleSystem>().main;
+            main.startColor = enemyColor.ToRGB();
+
             GetComponent<EnemyController>().isAlive(false);
             spawner.EnemyDestroyed();
         }

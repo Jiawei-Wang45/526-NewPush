@@ -5081,8 +5081,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0efd47391bd68d84eaf194da05dd675f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  filledImage: {fileID: 0}
-  cooldownText: {fileID: 0}
   firePoint: {fileID: 50638741}
   currentWeapon: {fileID: 11400000, guid: c77634c28d420b74e8cd29f62f1f25b1, type: 2}
   reloadTime: 1.5
@@ -5122,8 +5120,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd04fedd64180be498496ceda1faa7c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  filledImage: {fileID: 0}
-  cooldownText: {fileID: 0}
   firePoint: {fileID: 50638741}
 --- !u!114 &1335872725
 MonoBehaviour:

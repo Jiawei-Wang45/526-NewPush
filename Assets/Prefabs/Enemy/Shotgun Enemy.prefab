@@ -206,13 +206,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 15
   enemyMovementSpeed: 1
-  enemyDamage: 0
   health: 0
   enemyColor:
     H: 0
     S: 100
     L: 50
   droppableItems: {fileID: 11400000, guid: a6bab4fc5fbd71c49a5f65af40143fd8, type: 2}
+  dyingEffect: {fileID: 4296032697232908170, guid: 9c4b2aba842fcaa4cb15e255307712f1, type: 3}
 --- !u!114 &3966506979569408143
 MonoBehaviour:
   m_ObjectHideFlags: 0
