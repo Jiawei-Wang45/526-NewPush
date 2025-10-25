@@ -8,13 +8,15 @@ public class ShieldGhostAbility : BaseAbility
     private PauseAbility pauseAbility;
     private TracebackAbility tracebackAbility;
     private FireAbility fireAbility;
+
     //shield ghost variables
     private Vector2 savedPosition;
+    private GameObject returnPointInstance;
+    [Header("Shield Ghost parameters")]
     public ShieldGhost ghostType;
     public GameObject shieldShape;
     public GameObject hitboxShape;
     public GameObject returnPoint;
-    private GameObject returnPointInstance;
     public float pauseDuration = 3.0f;
     public float pauseCooldown = 3.0f;
     public float pauseStrength = 10.0f;
@@ -58,6 +60,7 @@ public class ShieldGhostAbility : BaseAbility
         Destroy(returnPointInstance);
         returnPointInstance = null;
         yield return new WaitForSeconds(pauseCooldown);
+        AudioManager.instance.PlaySound("cooldownFinish");
         isCooldown = false;
         ResetStates();
     }

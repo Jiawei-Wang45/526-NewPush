@@ -4,15 +4,13 @@ using UnityEditor.UIElements;
 
 public class Bullet_Default: MonoBehaviour
 {
-    private Rigidbody2D rb;
+    protected Rigidbody2D rb;
     private PauseAbility playerPauseAbility;
     public float bulletSpeed;
-    //public float bulletLifeTime;
     public float bulletDamage;
-
+    //public float bulletLifeTime;
     //public string bulletType;
 
-    public GameObject ClusterBullet;
 
 //    public enum BulletState
 //{
@@ -24,7 +22,7 @@ public class Bullet_Default: MonoBehaviour
 
 
     //SpeedFactor is used during pause time for the enemy to slow the bullets down, In other case it's 1 by default
-    public void InitBullet(float bulletSpeed, float bulletDamage, HSLColor color, float slowFactor=1.0f)
+    public virtual void InitBullet(float bulletSpeed, float bulletDamage, HSLColor color, float slowFactor=1.0f)
     {
         this.bulletSpeed = bulletSpeed;
         rb.linearVelocity = transform.right * bulletSpeed/ slowFactor;
@@ -35,7 +33,7 @@ public class Bullet_Default: MonoBehaviour
         //currentState = BulletState.Flying;
     }
 
-    private void Awake()
+    protected virtual void Awake()
     {
         rb= GetComponent<Rigidbody2D>();
         PauseAbility.instance.OnPauseStart += PauseStart;
@@ -78,7 +76,7 @@ public class Bullet_Default: MonoBehaviour
         color.a= alpha;
         spriteRenderer.color = color;
     }
-    private void OnCollisionEnter2D(Collision2D collision)
+    protected virtual void OnCollisionEnter2D(Collision2D collision)
     {
         //Debug.Log("Object is " + collision.gameObject.name+ "Collider is " + collision.collider.name+ "Bullet layer is " + gameObject.layer+"collision layer is "+ collision.gameObject.layer);
         //collision represents the parent gameobject, while the collider stands for the actual collision object the bullet hits, take care!
@@ -166,7 +164,7 @@ public class Bullet_Default: MonoBehaviour
     {
         rb.linearVelocity = transform.right * bulletSpeed;
     }
-    private void OnDestroy()
+    protected virtual void OnDestroy()
     {
         PauseAbility.instance.OnPauseStart -= PauseStart;
         PauseAbility.instance.OnPauseEnd -= PauseEnd;

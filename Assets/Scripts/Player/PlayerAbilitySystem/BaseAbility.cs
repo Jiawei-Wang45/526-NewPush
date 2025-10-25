@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class BaseAbility : MonoBehaviour
 {
+    [Header("cooldown UI parameters")]
     [SerializeField] protected Image filledImage;
     [SerializeField] protected TextMeshProUGUI cooldownText;
     protected bool isCooldown = false;
@@ -57,5 +58,5 @@ public class BaseAbility : MonoBehaviour
             int waveToSend = gm != null ? gm.CurrentWave : 0;
             PlayerControllerTest.instance.sendToGoogle.SendAbilityUse(PlayerControllerTest.instance.transform.position, waveToSend, abilityType);
         }
-    }
+    } 
 }

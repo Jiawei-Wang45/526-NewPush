@@ -7,6 +7,7 @@ public class PauseAbility : BaseAbility
     //components
     public static PauseAbility instance;
     //pause variable
+    [Header("Invincible parameters")]
     public float activePauseDuration = 5.0f;  //different from the pause triggered by shield ghost ability, it's a stand alone pause ability
     public float activePauseCooldown = 3.0f;
     public float activePauseStrength = 20.0f; //different from the pause triggered by shield ghost ability, it's a stand alone pause ability
@@ -51,6 +52,7 @@ public class PauseAbility : BaseAbility
         yield return new WaitForSeconds(pauseDuration);
         OnPauseEnd?.Invoke();
         yield return new WaitForSeconds(pauseCooldown);
+        AudioManager.instance.PlaySound("cooldownFinish");
         isCooldown = false;
         ResetStates();
     }

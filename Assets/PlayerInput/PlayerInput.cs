@@ -154,6 +154,15 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SpecialBullet"",
+                    ""type"": ""Button"",
+                    ""id"": ""386dbe10-ae02-4403-9ee1-52fb26310f4b"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -277,6 +286,17 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""action"": ""Invincible"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f002529e-11d6-4ea0-a34c-85b9f4c3032d"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SpecialBullet"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -292,6 +312,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         m_Default_Pause = m_Default.FindAction("Pause", throwIfNotFound: true);
         m_Default_ShieldGhost = m_Default.FindAction("ShieldGhost", throwIfNotFound: true);
         m_Default_Invincible = m_Default.FindAction("Invincible", throwIfNotFound: true);
+        m_Default_SpecialBullet = m_Default.FindAction("SpecialBullet", throwIfNotFound: true);
     }
 
     ~@PlayerInput()
@@ -379,6 +400,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Default_Pause;
     private readonly InputAction m_Default_ShieldGhost;
     private readonly InputAction m_Default_Invincible;
+    private readonly InputAction m_Default_SpecialBullet;
     /// <summary>
     /// Provides access to input actions defined in input action map "Default".
     /// </summary>
@@ -418,6 +440,10 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Default/Invincible".
         /// </summary>
         public InputAction @Invincible => m_Wrapper.m_Default_Invincible;
+        /// <summary>
+        /// Provides access to the underlying input action "Default/SpecialBullet".
+        /// </summary>
+        public InputAction @SpecialBullet => m_Wrapper.m_Default_SpecialBullet;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -465,6 +491,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @Invincible.started += instance.OnInvincible;
             @Invincible.performed += instance.OnInvincible;
             @Invincible.canceled += instance.OnInvincible;
+            @SpecialBullet.started += instance.OnSpecialBullet;
+            @SpecialBullet.performed += instance.OnSpecialBullet;
+            @SpecialBullet.canceled += instance.OnSpecialBullet;
         }
 
         /// <summary>
@@ -497,6 +526,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @Invincible.started -= instance.OnInvincible;
             @Invincible.performed -= instance.OnInvincible;
             @Invincible.canceled -= instance.OnInvincible;
+            @SpecialBullet.started -= instance.OnSpecialBullet;
+            @SpecialBullet.performed -= instance.OnSpecialBullet;
+            @SpecialBullet.canceled -= instance.OnSpecialBullet;
         }
 
         /// <summary>
@@ -586,5 +618,12 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnInvincible(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "SpecialBullet" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSpecialBullet(InputAction.CallbackContext context);
     }
 }

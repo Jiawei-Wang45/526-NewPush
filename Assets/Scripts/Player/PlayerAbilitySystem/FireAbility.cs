@@ -10,25 +10,34 @@ public class FireAbility: MonoBehaviour
     private PlayerInput playerInput;
 
     // firing variables
+    [Header("Basic Firing parameters")]
     private float fireTimer;
     public Transform firePoint;
     public PlayerWeapon currentWeapon;
     private bool isFiring = false;
     private bool hasFired = false;
 
+    //special ammo
+    [Header("Special Ammo attributes")]
+    public GameObject clusterBullet;
+
     //reload variables
+    [Header("Reloading parameters")]
+    public float reloadTime = 1.5f;
     private int maxAmmo;
     private int currentAmmo;
-    public float reloadTime = 1.5f;
     private bool isReloading = false;
     //reload UI
+    [Header("Reload UI settings")]
     public GameObject reloadBar;
     public GameObject handle;
     public float targetOffsetX;
 
-    //event declaration
+    //delegate declaration
     public delegate void FireDelegate();
     public event FireDelegate OnFire;
+
+    #region initialization
     private void Awake()
     {
         pc= GetComponent<PlayerControllerTest>();
@@ -44,13 +53,18 @@ public class FireAbility: MonoBehaviour
         //fire input binding
         playerInput.Default.Fire.performed += OnFireTriggered;
         playerInput.Default.Fire.canceled += OnFireTriggered;
+
+        //special bullet binding
+        playerInput.Default.SpecialBullet.performed += OnSpecialBulletTriggered;
+
+
         //reload input binding
         playerInput.Default.Reload.performed += OnReloadTriggered;
 
         //reset binding
         pc.OnResetCalled += ResetStates;
     }
-
+    #endregion
 
     #region Update
     private void Update()
@@ -137,8 +151,17 @@ public class FireAbility: MonoBehaviour
                 break;
         }
     }
-    #endregion 
+    #endregion
+    #region Special Bullet
+    private void OnSpecialBulletTriggered(InputAction.CallbackContext context)
+    {
+        GameObject specialBullet = Instantiate(clusterBullet, firePoint.position, firePoint.rotation);
+        Bullet_Cluster bulletAttributes = specialBullet.GetComponent<Bullet_Cluster>();
+        bulletAttributes.InitBullet(bulletAttributes.parentBulletSpeed, bulletAttributes.parentBulletDamage, stats.playerColor);
+    }
 
+
+    #endregion
 
     #region Reload
     private void OnReloadTriggered(InputAction.CallbackContext context)

@@ -10,6 +10,7 @@ public class InvincibleAbility : BaseAbility
     private ParticleSystem particleEffect;
     private ParticleSystem subParticleEffect;
     //Invincible parameter
+    [Header("Invincible parameters")]
     public float speedMultiplier = 2.0f; // how many times faster during dash
     public float InvincibleDuration = 3.0f; // seconds the dash lasts
     public float InvincibleCooldown = 3.0f; // seconds before dash can be used again
@@ -70,6 +71,7 @@ public class InvincibleAbility : BaseAbility
         gameObject.layer = LayerMask.NameToLayer("Player");
         particleEffect.Stop();
         yield return new WaitForSeconds(InvincibleCooldown);
+        AudioManager.instance.PlaySound("cooldownFinish");
         isCooldown = false;
         ResetStates();
 
