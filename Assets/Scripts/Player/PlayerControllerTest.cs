@@ -12,7 +12,7 @@ public class PlayerControllerTest : MonoBehaviour, IDamagable
     public PlayerInput playerInput;
     // movement parameter
     public float speed;
-    private Vector2 movement;
+    public Vector2 movement;
     // revive parameter
     public Vector2 initialPosition;
     //Analytics
