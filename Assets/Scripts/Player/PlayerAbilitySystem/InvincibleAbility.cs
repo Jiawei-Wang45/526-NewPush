@@ -7,7 +7,7 @@ public class InvincibleAbility : BaseAbility
     //components
     private PlayerControllerTest pc;
     private PlayerStats stats;
-    
+    private ParticleSystem particleEffect;
     //Invincible parameter
     public float speedMultiplier = 2.0f; // how many times faster during dash
     public float InvincibleDuration = 3.0f; // seconds the dash lasts
@@ -18,6 +18,7 @@ public class InvincibleAbility : BaseAbility
         base.Awake();
         pc=GetComponent<PlayerControllerTest>();
         stats =GetComponent<PlayerStats>();
+        particleEffect= GetComponent<ParticleSystem>();
     }
     private void Start()
     {
@@ -41,10 +42,12 @@ public class InvincibleAbility : BaseAbility
         stats.SetInvincible(true);
         pc.speed = stats.movementSpeed * speedMultiplier;
         gameObject.layer = LayerMask.NameToLayer("Invincible");
+        particleEffect.Play();
         yield return new WaitForSeconds(InvincibleDuration);
         stats.SetInvincible(false);
         pc.speed = stats.movementSpeed;
         gameObject.layer = LayerMask.NameToLayer("Player");
+        particleEffect.Stop();
         yield return new WaitForSeconds(InvincibleCooldown);
         isCooldown = false;
         ResetStates();
@@ -60,6 +63,7 @@ public class InvincibleAbility : BaseAbility
             stats.SetInvincible(false);
             pc.speed = stats.movementSpeed;
             gameObject.layer = LayerMask.NameToLayer("Player");
+            particleEffect.Stop();
             isCooldown = false;
         }
     }
