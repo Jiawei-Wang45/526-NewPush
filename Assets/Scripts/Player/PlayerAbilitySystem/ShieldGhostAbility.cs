@@ -38,6 +38,7 @@ public class ShieldGhostAbility : BaseAbility
     public void ActivateShieldGhost()
     {
         if (isCooldown) return;
+        SendAnalytics("ShieldGhost");
         StartCoroutine(ShieldGhostCoroutine(pauseDuration));
         StartCoroutine(AbilityCooldownCoroutine(pauseDuration + pauseCooldown));
     }

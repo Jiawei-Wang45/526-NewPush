@@ -48,4 +48,14 @@ public class BaseAbility : MonoBehaviour
         filledImage.fillAmount = 1;
         cooldownText.gameObject.SetActive(false);
     }
+
+    protected void SendAnalytics(string abilityType)
+    {
+        if (PlayerControllerTest.instance != null && PlayerControllerTest.instance.sendToGoogle != null)
+        {
+            GameManager gm = FindFirstObjectByType<GameManager>();
+            int waveToSend = gm != null ? gm.CurrentWave : 0;
+            PlayerControllerTest.instance.sendToGoogle.SendAbilityUse(PlayerControllerTest.instance.transform.position, waveToSend, abilityType);
+        }
+    }
 }

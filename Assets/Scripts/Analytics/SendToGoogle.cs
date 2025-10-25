@@ -14,6 +14,7 @@ public class SendToGoogle : MonoBehaviour
     private const string FIELD_TIME = "entry.2115569534"; // Time since start to ability use
     private const string FIELD_WAVE = "entry.865303843"; // wave number
     private const string FIELD_POSITION = "entry.1199288425"; // player position x,y
+    private const string FIELD_ABILITY_TYPE = "entry.845977060"; // ability type
     private const string FIELD_WAVE_DURATION = "entry.2115569534"; // Wave duration
     private const string FIELD_WAVE_NUMBER = "entry.865303843"; // Wave number
     private const string FIELD_TOTAL_SURVIVAL_TIME = "entry.2115569534"; // Total survival time
@@ -32,7 +33,7 @@ public class SendToGoogle : MonoBehaviour
         Debug.Log($"[SendToGoogle] Awake - sessionID={_sessionID} startTime={_startTime} URL={URL}");
     }
     // Send ability usage with concrete tracked fields
-    public void SendAbilityUse(Vector2 playerPosition, int waveOverride = -1)
+    public void SendAbilityUse(Vector2 playerPosition, int waveOverride = -1, string abilityType = "")
     {
         long session = _sessionID;
         float timeSinceStart = Time.realtimeSinceStartup - _startTime;
@@ -43,8 +44,8 @@ public class SendToGoogle : MonoBehaviour
         string waveStr = waveToSend.ToString();
         string posStr = playerPosition.x.ToString("F3") + "," + playerPosition.y.ToString("F3");
 
-        Debug.Log($"[SendToGoogle] SendAbilityUse -> session:{sessionStr} time:{timeStr} wave:{waveStr} position:{posStr}");
-        StartCoroutine(PostAbility(sessionStr, timeStr, waveStr, posStr));
+        Debug.Log($"[SendToGoogle] SendAbilityUse -> session:{sessionStr} time:{timeStr} wave:{waveStr} position:{posStr} abilityType:{abilityType}");
+        StartCoroutine(PostAbility(sessionStr, timeStr, waveStr, posStr, abilityType));
     }
 
     // Send wave data
@@ -71,7 +72,7 @@ public class SendToGoogle : MonoBehaviour
         StartCoroutine(PostGameSummary(sessionStr, timeStr, waveStr));
     }
 
-    private IEnumerator PostAbility(string sessionID, string time, string wave, string position)
+    private IEnumerator PostAbility(string sessionID, string time, string wave, string position, string abilityType)
     {
         WWWForm form = new WWWForm();
 
@@ -79,9 +80,10 @@ public class SendToGoogle : MonoBehaviour
         form.AddField(FIELD_TIME, time);
         form.AddField(FIELD_WAVE, wave);
         form.AddField(FIELD_POSITION, position);
+        form.AddField(FIELD_ABILITY_TYPE, abilityType);
 
         // Log form contents
-        Debug.Log($"[SendToGoogle] Posting to {URL} with fields: {FIELD_SESSION}={sessionID}, {FIELD_TIME}={time}, {FIELD_WAVE}={wave}, {FIELD_POSITION}={position}");
+        Debug.Log($"[SendToGoogle] Posting to {URL} with fields: {FIELD_SESSION}={sessionID}, {FIELD_TIME}={time}, {FIELD_WAVE}={wave}, {FIELD_POSITION}={position}, {FIELD_ABILITY_TYPE}={abilityType}");
 
         using (UnityWebRequest www = UnityWebRequest.Post(URL, form))
         {

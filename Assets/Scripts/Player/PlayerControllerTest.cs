@@ -17,7 +17,7 @@ public class PlayerControllerTest : MonoBehaviour, IDamagable
     public Vector2 initialPosition;
     //Analytics
     [Header("Analytics")]
-    [SerializeField] private SendToGoogle sendToGoogle;
+    [SerializeField] public SendToGoogle sendToGoogle;
     // delegate 
     public delegate void RestCalledDelegate();
     public event RestCalledDelegate OnResetCalled;

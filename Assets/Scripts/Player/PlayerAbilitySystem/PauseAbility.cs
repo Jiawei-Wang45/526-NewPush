@@ -40,6 +40,7 @@ public class PauseAbility : BaseAbility
     public void ActivatePause(float pauseDuration, float pauseStrength,float pauseCooldown)
     {
         if (isCooldown) return;
+        SendAnalytics("Pause");
         StartCoroutine(PauseCoroutine(pauseDuration,pauseStrength, pauseCooldown));
         StartCoroutine(AbilityCooldownCoroutine(pauseDuration + pauseCooldown));
     }
