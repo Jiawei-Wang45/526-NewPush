@@ -135,6 +135,12 @@ public class FireAbility: MonoBehaviour
     public void ConsumeAmmo(int amount)
     {
         currentAmmo -= amount;
+        if (currentAmmo < 0) currentAmmo = 0;
+        // update player color saturation based on ammo proportion
+        if (stats != null && maxAmmo > 0)
+        {
+            stats.playerColor.S = (currentAmmo / (float)maxAmmo) * 100f;
+        }
     }
     private void OnFireTriggered(InputAction.CallbackContext context)
     {
@@ -189,6 +195,10 @@ public class FireAbility: MonoBehaviour
             yield return null;
         }
         currentAmmo = maxAmmo;
+        if (stats != null)
+        {
+            stats.playerColor.S = 100f;
+        }
         ResetReload();
     }
     private void setHandleOffsetX(float percent)
@@ -210,6 +220,10 @@ public class FireAbility: MonoBehaviour
         currentWeapon= newWeapon;
         maxAmmo = currentWeapon.maxAmmoNums;
         currentAmmo = maxAmmo;
+        if (stats != null)
+        {
+            stats.playerColor.S = 100f;
+        }
         //TODO: May change reloadTime for different types of weapons
     }
 
