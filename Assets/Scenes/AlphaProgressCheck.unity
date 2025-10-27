@@ -9230,9 +9230,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: <size=20><color=#FF0000>WASD</color></size> to move, <size=20><color=#FF0000>left
-    click</color></size> to fire, <size=20><color=#FF0000>Die = </color></size>reset
-    with ghost
+  m_text: <size=20><color=#FF0000>WASD</color></size> to move\n<size=20><color=#FF0000>left
+    click</color></size> to fire
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 2a280115a77d9fd42a429972ddb21e7c, type: 2}
   m_sharedMaterial: {fileID: -4619050269489390830, guid: 2a280115a77d9fd42a429972ddb21e7c, type: 2}
