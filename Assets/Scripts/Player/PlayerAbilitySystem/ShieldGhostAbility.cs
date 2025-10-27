@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 public class ShieldGhostAbility : BaseAbility
 {
     //other abilities it will use
-    private PauseAbility pauseAbility;
+    private TracesetAbility tracesetAbility;
     private TracebackAbility tracebackAbility;
     private FireAbility fireAbility;
 
@@ -23,7 +23,7 @@ public class ShieldGhostAbility : BaseAbility
     protected override void Awake()
     {
         base.Awake();
-        pauseAbility = GetComponent<PauseAbility>();
+        tracesetAbility = GetComponent<TracesetAbility>();
         tracebackAbility = GetComponent<TracebackAbility>();
         fireAbility=GetComponent<FireAbility>();
     }
@@ -47,7 +47,8 @@ public class ShieldGhostAbility : BaseAbility
     private IEnumerator ShieldGhostCoroutine(float pauseDuration)
     {
         isCooldown = true;
-        pauseAbility.ActivatePause(pauseDuration, pauseStrength, pauseCooldown);
+        // use TracesetAbility which provides player-invincible pause behavior
+        tracesetAbility.ActivatePause(pauseDuration, pauseStrength, pauseCooldown);
         tracebackAbility.ActivateTrackback(pauseDuration, ghostType, fireAbility.currentWeapon);
         shieldShape.SetActive(true);
         hitboxShape.SetActive(true);

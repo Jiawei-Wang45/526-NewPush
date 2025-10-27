@@ -45,6 +45,20 @@ public class PauseAbility : BaseAbility
         StartCoroutine(PauseCoroutine(pauseDuration,pauseStrength, pauseCooldown));
         StartCoroutine(AbilityCooldownCoroutine(pauseDuration + pauseCooldown));
     }
+
+    // Trigger only the pause events (OnPauseStart/OnPauseEnd) without sending analytics or starting cooldown.
+    // Useful for abilities that want the global pause behavior but manage their own analytics/cooldown.
+    public void TriggerPauseEvents(float pauseDuration, float pauseStrength)
+    {
+        StartCoroutine(TriggerPauseCoroutine(pauseDuration, pauseStrength));
+    }
+
+    private IEnumerator TriggerPauseCoroutine(float pauseDuration, float pauseStrength)
+    {
+        OnPauseStart?.Invoke(pauseStrength);
+        yield return new WaitForSeconds(pauseDuration);
+        OnPauseEnd?.Invoke();
+    }
     private IEnumerator PauseCoroutine(float pauseDuration, float pauseStrength, float pauseCooldown)
     {
         isCooldown = true;
