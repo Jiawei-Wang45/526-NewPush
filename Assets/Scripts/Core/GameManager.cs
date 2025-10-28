@@ -120,7 +120,7 @@ public class GameManager : MonoBehaviour
 
         resetsRemaining = 2;
         resetsRemainingText.text = $"<size=20><color=#FF0000>Resets Remaining: </color>{resetsRemaining}</size>";
-        infoText.text = "<size=20><color=#FF0000>Wave Clear!</color></size>\nLives and ghosts restored";
+        infoText.text = "<size=20><color=#FF0000>Wave Clear!</color></size>\nHealth & resets restored";
         player.UponWaveClear();
         waveCount++;
         waveStartTime = Time.time; // Update wave start time for next wave

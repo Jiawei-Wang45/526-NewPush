@@ -26,7 +26,7 @@ public class EnemyStats : MonoBehaviour
     public void TakeDamage(float damage)
     {
         SetHealth(health-damage);
-        enemyColor.L = 50f + (health / maxHealth) * 40f;
+        enemyColor.L = 50f + (health / maxHealth) * 40;
         if (health <= 0)
         {
             RandomDropItems();
