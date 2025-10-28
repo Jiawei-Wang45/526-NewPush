@@ -9,6 +9,9 @@ public class BaseAbility : MonoBehaviour
     [SerializeField] protected Image filledImage;
     [SerializeField] protected TextMeshProUGUI cooldownText;
     protected bool isCooldown = false;
+    private Coroutine disableRoutine = null;
+
+    protected bool isEnabled = true;
     protected virtual void Awake()
     {
         ResetAbilityUI();
@@ -27,8 +30,8 @@ public class BaseAbility : MonoBehaviour
         while (true)
         {
             cooldownRemainTime -= Time.deltaTime;
-            filledImage.fillAmount = 1-cooldownRemainTime / cooldownTime;
-            if (cooldownRemainTime<1)
+            filledImage.fillAmount = 1 - cooldownRemainTime / cooldownTime;
+            if (cooldownRemainTime < 1)
             {
                 cooldownText.SetText(cooldownRemainTime.ToString("F1"));
             }
@@ -41,14 +44,29 @@ public class BaseAbility : MonoBehaviour
             yield return null;
         }
         cooldownText.gameObject.SetActive(false);
+        isCooldown = false;
     }
-
 
     protected void ResetAbilityUI()
     {
         filledImage.fillAmount = 1;
         cooldownText.gameObject.SetActive(false);
     }
+
+    public void DisableAbility(float duration)
+    {
+        if (disableRoutine != null) StopCoroutine(disableRoutine);
+        disableRoutine = StartCoroutine(DisableCoroutine(duration));
+    }
+    
+    protected IEnumerator DisableCoroutine(float cooldownTime)
+    {
+        isEnabled = false;
+        yield return new WaitForSeconds(cooldownTime);
+        isEnabled = true;
+        disableRoutine = null;
+    }
+
 
     protected void SendAnalytics(string abilityType)
     {

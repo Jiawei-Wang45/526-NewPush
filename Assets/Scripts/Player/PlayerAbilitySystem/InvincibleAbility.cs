@@ -34,7 +34,7 @@ public class InvincibleAbility : BaseAbility
     }
     public void ActivateInvincible()
     {
-        if (isCooldown) return;
+        if (isCooldown || !isEnabled) return;
         SendAnalytics("Invincible");
         StartCoroutine(InvincibleCoroutine());
         StartCoroutine(AbilityCooldownCoroutine(InvincibleDuration + InvincibleCooldown));

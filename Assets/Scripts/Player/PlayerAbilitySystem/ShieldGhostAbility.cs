@@ -39,8 +39,10 @@ public class ShieldGhostAbility : BaseAbility
     }
     public void ActivateShieldGhost()
     {
-        if (isCooldown) return;
+        Debug.Log($"Shield Ghost Ability enabled: {isEnabled}");
+        if (isCooldown || !isEnabled) return;
         SendAnalytics("ShieldGhost");
+        GetComponent<PauseAbility>().DisableAbility(pauseDuration);
         StartCoroutine(ShieldGhostCoroutine(pauseDuration));
         StartCoroutine(AbilityCooldownCoroutine(pauseDuration + pauseCooldown));
     }

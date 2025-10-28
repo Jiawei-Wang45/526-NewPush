@@ -40,8 +40,10 @@ public class PauseAbility : BaseAbility
     }
     public void ActivatePause(float pauseDuration, float pauseStrength,float pauseCooldown)
     {
-        if (isCooldown) return;
+        Debug.Log($"Pause Ability enabled {isEnabled}");
+        if (isCooldown || !isEnabled) return;
         SendAnalytics("Pause");
+        GetComponent<ShieldGhostAbility>().DisableAbility(pauseDuration);
         StartCoroutine(PauseCoroutine(pauseDuration,pauseStrength, pauseCooldown));
         StartCoroutine(AbilityCooldownCoroutine(pauseDuration + pauseCooldown));
     }
