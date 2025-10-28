@@ -15,7 +15,7 @@ MonoBehaviour:
   weaponType: 0
   triggerType: 1
   weaponBulletLifeTime: 2
-  weaponBulletDamage: 10
+  weaponBulletDamage: 4
   weaponBulletSpeed: 20
   weaponFireRate: 2
   weaponBulletInOneShot: 5

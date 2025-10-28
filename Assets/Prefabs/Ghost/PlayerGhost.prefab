@@ -45,6 +45,8 @@ GameObject:
   - component: {fileID: 6647639767574705978}
   - component: {fileID: 3996045582538590906}
   - component: {fileID: 6080577275780738487}
+  - component: {fileID: 2812039372150129597}
+  - component: {fileID: 5672591822670757630}
   m_Layer: 3
   m_Name: PlayerGhost
   m_TagString: Player
@@ -208,10 +210,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90a7127d1089e274482afa8314cd1f01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pc: {fileID: 0}
   movementSpeed: 10
   maxHealth: 5
   health: 0
   isGhost: 1
+  isInvincible: 0
+  playerColor:
+    H: 0
+    S: 100
+    L: 50
+  originalH: 0
+  reloadTime: 1.5
+  hRecoverySpeed: 1
+  hRecoveryDelay: 2
+  hRecoveryTimer: 0
+  isRecoveringH: 0
 --- !u!114 &6080577275780738487
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -228,6 +242,34 @@ MonoBehaviour:
   ghostAim: {fileID: 4529250764501810466}
   firePoint: {fileID: 705893417141931669}
   currentWeapon: {fileID: 0}
+--- !u!114 &2812039372150129597
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1732174262029397663}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd04fedd64180be498496ceda1faa7c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  firePoint: {fileID: 0}
+--- !u!114 &5672591822670757630
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1732174262029397663}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f1eaacb3db698a47936711eb607434d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  activePauseDuration: 5
+  activePauseCooldown: 3
+  activePauseStrength: 20
 --- !u!1 &5314922793995746250
 GameObject:
   m_ObjectHideFlags: 0

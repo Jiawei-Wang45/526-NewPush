@@ -49,7 +49,7 @@ public class ShieldGhostAbility : BaseAbility
         isCooldown = true;
         // use TracesetAbility which provides player-invincible pause behavior
         tracesetAbility.ActivatePause(pauseDuration, pauseStrength, pauseCooldown);
-        tracebackAbility.ActivateTrackback(pauseDuration, ghostType, fireAbility.currentWeapon);
+        tracebackAbility.ActivateTrackback(pauseDuration, ghostType);
         shieldShape.SetActive(true);
         hitboxShape.SetActive(true);
         returnPointInstance = Instantiate(returnPoint, transform.position, transform.rotation);

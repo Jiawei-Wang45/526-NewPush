@@ -9804,6 +9804,7 @@ GameObject:
   - component: {fileID: 1335872726}
   - component: {fileID: 1335872728}
   - component: {fileID: 1335872727}
+  - component: {fileID: 1335872729}
   m_Layer: 3
   m_Name: player
   m_TagString: Pausable
@@ -9991,7 +9992,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pc: {fileID: 0}
   movementSpeed: 10
-  maxHealth: 5
+  maxHealth: 20
   health: 0
   isGhost: 0
   isInvincible: 0
@@ -10057,7 +10058,7 @@ MonoBehaviour:
   hitboxShape: {fileID: 542654361}
   returnPoint: {fileID: 3640288586839963322, guid: 1b237f2327867df49a2821fc0c06cbf5, type: 3}
   pauseDuration: 3
-  pauseCooldown: 3
+  pauseCooldown: 10
   pauseStrength: 10
 --- !u!114 &1335872724
 MonoBehaviour:
@@ -10087,7 +10088,7 @@ MonoBehaviour:
   filledImage: {fileID: 594417072}
   cooldownText: {fileID: 1838791516}
   activePauseDuration: 5
-  activePauseCooldown: 3
+  activePauseCooldown: 15
   activePauseStrength: 20
 --- !u!114 &1335872726
 MonoBehaviour:
@@ -10105,7 +10106,7 @@ MonoBehaviour:
   cooldownText: {fileID: 1951127272}
   speedMultiplier: 2
   InvincibleDuration: 3
-  InvincibleCooldown: 3
+  InvincibleCooldown: 10
 --- !u!199 &1335872727
 ParticleSystemRenderer:
   serializedVersion: 6
@@ -14907,6 +14908,21 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel1_3: W
+--- !u!114 &1335872729
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1335872713}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f1eaacb3db698a47936711eb607434d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  activePauseDuration: 5
+  activePauseCooldown: 3
+  activePauseStrength: 20
 --- !u!1 &1361703342
 GameObject:
   m_ObjectHideFlags: 0

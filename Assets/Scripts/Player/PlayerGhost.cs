@@ -41,15 +41,6 @@ public class PlayerGhost : MonoBehaviour
             //rb.linearVelocity = currentState.currentVelocity;
             rb.position = currentState.currentPosition;
             ghostAim.rotation = currentState.currentRotation;
-            if (currentState.usingNewWeapon)
-            {
-                currentWeapon = currentState.usingNewWeapon;
-                //Debug.Log("Equipping weapon");
-            }
-            if (currentState.currentlyFiring && currentWeapon)
-            {
-                Fire();
-            }
             stateIndex++;
         } else
         {

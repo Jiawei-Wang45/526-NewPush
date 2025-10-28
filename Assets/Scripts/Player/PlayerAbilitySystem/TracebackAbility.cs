@@ -21,37 +21,27 @@ public class TracebackAbility : MonoBehaviour
     }
     private void Start()
     {
-        GetComponent<FireAbility>().OnFire += OnFire;
         GetComponent<PlayerControllerTest>().OnResetCalled += ResetStates;
     }
     private void FixedUpdate()
     {
         if (isRecording)
         {
-            recordedStates.Add(new ObjectState(rb.linearVelocity, rb.position, firePoint.rotation, recordFireAction, currentWeapon));    
+            recordedStates.Add(new ObjectState(rb.linearVelocity, rb.position, firePoint.rotation));    
         }
         recordFireAction = false;
     }
     #region listen call back
-    private void OnFire()
-    {
-        recordFireAction = true;
-    }
-    public void OnWeaponChanged(PlayerWeapon newWeapon)
-    {
-        currentWeapon= newWeapon;
-    }
     #endregion
-    public void ActivateTrackback(float duration, PlayerGhost GhostType,PlayerWeapon initialWeapon)
+    public void ActivateTrackback(float duration, PlayerGhost GhostType)
     {
         if (isRecording) return;
-        StartCoroutine(TrackbackCoroutine(duration, GhostType, initialWeapon));
+        StartCoroutine(TrackbackCoroutine(duration, GhostType));
     }
-    private IEnumerator TrackbackCoroutine(float duration, PlayerGhost GhostType, PlayerWeapon initialWeapon)
+    private IEnumerator TrackbackCoroutine(float duration, PlayerGhost GhostType)
     {
         isRecording = true;
         recordedStates.Clear();
-        currentWeapon = initialWeapon;
         yield return new WaitForSeconds(duration);
         ghostInstance = Instantiate(GhostType);
         ghostInstance.InitializeGhost(recordedStates[0].currentPosition, recordedStates);

@@ -208,6 +208,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90a7127d1089e274482afa8314cd1f01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pc: {fileID: 0}
   movementSpeed: 10
   maxHealth: 30
   health: 0
@@ -218,17 +219,11 @@ MonoBehaviour:
     S: 100
     L: 50
   originalH: 0
-  weaponTypeThreshold: 15
-  maxAmmo: 100
-  currentAmmo: 0
   reloadTime: 2
   hRecoverySpeed: 1
   hRecoveryDelay: 2
   hRecoveryTimer: 0
   isRecoveringH: 0
-  reloadBar: {fileID: 0}
-  handle: {fileID: 0}
-  targetOffsetX: 0
 --- !u!114 &7532095911874647355
 MonoBehaviour:
   m_ObjectHideFlags: 0
