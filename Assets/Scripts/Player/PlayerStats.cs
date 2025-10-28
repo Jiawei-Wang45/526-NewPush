@@ -49,7 +49,7 @@ public class PlayerStats : MonoBehaviour
     {
         if (isInvincible) return;
         ChangeHealth(Mathf.Clamp(health - damage, 0, maxHealth));
-        playerColor.L = 50f + (1 - (health / maxHealth)) * 40f;
+        playerColor.L = 50f + (1 - (health / maxHealth)) * 25f;
         /*
         playerColor.H = Mathf.Lerp(playerColor.H, bulletColor.H, 0.01f);
         // start to recover the Hvalue

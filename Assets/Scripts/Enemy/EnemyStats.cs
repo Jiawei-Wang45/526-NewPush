@@ -20,13 +20,12 @@ public class EnemyStats : MonoBehaviour
         health = maxHealth;
 
         enemyColor = new HSLColor(200f, 100f, 50f);
-
         spawner = FindFirstObjectByType<EnemySpawner>();
     }
     public void TakeDamage(float damage)
     {
         SetHealth(health-damage);
-        enemyColor.L = 50f + (1 - (health / maxHealth)) * 40f;
+        enemyColor.L = 50f + (1 - (health / maxHealth)) * 25;
         if (health <= 0)
         {
             RandomDropItems();
