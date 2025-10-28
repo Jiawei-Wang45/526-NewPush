@@ -117,6 +117,7 @@ public class FireAbility: MonoBehaviour
             ActivateReload();
             return;
         }
+        else if (isReloading) return;
         OnFire?.Invoke();
         ConsumeAmmo(1);
         float bulletTiltAngle = -(currentWeapon.weaponBulletInOneShot - 1) * currentWeapon.weaponFiringAngle / 2;
