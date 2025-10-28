@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
     public GameObject InGamePauseMenu;
     public GameObject InGameEndingMenu;
     public GameObject InGameWinMenu;
+    public GameObject TutorialText;
     public PlayerControllerTest player;
     public PlayerGhost ghost;
     public EnemySpawner enemySpawner;
@@ -68,7 +69,7 @@ public class GameManager : MonoBehaviour
             pcTest.playerInput.Default.Escape.performed += OnEscapeTriggered;
             sendToGoogle = FindFirstObjectByType<SendToGoogle>();
         }
-        Time.timeScale = 1.0f;
+        Time.timeScale = 0.0f;
     }
     //private void Update()
     //{
@@ -77,6 +78,13 @@ public class GameManager : MonoBehaviour
     //        ChangePauseStat();
     //    }
     //}
+
+    public void GameStart()
+    {
+        TutorialText.SetActive(false);
+        Time.timeScale = 1.0f;
+        enemySpawner.StartWave();
+    }
 
     public void PlayerDestroyed()
     {

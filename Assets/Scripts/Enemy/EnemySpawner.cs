@@ -80,7 +80,7 @@ public class EnemySpawner : MonoBehaviour
             WaveCleared();
         }
     }
-    
+
     private Vector2 GetRandomSpawnPoint()
     {
         SpriteRenderer sr = spawnBox.GetComponent<SpriteRenderer>();
@@ -91,7 +91,7 @@ public class EnemySpawner : MonoBehaviour
         return new Vector2(x, y);
     }
 
-    private void Start()
+    public void StartWave()
     {
         InitializeNewWave();
         SpawnWave();
@@ -106,8 +106,7 @@ public class EnemySpawner : MonoBehaviour
         }
         enemiesInWave.Clear();
         spawnBudget += 10;
-        InitializeNewWave();
-        SpawnWave();
+        StartWave();
         gameManager.WaveClear();
     }
 
