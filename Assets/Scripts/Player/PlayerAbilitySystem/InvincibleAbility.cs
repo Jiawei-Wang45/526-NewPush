@@ -35,6 +35,7 @@ public class InvincibleAbility : BaseAbility
     public void ActivateInvincible()
     {
         if (isCooldown || !isEnabled) return;
+        
         SendAnalytics("Invincible");
         StartCoroutine(InvincibleCoroutine());
         StartCoroutine(AbilityCooldownCoroutine(InvincibleDuration + InvincibleCooldown));
@@ -82,7 +83,6 @@ public class InvincibleAbility : BaseAbility
         if (isCooldown)
         {
             StopAllCoroutines();
-            ResetAbilityUI();
             stats.SetInvincible(false);
             pc.speed = stats.movementSpeed;
             gameObject.layer = LayerMask.NameToLayer("Player");

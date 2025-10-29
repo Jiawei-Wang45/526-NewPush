@@ -47,7 +47,7 @@ public class PlayerStats : MonoBehaviour
     }
     public void TakeDamage(float damage, HSLColor bulletColor)
     {
-        if (isInvincible) return;
+        //if (isInvincible) return;
         ChangeHealth(Mathf.Clamp(health - damage, 0, maxHealth));
         playerColor.L = 50f + (1 - (health / maxHealth)) * 25f;
         /*

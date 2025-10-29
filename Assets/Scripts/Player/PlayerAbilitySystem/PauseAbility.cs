@@ -78,7 +78,6 @@ public class PauseAbility : BaseAbility
         if (isCooldown)
         {
             StopAllCoroutines();
-            ResetAbilityUI();
             OnPauseEnd?.Invoke();
             isCooldown = false;
         }

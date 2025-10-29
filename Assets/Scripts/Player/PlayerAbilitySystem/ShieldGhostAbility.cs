@@ -73,7 +73,6 @@ public class ShieldGhostAbility : BaseAbility
         if (isCooldown)
         {
             StopAllCoroutines();
-            ResetAbilityUI();
             shieldShape.SetActive(false);
             hitboxShape.SetActive(false);
             Destroy(returnPointInstance);

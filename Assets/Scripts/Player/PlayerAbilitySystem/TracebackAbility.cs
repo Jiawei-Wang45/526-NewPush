@@ -5,12 +5,12 @@ using UnityEngine;
 public class TracebackAbility : MonoBehaviour
 {
     private Rigidbody2D rb;
-    private FireAbility fireAbility;
-    private PlayerWeapon currentWeapon;
+    //private FireAbility fireAbility;
+    //private PlayerWeapon currentWeapon;
     public Transform firePoint;
     
     // store the necessary information to trace back
-    private bool recordFireAction = false;
+    //private bool recordFireAction = false;
     private bool isRecording = false;
     private List<ObjectState> recordedStates = new List<ObjectState>();
     private PlayerGhost ghostInstance;
@@ -29,7 +29,7 @@ public class TracebackAbility : MonoBehaviour
         {
             recordedStates.Add(new ObjectState(rb.linearVelocity, rb.position, firePoint.rotation));    
         }
-        recordFireAction = false;
+        //recordFireAction = false;
     }
     #region listen call back
     #endregion
@@ -56,7 +56,7 @@ public class TracebackAbility : MonoBehaviour
             if (ghostInstance != null)
                 Destroy(ghostInstance);
             ghostInstance= null;
-            currentWeapon = null;
+            //currentWeapon = null;
             isRecording = false;
         }
         

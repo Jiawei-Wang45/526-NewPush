@@ -260,11 +260,11 @@ public class GameManager : MonoBehaviour
         //}
         onReset?.Invoke();
         // Destroy all enemy spawn indicators to prevent spawning during reset
-        EnemySpawnIndicator[] indicators = FindObjectsByType<EnemySpawnIndicator>(FindObjectsInactive.Include, FindObjectsSortMode.None); 
-        foreach (EnemySpawnIndicator i in indicators)
-        {
-                Destroy(i.gameObject);
-        }
+        //EnemySpawnIndicator[] indicators = FindObjectsByType<EnemySpawnIndicator>(FindObjectsInactive.Include, FindObjectsSortMode.None); 
+        //foreach (EnemySpawnIndicator i in indicators)
+        //{
+        //        Destroy(i.gameObject);
+        //}
 
         Bullet_Default[] bullets = FindObjectsByType<Bullet_Default>(FindObjectsInactive.Include, FindObjectsSortMode.None);
         foreach (Bullet_Default b in bullets)

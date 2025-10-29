@@ -112,12 +112,11 @@ public class FireAbility: MonoBehaviour
     #region Fire
     private void Fire()
     {
-        if (!CanFire() && !isReloading)
+        if (!CanFire())
         {
             ActivateReload();
             return;
         }
-        else if (isReloading) return;
         OnFire?.Invoke();
         ConsumeAmmo(1);
         float bulletTiltAngle = -(currentWeapon.weaponBulletInOneShot - 1) * currentWeapon.weaponFiringAngle / 2;
@@ -131,7 +130,7 @@ public class FireAbility: MonoBehaviour
     }
     public bool CanFire()
     {
-        return currentAmmo > 0;
+        return currentAmmo > 0 && !isReloading;
     }
     public void ConsumeAmmo(int amount)
     {
