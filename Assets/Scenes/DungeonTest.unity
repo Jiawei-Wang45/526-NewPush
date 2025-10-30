@@ -6229,7 +6229,7 @@ MonoBehaviour:
   startRoomPrefab: {fileID: 4811822070566930807, guid: dd5ff9d22494f8b4fa27d01e31d9de2f, type: 3}
   endRoomPrefab: {fileID: 4811822070566930807, guid: 93a45c27008918443be545d4c0e5439d, type: 3}
   roadPrefab: {fileID: 5586165495642614983, guid: ca43d6c8fd477534797884aef3869258, type: 3}
-  generateOnStart: 0
+  generateOnStart: 1
   assignRoomsToGameManager: 1
   gridWidth: 10
   gridHeight: 10
