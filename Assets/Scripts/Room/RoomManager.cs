@@ -207,6 +207,23 @@ public class RoomManager : MonoBehaviour
         EnsureDoorsExist();
         // Apply open/closed logic using existing private method
         OpenDoors();
+        // Ensure spawners have a reference to the GameManager when rooms are created by generators
+        AssignGameManagerToSpawners();
+    }
+
+    // Ensure any EnemySpawner on this room has a reference to the global GameManager instance.
+    // This is defensive: generators or designers might forget to wire the reference in the Inspector.
+    private void AssignGameManagerToSpawners()
+    {
+        if (enemySpawners == null || GameManager.instance == null) return;
+        foreach (var s in enemySpawners)
+        {
+            if (s == null) continue;
+            if (s.gameManager == null)
+            {
+                s.gameManager = GameManager.instance;
+            }
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -292,6 +309,7 @@ public class RoomManager : MonoBehaviour
 
             if (!anyActive)
             {
+                Debug.Log($"RoomManager '{name}': All spawners idle, room cleared.");
                 // No active waves across spawners — consider room cleared
                 isRoomActive = false;
                 OpenDoors();

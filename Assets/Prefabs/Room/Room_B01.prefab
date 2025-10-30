@@ -793,7 +793,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   roomTrigger: {fileID: 7317622075315689984}
   doorPrefab: {fileID: 1718955756871633245, guid: c38b70b6bf15f57408f831ec3c90cac5, type: 3}
-  doorOutsideOffset: 1
+  doorOutsideOffset: 1.5
   doorNorthMode: 0
   doorEastMode: 0
   doorSouthMode: 0

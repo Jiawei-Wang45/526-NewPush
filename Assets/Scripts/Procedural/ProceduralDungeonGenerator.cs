@@ -75,7 +75,6 @@ public class ProceduralDungeonGenerator : MonoBehaviour
 		// endpoints: prefer door transform if present, otherwise cell center edge
 		Vector3 aPos = GetEndpointForConnection(indexA, bCell);
 		Vector3 bPos = GetEndpointForConnection(indexB, aCell);
-		Debug.Log($"  Endpoint A: {aPos}, Endpoint B: {bPos}");
 		TileRoadBetween(aPos, bPos);
 	}
 

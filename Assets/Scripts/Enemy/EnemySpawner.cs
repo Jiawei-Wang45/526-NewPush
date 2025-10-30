@@ -87,6 +87,7 @@ public class EnemySpawner : MonoBehaviour
     public void SpawnWave()
     {
         enemiesStillAlive = enemiesInWave.Count;
+        Debug.Log($"EnemySpawner '{name}': Spawning wave {currentWaveIndex + 1} with {enemiesStillAlive} enemies.");
         IsWaveActive = true;
         IsWaveCleared = false;
         for (int i = 0; i < enemiesInWave.Count; i++)
@@ -98,9 +99,8 @@ public class EnemySpawner : MonoBehaviour
     
     public void EnemyDestroyed()
     {
-
         enemiesStillAlive--;
-        Debug.Log($"Enemy destroyed {enemiesStillAlive} left");
+        Debug.Log($"EnemySpawner '{name}': Enemy destroyed. {enemiesStillAlive} remaining.");
         if (enemiesStillAlive == 0)
         {
             WaveCleared();
@@ -192,6 +192,12 @@ public class EnemySpawner : MonoBehaviour
         EnemyController enemyController = spawnedEnemy.GetComponent<EnemyController>();
         spawnedEnemy.GetComponent<EnemyController>().BoundHealthbar = createdHealthbar;
         createdHealthbar.GetComponentInChildren<EnemyHealthbar>().enemy = spawnedEnemy;
+        // Ensure the spawned enemy knows which spawner created it so callbacks go to the correct spawner
+        var stats = enemyController.GetComponent<EnemyStats>();
+        if (stats != null)
+        {
+            stats.spawner = this;
+        }
         return enemyController;
     }
 }
