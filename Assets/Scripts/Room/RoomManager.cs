@@ -230,11 +230,59 @@ public class RoomManager : MonoBehaviour
     {
         if (roomTrigger != null && other == null) return;
 
+        // Only respond to player entering. Avoid starting the room for other colliders.
         var player = other.GetComponentInParent<PlayerControllerTest>();
         if (player != null && !hasPlayerEntered)
         {
-            hasPlayerEntered = true;
-            StartRoom();
+            // Prefer to verify the player's collider is fully inside the room trigger
+            bool fullyInside = false;
+            var playerCol = player.GetComponentInChildren<Collider2D>();
+            if (playerCol != null && roomTrigger != null)
+            {
+                var pBounds = playerCol.bounds;
+                fullyInside = roomTrigger.bounds.Contains(pBounds.min) && roomTrigger.bounds.Contains(pBounds.max);
+            }
+            else if (roomTrigger != null)
+            {
+                // fallback: use player position
+                fullyInside = roomTrigger.bounds.Contains(player.transform.position);
+            }
+
+            if (fullyInside)
+            {
+                hasPlayerEntered = true;
+                StartRoom();
+            }
+            else
+            {
+                // Player is only partially inside; wait for OnTriggerStay2D to detect full entry
+            }
+        }
+    }
+
+    private void OnTriggerStay2D(Collider2D other)
+    {
+        if (roomTrigger != null && other == null) return;
+        var player = other.GetComponentInParent<PlayerControllerTest>();
+        if (player != null && !hasPlayerEntered)
+        {
+            bool fullyInside = false;
+            var playerCol = player.GetComponentInChildren<Collider2D>();
+            if (playerCol != null && roomTrigger != null)
+            {
+                var pBounds = playerCol.bounds;
+                fullyInside = roomTrigger.bounds.Contains(pBounds.min) && roomTrigger.bounds.Contains(pBounds.max);
+            }
+            else if (roomTrigger != null)
+            {
+                fullyInside = roomTrigger.bounds.Contains(player.transform.position);
+            }
+
+            if (fullyInside)
+            {
+                hasPlayerEntered = true;
+                StartRoom();
+            }
         }
     }
 

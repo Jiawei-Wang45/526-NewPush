@@ -1,0 +1,201 @@
+using System.Collections.Generic;
+using UnityEngine;
+
+public static class ProceduralDungeonInstantiator
+{
+    // Instantiate rooms and roads from a GenerationResult produced by ProceduralGraphGenerator
+    public static List<GameObject> InstantiateFromGraph(
+        ProceduralGraphGenerator.GenerationResult graphResult,
+        GameObject[] roomPrefabs,
+        GameObject startRoomPrefab,
+        GameObject endRoomPrefab,
+        GameObject roadPrefab,
+        Vector2 cellSize,
+        float roomScale,
+        Vector3 dungeonOffset,
+        Transform parent,
+        float doorOutsideOffset)
+    {
+        var instantiatedRooms = new List<GameObject>();
+        var occupiedCells = graphResult.occupiedCells;
+        var adjacencyGraph = graphResult.adjacencyGraph;
+
+    // Instantiate rooms at cell centers
+        for (int i = 0; i < occupiedCells.Count; i++)
+        {
+            var cell = occupiedCells[i];
+            Vector3 worldPos = new Vector3(cell.x * cellSize.x, cell.y * cellSize.y, 0f) + parent.position + dungeonOffset;
+            GameObject roomInstance = null;
+            GameObject prefabToUse = null;
+            if (i == graphResult.startIndex && startRoomPrefab != null) prefabToUse = startRoomPrefab;
+            else if (i == graphResult.endIndex && endRoomPrefab != null) prefabToUse = endRoomPrefab;
+            else if (roomPrefabs != null && roomPrefabs.Length > 0) prefabToUse = roomPrefabs[UnityEngine.Random.Range(0, roomPrefabs.Length)];
+            if (prefabToUse != null)
+            {
+                roomInstance = Object.Instantiate(prefabToUse, worldPos, Quaternion.identity, parent);
+            }
+            else
+            {
+                roomInstance = new GameObject($"Room_{i}");
+                roomInstance.transform.position = worldPos;
+                roomInstance.transform.SetParent(parent, false);
+            }
+
+            // Ensure a RoomManager is present and configured
+            var rm = roomInstance.GetComponent<RoomManager>();
+            if (rm == null) rm = roomInstance.AddComponent<RoomManager>();
+
+            if (rm.roomTrigger == null)
+            {
+                var trigger = roomInstance.AddComponent<BoxCollider2D>();
+                trigger.isTrigger = true;
+                trigger.size = cellSize * roomScale;
+                rm.roomTrigger = trigger;
+            }
+
+            roomInstance.transform.localScale = Vector3.one * roomScale;
+
+            // Ensure doors exist/positioned now so generator can read door transforms immediately
+            rm.doorOutsideOffset = doorOutsideOffset;
+            rm.InitializeDoors();
+
+            instantiatedRooms.Add(roomInstance);
+        }
+
+        // Apply door modes based on adjacency graph
+        // build cell->index map (occupiedCells list index already matches)
+        for (int i = 0; i < occupiedCells.Count; i++)
+        {
+            var roomGO = instantiatedRooms[i];
+            if (roomGO == null) continue;
+            var rm = roomGO.GetComponent<RoomManager>();
+            if (rm == null) continue;
+
+            Vector2Int[] dirs = new Vector2Int[] { Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left };
+            for (int d = 0; d < dirs.Length; d++)
+            {
+                var nbCell = occupiedCells[i] + dirs[d];
+                bool connected = false;
+                // find index of neighbor cell
+                int nbIndex = occupiedCells.FindIndex(v => v == nbCell);
+                if (nbIndex >= 0)
+                {
+                    if (adjacencyGraph.TryGetValue(i, out var neighs) && neighs.Contains(nbIndex)) connected = true;
+                }
+
+                var dirEnum = (RoomManager.DoorDirection)d;
+                rm.SetDoorMode(dirEnum, connected ? RoomManager.DoorMode.Normal : RoomManager.DoorMode.PermanentlyLocked);
+            }
+
+            var all = rm.GetAllDoors();
+            for (int k = 0; k < all.Length; k++)
+            {
+                var door = all[k];
+                if (door == null) continue;
+                var mode = rm.GetDoorMode((RoomManager.DoorDirection)k);
+                if (mode == RoomManager.DoorMode.PermanentlyLocked) door.SetActive(true); else door.SetActive(false);
+            }
+        }
+
+        // Create roads
+        if (roadPrefab != null)
+        {
+            var created = new HashSet<string>();
+            for (int i = 0; i < occupiedCells.Count; i++)
+            {
+                foreach (var j in adjacencyGraph[i])
+                {
+                    if (i == j) continue;
+                    string key = i < j ? $"{i}-{j}" : $"{j}-{i}";
+                    if (created.Contains(key)) continue;
+                    created.Add(key);
+                    CreateRoadBetween(instantiatedRooms, occupiedCells, i, j, roadPrefab, cellSize, parent);
+                }
+            }
+        }
+
+        return instantiatedRooms;
+    }
+
+    private static void CreateRoadBetween(List<GameObject> instantiatedRooms, List<Vector2Int> occupiedCells, int indexA, int indexB, GameObject roadPrefab, Vector2 cellSize, Transform parent)
+    {
+        var aCell = occupiedCells[indexA];
+        var bCell = occupiedCells[indexB];
+        Vector3 aPos = GetEndpointForConnection(instantiatedRooms, occupiedCells, indexA, bCell, cellSize);
+        Vector3 bPos = GetEndpointForConnection(instantiatedRooms, occupiedCells, indexB, aCell, cellSize);
+        TileRoadBetween(aPos, bPos, roadPrefab, cellSize, parent);
+    }
+
+    private static Vector3 GetEndpointForConnection(List<GameObject> instantiatedRooms, List<Vector2Int> occupiedCells, int roomIndex, Vector2Int neighborCell, Vector2 cellSize)
+    {
+    var cell = occupiedCells[roomIndex];
+    var roomGO = instantiatedRooms[roomIndex];
+    Vector3 center = roomGO != null ? roomGO.transform.position : new Vector3(cell.x * cellSize.x, cell.y * cellSize.y, 0f);
+        Vector2Int dir = neighborCell - cell;
+
+        RoomManager.DoorDirection doorDir = RoomManager.DoorDirection.North;
+        if (dir.x > 0) doorDir = RoomManager.DoorDirection.East;
+        else if (dir.x < 0) doorDir = RoomManager.DoorDirection.West;
+        else if (dir.y > 0) doorDir = RoomManager.DoorDirection.North;
+        else if (dir.y < 0) doorDir = RoomManager.DoorDirection.South;
+
+        if (roomGO != null)
+        {
+            var rm = roomGO.GetComponent<RoomManager>();
+            if (rm != null && rm.HasDoor(doorDir))
+            {
+                // use exit anchor if provided
+                return rm.GetDoorEndpoint(doorDir);
+            }
+        }
+
+        Vector3 offset = Vector3.zero;
+        if (dir.x > 0) offset = new Vector3(cellSize.x * 0.5f, 0f, 0f);
+        else if (dir.x < 0) offset = new Vector3(-cellSize.x * 0.5f, 0f, 0f);
+        else if (dir.y > 0) offset = new Vector3(0f, cellSize.y * 0.5f, 0f);
+        else if (dir.y < 0) offset = new Vector3(0f, -cellSize.y * 0.5f, 0f);
+
+        return center + offset;
+    }
+
+    private static void TileRoadBetween(Vector3 from, Vector3 to, GameObject roadPrefab, Vector2 cellSize, Transform parent)
+    {
+        Vector3 dir = to - from;
+        float totalLength = dir.magnitude;
+        if (totalLength <= 0.001f) return;
+        Vector3 unit = dir.normalized;
+
+        float segLen = MeasureRoadPrefabLength(roadPrefab);
+        if (segLen <= 0f) segLen = Mathf.Max(cellSize.x, cellSize.y);
+
+        int count = Mathf.Max(1, Mathf.CeilToInt(totalLength / segLen));
+        for (int i = 0; i < count; i++)
+        {
+            float t = (i + 0.5f) / count;
+            Vector3 pos = Vector3.Lerp(from, to, t);
+            var seg = Object.Instantiate(roadPrefab, pos, Quaternion.identity, parent);
+            seg.transform.right = unit;
+        }
+    }
+
+    private static float MeasureRoadPrefabLength(GameObject roadPrefab)
+    {
+        if (roadPrefab == null) return 0f;
+        float len = 0f;
+        var tmp = Object.Instantiate(roadPrefab);
+        var sr = tmp.GetComponentInChildren<SpriteRenderer>();
+        if (sr != null) len = sr.bounds.size.x;
+        else
+        {
+            var mr = tmp.GetComponentInChildren<MeshRenderer>();
+            if (mr != null) len = mr.bounds.size.x;
+            else
+            {
+                var bc = tmp.GetComponentInChildren<BoxCollider2D>();
+                if (bc != null) len = bc.size.x;
+            }
+        }
+        Object.DestroyImmediate(tmp);
+        return len;
+    }
+}

@@ -23,8 +23,7 @@ public class GameManager : MonoBehaviour
     private int currentRoomIndex = -1;
     public bool isInLevel;
     public float levelStartTime;
-    private int resetsRemaining = 2;
-    public TMP_Text resetsRemainingText;
+    
     public TMP_Text infoText;
     public TMP_Text displayScoreText;
     // Google analytics temporarily disabled: keep field commented for now
@@ -123,16 +122,8 @@ public class GameManager : MonoBehaviour
 
     public void PlayerDestroyed()
     {
-        if (resetsRemaining == 0)
-        {
-            GameOver();
-        }
-        else
-        {
-            resetsRemaining -= 1;
-            resetsRemainingText.text = $"<size=20><color=#FF0000>Resets Remaining: </color>{resetsRemaining}</size>";
-            Reset();
-        }
+        // No more resets: when player is destroyed, immediately end the game
+        GameOver();
     }
 
     // Wave lifecycle is now handled by RoomManager and EnemySpawner.
