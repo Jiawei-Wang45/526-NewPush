@@ -30,11 +30,6 @@ public class ProceduralDungeonGenerator : MonoBehaviour
 	public int roomCount = 9;
 	public Vector2 cellSize = new Vector2(10f, 8f);
 
-	[Header("Adjacency options")]
-	[Range(0f, 1f)] public float connectionProbability = 1f; // probability to create an edge between adjacent cells
-	[Tooltip("Optional seed for adjacency randomization. 0 = use time-based randomness.")]
-	public int adjacencySeed = 0;
-
 	[Header("Room sizing")]
 	[Range(0.1f, 1f)] public float roomScale = 0.8f; // room visual and trigger scale relative to cellSize
 
@@ -316,9 +311,6 @@ public class ProceduralDungeonGenerator : MonoBehaviour
 		var graph = new Dictionary<int, List<int>>();
 		for (int i = 0; i < occupiedCells.Count; i++) graph[i] = new List<int>();
 
-		// Create a RNG for adjacency selection. Use adjacencySeed if provided for reproducibility.
-		System.Random rng = adjacencySeed != 0 ? new System.Random(adjacencySeed) : new System.Random();
-
 		Vector2Int[] dirs = new Vector2Int[] { Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left };
 		for (int i = 0; i < occupiedCells.Count; i++)
 		{
@@ -328,14 +320,8 @@ public class ProceduralDungeonGenerator : MonoBehaviour
 				var nb = c + d;
 				if (map.TryGetValue(nb, out int j))
 				{
-					// Decide probabilistically whether to add this edge. This allows some adjacent
-					// cells to remain unconnected while RepairConnectivity() later ensures overall connectivity.
-					double roll = rng.NextDouble();
-					if (roll <= connectionProbability)
-					{
-						if (!graph[i].Contains(j)) graph[i].Add(j);
-						if (!graph[j].Contains(i)) graph[j].Add(i);
-					}
+					if (!graph[i].Contains(j)) graph[i].Add(j);
+					if (!graph[j].Contains(i)) graph[j].Add(i);
 				}
 			}
 		}
