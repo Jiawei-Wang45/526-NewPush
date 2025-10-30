@@ -70,11 +70,12 @@ public class BaseAbility : MonoBehaviour
 
     protected void SendAnalytics(string abilityType)
     {
-        if (PlayerControllerTest.instance != null && PlayerControllerTest.instance.sendToGoogle != null)
-        {
-            GameManager gm = FindFirstObjectByType<GameManager>();
-            int waveToSend = gm != null ? gm.CurrentWave : 0;
-            PlayerControllerTest.instance.sendToGoogle.SendAbilityUse(PlayerControllerTest.instance.transform.position, waveToSend, abilityType);
-        }
+        // Analytics temporarily disabled: do not send ability-use events with wave data
+        // if (PlayerControllerTest.instance != null && PlayerControllerTest.instance.sendToGoogle != null)
+        // {
+        //     GameManager gm = FindFirstObjectByType<GameManager>();
+        //     int waveToSend = gm != null ? gm.CurrentWave : 0;
+        //     PlayerControllerTest.instance.sendToGoogle.SendAbilityUse(PlayerControllerTest.instance.transform.position, waveToSend, abilityType);
+        // }
     } 
 }

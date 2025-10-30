@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,10 +17,27 @@ public class EnemySpawner : MonoBehaviour
     public GameManager gameManager;
     public GameObject spawnBox;
     public int spawnBudget = 20;
+    // Optional fixed per-wave budgets. If provided and length > 0, the spawner will use these budgets per wave.
+    public int[] waveBudgets;
+    // If true, the spawner will automatically start the next wave after a clear (or when totalWaves is 0 meaning infinite).
+    public bool loopWaves = true;
+    // If > 0, the spawner will run this many waves and then finish. If 0, waves are infinite depending on loopWaves.
+    public int totalWaves = 1;
+
     private List<EnemyController> enemiesInWave = new List<EnemyController>();
     private List<Vector2> spawnPositions = new List<Vector2>();
 
     private int enemiesStillAlive;
+
+    // Wave state exposed to other scripts
+    public bool IsWaveActive { get; private set; } = false;
+    public bool IsWaveCleared { get; private set; } = false;
+    public int currentWaveIndex = 0;
+
+    // Event fired when current wave is cleared
+    public event Action OnWaveCleared;
+    // Event fired when the spawner has finished all its waves (only if it has finite waves)
+    public event Action OnSpawnerFinished;
     private void Awake()
     {
         for (int i = 0; i < enemySpawnList.Length; i++)
@@ -32,6 +50,12 @@ public class EnemySpawner : MonoBehaviour
     public void InitializeNewWave()
     {
         int pointsToSpend = spawnBudget;
+        // If fixed wave budgets are provided, use the budget for the current wave index
+        if (waveBudgets != null && waveBudgets.Length > 0)
+        {
+            int idx = Mathf.Clamp(currentWaveIndex, 0, waveBudgets.Length - 1);
+            pointsToSpend = waveBudgets[idx];
+        }
         //List<(int cost, int index)> costIndexList = new List<(int, int)>();
         //for (int i = 0; i < difficultyCosts.Count; i++)
         //{
@@ -53,7 +77,7 @@ public class EnemySpawner : MonoBehaviour
             //    break;
             //}
 
-            int index = Random.Range(0, enemySpawnList.Length);
+            int index = UnityEngine.Random.Range(0, enemySpawnList.Length);
             pointsToSpend -= difficultyCosts[index];
             enemiesInWave.Add(InstantiateNewEnemy(enemySpawnList[index]));
             spawnPositions.Add(GetRandomSpawnPoint());
@@ -63,6 +87,8 @@ public class EnemySpawner : MonoBehaviour
     public void SpawnWave()
     {
         enemiesStillAlive = enemiesInWave.Count;
+        IsWaveActive = true;
+        IsWaveCleared = false;
         for (int i = 0; i < enemiesInWave.Count; i++)
         {
             GameObject spawnedIndicator = Instantiate(enemySpawnIndicator, spawnPositions[i], transform.rotation);
@@ -86,13 +112,22 @@ public class EnemySpawner : MonoBehaviour
         SpriteRenderer sr = spawnBox.GetComponent<SpriteRenderer>();
         Bounds b = sr.bounds;
 
-        float x = Random.Range(b.min.x, b.max.x);
-        float y = Random.Range(b.min.y, b.max.y);
+        float x = UnityEngine.Random.Range(b.min.x, b.max.x);
+        float y = UnityEngine.Random.Range(b.min.y, b.max.y);
         return new Vector2(x, y);
     }
 
     public void StartWave()
     {
+        // If totalWaves > 0 and we've already reached the total, do nothing (finished)
+        if (totalWaves > 0 && currentWaveIndex >= totalWaves)
+        {
+            IsWaveActive = false;
+            IsWaveCleared = true;
+            OnSpawnerFinished?.Invoke();
+            return;
+        }
+
         InitializeNewWave();
         SpawnWave();
     }
@@ -105,10 +140,48 @@ public class EnemySpawner : MonoBehaviour
             e.Erase();
         }
         enemiesInWave.Clear();
-        spawnBudget += 10;
-        gameManager.WaveClear();
-        StartWave();
+        // mark state
+        IsWaveActive = false;
+        IsWaveCleared = true;
+
+        // Notify listeners that this wave was cleared
+        OnWaveCleared?.Invoke();
+
+        // GameManager no longer manages waves; RoomManager/other listeners
+        // should subscribe to OnWaveCleared/OnSpawnerFinished as needed.
+
+        // Advance to next wave index
+        currentWaveIndex++;
+
+        // If we have a finite number of waves and we've reached the end, signal finished
+        if (totalWaves > 0 && currentWaveIndex >= totalWaves)
+        {
+            OnSpawnerFinished?.Invoke();
+            IsWaveActive = false;
+            IsWaveCleared = true;
+            return;
+        }
+
+        // Otherwise start next wave if looping or totalWaves is 0 (infinite) or still have remaining finite waves
+        if (loopWaves || (totalWaves > 0 && currentWaveIndex < totalWaves))
+        {
+            // If using waveBudgets, wrap/wrapless handled by InitializeNewWave via currentWaveIndex
+            StartWave();
+        }
         
+    }
+
+    // Returns true if this spawner has a finite number of waves that will eventually finish.
+    public bool HasFiniteWaves()
+    {
+        return totalWaves > 0;
+    }
+
+    // Returns true when the spawner has finished all its waves (only meaningful if HasFiniteWaves==true)
+    public bool HasFinishedAllWaves()
+    {
+        if (!HasFiniteWaves()) return false;
+        return currentWaveIndex >= totalWaves && !IsWaveActive;
     }
 
 
