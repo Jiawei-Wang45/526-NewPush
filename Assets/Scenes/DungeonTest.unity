@@ -6226,16 +6226,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   roomPrefabs:
   - {fileID: 4811822070566930807, guid: 5d94691c52701b1489a00a4023f4c3ff, type: 3}
-  startRoomPrefab: {fileID: 4811822070566930807, guid: b8259b4e04a47b84bb7e873256e52bc2, type: 3}
-  endRoomPrefab: {fileID: 4811822070566930807, guid: b8259b4e04a47b84bb7e873256e52bc2, type: 3}
+  startRoomPrefab: {fileID: 4811822070566930807, guid: dd5ff9d22494f8b4fa27d01e31d9de2f, type: 3}
+  endRoomPrefab: {fileID: 4811822070566930807, guid: 93a45c27008918443be545d4c0e5439d, type: 3}
   roadPrefab: {fileID: 5586165495642614983, guid: ca43d6c8fd477534797884aef3869258, type: 3}
-  generateOnStart: 1
+  generateOnStart: 0
   assignRoomsToGameManager: 1
   gridWidth: 10
   gridHeight: 10
   roomCount: 10
   cellSize: {x: 75, y: 75}
   roomScale: 1
+  doorOutsideOffset: 1
 --- !u!1 &359807819
 GameObject:
   m_ObjectHideFlags: 0
@@ -8412,9 +8413,8 @@ MonoBehaviour:
   - {fileID: 0}
   isInLevel: 1
   levelStartTime: 0
-  resetsRemainingText: {fileID: 0}
-  infoText: {fileID: 0}
-  displayScoreText: {fileID: 0}
+  infoText: {fileID: 1025013844}
+  displayScoreText: {fileID: 612018814}
 --- !u!1 &855916485
 GameObject:
   m_ObjectHideFlags: 0
@@ -8747,7 +8747,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 850232884}
         m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: Restart
         m_Mode: 1
@@ -16448,7 +16448,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 850232884}
         m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: BackToMainMenu
         m_Mode: 1
