@@ -34,6 +34,9 @@ public class ProceduralDungeonGenerator : MonoBehaviour
 	[Header("Door settings")]
 	public float doorOutsideOffset = 1f;
 
+	[Header("Adjacency")]
+	[Range(0f, 1f)] public float adjacencyProbability = 1f; // probability that adjacent cells are initially connected
+
 	// runtime data (kept for convenience/debugging)
 	private List<Vector2Int> occupiedCells = new List<Vector2Int>();
 	private List<GameObject> instantiatedRooms = new List<GameObject>();
@@ -50,7 +53,7 @@ public class ProceduralDungeonGenerator : MonoBehaviour
 		ClearGenerated();
 
 		// Algorithm: generate grid cells + adjacency
-		var result = ProceduralGraphGenerator.Generate(gridWidth, gridHeight, roomCount);
+		var result = ProceduralGraphGenerator.Generate(gridWidth, gridHeight, roomCount, adjacencyProbability);
 		occupiedCells = result.occupiedCells;
 		adjacencyGraph = result.adjacencyGraph;
 
@@ -84,7 +87,7 @@ public class ProceduralDungeonGenerator : MonoBehaviour
 		}
 
 		instantiatedRooms = ProceduralDungeonInstantiator.InstantiateFromGraph(
-			result, roomPrefabs, startRoomPrefab, endRoomPrefab, roadPrefab, cellSize, roomScale, dungeonOffset, this.transform, doorOutsideOffset);
+			result, roomPrefabs, startRoomPrefab, endRoomPrefab, roadPrefab, cellSize, roomScale, dungeonOffset, this.transform);
 
 		// Optionally assign generated rooms back to GameManager
 		if (assignRoomsToGameManager && GameManager.instance != null)

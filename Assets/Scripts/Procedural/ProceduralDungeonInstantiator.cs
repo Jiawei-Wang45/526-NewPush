@@ -6,15 +6,14 @@ public static class ProceduralDungeonInstantiator
     // Instantiate rooms and roads from a GenerationResult produced by ProceduralGraphGenerator
     public static List<GameObject> InstantiateFromGraph(
         ProceduralGraphGenerator.GenerationResult graphResult,
-        GameObject[] roomPrefabs,
-        GameObject startRoomPrefab,
-        GameObject endRoomPrefab,
-        GameObject roadPrefab,
-        Vector2 cellSize,
-        float roomScale,
-        Vector3 dungeonOffset,
-        Transform parent,
-        float doorOutsideOffset)
+    GameObject[] roomPrefabs,
+    GameObject startRoomPrefab,
+    GameObject endRoomPrefab,
+    GameObject roadPrefab,
+    Vector2 cellSize,
+    float roomScale,
+    Vector3 dungeonOffset,
+    Transform parent)
     {
         var instantiatedRooms = new List<GameObject>();
         var occupiedCells = graphResult.occupiedCells;
@@ -45,18 +44,34 @@ public static class ProceduralDungeonInstantiator
             var rm = roomInstance.GetComponent<RoomManager>();
             if (rm == null) rm = roomInstance.AddComponent<RoomManager>();
 
-            if (rm.roomTrigger == null)
-            {
-                var trigger = roomInstance.AddComponent<BoxCollider2D>();
-                trigger.isTrigger = true;
-                trigger.size = cellSize * roomScale;
-                rm.roomTrigger = trigger;
-            }
-
+            // Apply scale first so any builder-created geometry will be sized correctly in world space
             roomInstance.transform.localScale = Vector3.one * roomScale;
 
+            // Prefer letting a RoomBuilder create the room geometry and trigger so the
+            // prefab's configured sizes (builder.defaultSize) are respected. If no builder
+            // is present, fall back to creating a BoxCollider2D sized to the cell.
+            var builder = roomInstance.GetComponentInChildren<RoomBuilder>(true);
+            if (builder != null)
+            {
+                // Build using the builder's configured default size. The transform scale
+                // already applied above will affect final world size (defaultSize * roomScale).
+                builder.Build(builder.defaultSize);
+
+                // Adopt the trigger created by the builder (if any) onto the RoomManager
+                rm.roomTrigger = roomInstance.GetComponentInChildren<BoxCollider2D>(true);
+            }
+            else
+            {
+                if (rm.roomTrigger == null)
+                {
+                    var trigger = roomInstance.AddComponent<BoxCollider2D>();
+                    trigger.isTrigger = true;
+                    trigger.size = cellSize * roomScale;
+                    rm.roomTrigger = trigger;
+                }
+            }
+
             // Ensure doors exist/positioned now so generator can read door transforms immediately
-            rm.doorOutsideOffset = doorOutsideOffset;
             rm.InitializeDoors();
 
             instantiatedRooms.Add(roomInstance);

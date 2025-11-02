@@ -12,7 +12,10 @@ public static class ProceduralGraphGenerator
     }
 
     // Generate occupied cells and adjacency graph using the same algorithm as before
-    public static GenerationResult Generate(int gridWidth, int gridHeight, int roomCount)
+    // adjacencyProbability: probability [0..1] that two adjacent cells will be considered connected
+    // during initial adjacency construction. Use <1 to allow adjacent-but-not-connected rooms;
+    // RepairConnectivity will still ensure the final graph is fully connected.
+    public static GenerationResult Generate(int gridWidth, int gridHeight, int roomCount, float adjacencyProbability = 1f)
     {
         var result = new GenerationResult();
 
@@ -63,8 +66,14 @@ public static class ProceduralGraphGenerator
                 var nb = c + d;
                 if (map.TryGetValue(nb, out int j))
                 {
-                    if (!graph[i].Contains(j)) graph[i].Add(j);
-                    if (!graph[j].Contains(i)) graph[j].Add(i);
+                    // only handle each unordered pair once (when j > i) to keep decisions symmetric
+                    if (j <= i) continue;
+                    // allow probabilistic omission of adjacent connections
+                    if (rng.NextDouble() < Mathf.Clamp01(adjacencyProbability))
+                    {
+                        if (!graph[i].Contains(j)) graph[i].Add(j);
+                        if (!graph[j].Contains(i)) graph[j].Add(i);
+                    }
                 }
             }
         }
