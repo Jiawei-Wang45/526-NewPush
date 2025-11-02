@@ -25,6 +25,12 @@ public class RoomDoors : MonoBehaviour
         var foundW = transform.Find("Door_West"); if (foundW != null) doorWest = foundW.gameObject;
     }
 
+    // Try to get the RoomBuilder on this GameObject (or children) to access its prefabs
+    private RoomBuilder GetBuilder()
+    {
+        return GetComponentInChildren<RoomBuilder>(true);
+    }
+
     public GameObject GetDoor(RoomManager.DoorDirection dir)
     {
         switch (dir)
@@ -66,32 +72,108 @@ public class RoomDoors : MonoBehaviour
 
     public void CloseDoors()
     {
+        // Close means: for Normal doors activate the door prefab; for PermanentlyLocked
+        // replace door with a wall block (or activate the block) so passage is blocked.
+        var builder = GetBuilder();
         var all = GetAllDoors();
-        if (all == null) return;
-        foreach (var d in all)
+        for (int i = 0; i < all.Length; i++)
         {
-            if (d == null) continue;
-            d.SetActive(true);
+            var dir = (RoomManager.DoorDirection)i;
+            var door = all[i];
+            var mode = GetDoorMode(dir);
+            if (mode == RoomManager.DoorMode.PermanentlyLocked)
+            {
+                // ensure a wall block exists at this door and hide the door prefab
+                if (door != null) door.SetActive(false);
+                CreateBlockForDoor(dir, builder);
+            }
+            else
+            {
+                // normal door: show door, remove any block
+                if (door != null) door.SetActive(true);
+                RemoveBlockForDoor(dir);
+            }
         }
     }
 
     public void OpenDoors()
     {
+        // Open means: Normal doors are hidden (open), PermanentlyLocked must remain blocked
+        var builder = GetBuilder();
         var all = GetAllDoors();
-        if (all == null) return;
         for (int i = 0; i < all.Length; i++)
         {
-            var d = all[i];
-            if (d == null) continue;
-            var mode = GetDoorMode((RoomManager.DoorDirection)i);
+            var dir = (RoomManager.DoorDirection)i;
+            var door = all[i];
+            var mode = GetDoorMode(dir);
             if (mode == RoomManager.DoorMode.PermanentlyLocked)
             {
-                d.SetActive(true);
+                // keep blocked
+                if (door != null) door.SetActive(false);
+                CreateBlockForDoor(dir, builder);
             }
             else
             {
-                d.SetActive(false);
+                // open path: hide door and remove block
+                if (door != null) door.SetActive(false);
+                RemoveBlockForDoor(dir);
             }
+        }
+    }
+
+    // Create a wall-block GameObject at the door position. If builder or its wallPrefab is missing,
+    // no-op.
+    private void CreateBlockForDoor(RoomManager.DoorDirection dir, RoomBuilder builder)
+    {
+        if (builder == null || builder.wallPrefab == null) return;
+        string blockName = $"Door_{dir}_Block";
+        var existing = transform.Find(blockName);
+        if (existing != null) return; // already present
+
+        // Find the door transform to copy its local position/rotation. If door is missing, try to approximate.
+        GameObject door = GetDoor(dir);
+        GameObject block = Instantiate(builder.wallPrefab, transform);
+        block.name = blockName;
+        if (door != null)
+        {
+            block.transform.localPosition = door.transform.localPosition;
+            block.transform.localRotation = door.transform.localRotation;
+        }
+        else
+        {
+            // approximate by placing at edge using this object's BoxCollider2D if present
+            var bc = GetComponent<BoxCollider2D>();
+            if (bc != null)
+            {
+                Vector2 localPos = Vector2.zero;
+                float halfX = bc.size.x * 0.5f;
+                float halfY = bc.size.y * 0.5f;
+                switch (dir)
+                {
+                    case RoomManager.DoorDirection.North: localPos = new Vector2(0f, halfY); block.transform.localRotation = Quaternion.Euler(0f,0f,90f); break;
+                    case RoomManager.DoorDirection.South: localPos = new Vector2(0f, -halfY); block.transform.localRotation = Quaternion.Euler(0f,0f,-90f); break;
+                    case RoomManager.DoorDirection.East: localPos = new Vector2(halfX, 0f); block.transform.localRotation = Quaternion.identity; break;
+                    case RoomManager.DoorDirection.West: localPos = new Vector2(-halfX, 0f); block.transform.localRotation = Quaternion.identity; break;
+                }
+                block.transform.localPosition = new Vector3(localPos.x, localPos.y, 0f);
+            }
+        }
+        // try to ensure block renders above walls if it has SpriteRenderer
+        var sr = block.GetComponentInChildren<SpriteRenderer>();
+        if (sr != null) sr.sortingOrder += 5;
+    }
+
+    private void RemoveBlockForDoor(RoomManager.DoorDirection dir)
+    {
+        string blockName = $"Door_{dir}_Block";
+        var t = transform.Find(blockName);
+        if (t != null)
+        {
+            #if UNITY_EDITOR
+            Object.DestroyImmediate(t.gameObject);
+            #else
+            Object.Destroy(t.gameObject);
+            #endif
         }
     }
 }

@@ -6143,10 +6143,10 @@ MonoBehaviour:
   endRoomPrefab: {fileID: 4811822070566930807, guid: 62f308bd673f4e94184496830d3fd217, type: 3}
   roadPrefab: {fileID: 5586165495642614983, guid: ca43d6c8fd477534797884aef3869258, type: 3}
   generateOnStart: 1
-  assignRoomsToGameManager: 0
-  gridWidth: 40
-  gridHeight: 40
-  roomCount: 20
+  assignRoomsToGameManager: 1
+  gridWidth: 20
+  gridHeight: 20
+  roomCount: 10
   cellSize: {x: 75, y: 75}
   roomScale: 1
   doorOutsideOffset: 1

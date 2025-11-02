@@ -100,7 +100,6 @@ public class EnemySpawner : MonoBehaviour
     public void EnemyDestroyed()
     {
         enemiesStillAlive--;
-        Debug.Log($"EnemySpawner '{name}': Enemy destroyed. {enemiesStillAlive} remaining.");
         if (enemiesStillAlive == 0)
         {
             WaveCleared();

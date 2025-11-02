@@ -63,8 +63,9 @@ public class RoomManager : MonoBehaviour
         roomDoors?.SetDoorMode(dir, mode);
     }
 
-    // Enemy spawners inside this room. These will be started when the player enters.
-    public EnemySpawner[] enemySpawners;
+    // Enemy spawner inside this room. This project uses a single spawner per room.
+    // Assign the spawner in the Inspector to `enemySpawner`.
+    public EnemySpawner enemySpawner;
 
     [Header("Builder (required)")]
     // RoomBuilder is required. RoomManager will call RoomBuilder.Build(size) to auto-generate
@@ -180,14 +181,10 @@ public class RoomManager : MonoBehaviour
     // This is defensive: generators or designers might forget to wire the reference in the Inspector.
     private void AssignGameManagerToSpawners()
     {
-        if (enemySpawners == null || GameManager.instance == null) return;
-        foreach (var s in enemySpawners)
+        if (GameManager.instance == null) return;
+        if (enemySpawner != null && enemySpawner.gameManager == null)
         {
-            if (s == null) continue;
-            if (s.gameManager == null)
-            {
-                s.gameManager = GameManager.instance;
-            }
+            enemySpawner.gameManager = GameManager.instance;
         }
     }
 
@@ -212,37 +209,11 @@ public class RoomManager : MonoBehaviour
                 // fallback: use player position
                 fullyInside = roomTrigger.bounds.Contains(player.transform.position);
             }
-            Debug.Log($"RoomManager '{name}': Player entered room trigger. Fully inside: {fullyInside}");
 
             if (fullyInside)
             {
                 hasPlayerEntered = true;
                 StartRoom();
-            }
-            else
-            {
-                // Player is only partially inside; wait for OnTriggerStay2D to detect full entry
-                // Log bounds to help debug why containment failed
-                if (roomTrigger == null)
-                {
-                    Debug.LogWarning($"RoomManager '{name}': roomTrigger is null when checking player containment.");
-                }
-                else
-                {
-                    var playerColDebug = player.GetComponentInChildren<Collider2D>();
-                    if (playerColDebug != null)
-                    {
-                        var pB = playerColDebug.bounds;
-                        var rB = roomTrigger.bounds;
-                        Debug.Log($"RoomManager '{name}': containment failed. Player bounds min={pB.min} max={pB.max} | room bounds min={rB.min} max={rB.max}");
-                    }
-                    else
-                    {
-                        var pPos = player.transform.position;
-                        var rB = roomTrigger.bounds;
-                        Debug.Log($"RoomManager '{name}': containment failed. Player position={pPos} | room bounds min={rB.min} max={rB.max}");
-                    }
-                }
             }
         }
     }
@@ -259,7 +230,6 @@ public class RoomManager : MonoBehaviour
             {
                 var pBounds = playerCol.bounds;
                 fullyInside = roomTrigger.bounds.Contains(pBounds.min) && roomTrigger.bounds.Contains(pBounds.max);
-                Debug.Log($"RoomManager '{name}': OnTriggerStay2D checking player full entry. Fully inside: {fullyInside}");
             }
             else if (roomTrigger != null)
             {
@@ -271,80 +241,58 @@ public class RoomManager : MonoBehaviour
                 hasPlayerEntered = true;
                 StartRoom();
             }
-                else
-                {
-                    // Player is only partially inside; log bounds to diagnose
-                    if (roomTrigger == null)
-                    {
-                        Debug.LogWarning($"RoomManager '{name}': roomTrigger is null when checking player containment (Stay).");
-                    }
-                    else
-                    {
-                        var playerColDebug = player.GetComponentInChildren<Collider2D>();
-                        if (playerColDebug != null)
-                        {
-                            var pB = playerColDebug.bounds;
-                            var rB = roomTrigger.bounds;
-                            Debug.Log($"RoomManager '{name}': (Stay) containment failed. Player bounds min={pB.min} max={pB.max} | room bounds min={rB.min} max={rB.max}");
-                        }
-                        else
-                        {
-                            var pPos = player.transform.position;
-                            var rB = roomTrigger.bounds;
-                            Debug.Log($"RoomManager '{name}': (Stay) containment failed. Player position={pPos} | room bounds min={rB.min} max={rB.max}");
-                        }
-                    }
-                }
         }
     }
 
     // Made public so DungeonManager can activate rooms
     public void StartRoom()
     {
+        // If there's no spawner in this room, consider it immediately cleared.
+        if (enemySpawner == null)
+        {
+            Debug.Log($"RoomManager '{name}': no spawner assigned — marking room cleared on entry.");
+            isRoomActive = false;
+            // Ensure doors remain open and notify listeners
+            OpenDoors();
+            onRoomCleared?.Invoke();
+            GameManager.instance?.RoomCleared(this);
+            return;
+        }
+
         isRoomActive = true;
         // Close doors via RoomDoors
-        roomDoors.CloseDoors();
-        StartSpawners();
+        CloseDoors();
+        enemySpawner.StartWave();
 
-        // Determine how many spawners are finite (will eventually finish).
-        int spawnersToFinish = 0;
-        if (enemySpawners != null && enemySpawners.Length > 0)
+        // Single-spawner logic: if the spawner is finite, subscribe and wait for its
+        // OnSpawnerFinished event to open doors. Otherwise poll until idle.
+        if (enemySpawner != null)
         {
-            foreach (var s in enemySpawners)
+            // Only subscribe if the spawner is finite (will signal completion).
+            if (enemySpawner.HasFiniteWaves())
             {
-                if (s == null) continue;
-                // subscribe to finished event so we know when finite spawners complete
-                s.OnSpawnerFinished += OnSpawnerFinished;
-                if (s.HasFiniteWaves()) spawnersToFinish++;
+                // Ensure we don't double-subscribe
+                enemySpawner.OnSpawnerFinished -= OnSpawnerFinished;
+                enemySpawner.OnSpawnerFinished += OnSpawnerFinished;
+                // Wait for the spawner to signal completion via event
+                return;
             }
         }
 
-        if (spawnersToFinish > 0)
-        {
-            // We'll wait for the OnSpawnerFinished callbacks to open doors.
-            pendingSpawnersToFinish = spawnersToFinish;
-        }
-        else
-        {
-            // No finite spawners; poll spawners until they are all idle (no active waves)
-            StartCoroutine(PollSpawnersUntilIdle());
-        }
+        // No finite spawner subscribed — poll until spawner(s) become idle
+        StartCoroutine(PollSpawnersUntilIdle());
     }
-
-    private int pendingSpawnersToFinish = 0;
 
     private void OnSpawnerFinished()
     {
-        pendingSpawnersToFinish--;
-        if (pendingSpawnersToFinish <= 0)
-        {
-            // Room cleared
-            isRoomActive = false;
-            OpenDoors();
-            onRoomCleared?.Invoke();
-            // Notify game manager that this room is cleared
-            GameManager.instance?.RoomCleared(this);
-        }
+        // Single-spawner finished: unsubscribe and clear the room
+        if (enemySpawner != null) enemySpawner.OnSpawnerFinished -= OnSpawnerFinished;
+
+        isRoomActive = false;
+        OpenDoors();
+        onRoomCleared?.Invoke();
+        // Notify game manager that this room is cleared
+        GameManager.instance?.RoomCleared(this);
     }
 
     private IEnumerator PollSpawnersUntilIdle()
@@ -355,22 +303,14 @@ public class RoomManager : MonoBehaviour
         while (true)
         {
             bool anyActive = false;
-            if (enemySpawners != null)
+            // Single spawner check
+            if (enemySpawner != null && enemySpawner.IsWaveActive)
             {
-                foreach (var s in enemySpawners)
-                {
-                    if (s == null) continue;
-                    if (s.IsWaveActive)
-                    {
-                        anyActive = true;
-                        break;
-                    }
-                }
+                anyActive = true;
             }
 
             if (!anyActive)
             {
-                Debug.Log($"RoomManager '{name}': All spawners idle, room cleared.");
                 // No active waves across spawners — consider room cleared
                 isRoomActive = false;
                 OpenDoors();
@@ -396,23 +336,14 @@ public class RoomManager : MonoBehaviour
         roomDoors.OpenDoors();
     }
 
-    private void StartSpawners()
-    {
-        if (enemySpawners == null) return;
-        foreach (var s in enemySpawners)
-        {
-            if (s == null) continue;
-            // Try to call StartWave if available (matches GameManager usage)
-            s.StartWave();
-        }
-    }
-
     // Optional helper to force-clear the room (useful for debugging / level design)
     public void ForceClearRoom()
     {
         StopAllCoroutines();
         isRoomActive = false;
         OpenDoors();
+        // Ensure we unsubscribe from spawner events when force-clearing
+        if (enemySpawner != null) enemySpawner.OnSpawnerFinished -= OnSpawnerFinished;
         onRoomCleared?.Invoke();
     }
 }

@@ -98,20 +98,35 @@ public class GameManager : MonoBehaviour
             return;
         }
         currentRoomIndex = 0;
+        // Refresh the room progress UI
+        UpdateRoomProgressUI();
     }
 
     // Called by RoomManager when a room is cleared
     public void RoomCleared(RoomManager room)
     {
         // Only advance if the cleared room matches the current room (defensive)
-        if (currentRoomIndex >= 0 && currentRoomIndex < rooms.Length && rooms[currentRoomIndex] == room)
+        if (currentRoomIndex >= 0 && currentRoomIndex < rooms.Length)
         {
+            Debug.Log($"GameManager: Room '{room.name}' cleared. Advancing to room {currentRoomIndex + 1}");
             currentRoomIndex++;
-            // Do NOT auto-start the next room here. Rooms start when the player
-            // enters their trigger (RoomManager.OnTriggerEnter2D calls StartRoom()).
-            // Victory is no longer tied to clearing all rooms; a separate WinTrigger
-            // should call PlayerReachedWinTrigger() when the player touches it.
+            UpdateRoomProgressUI();
         }
+    }
+
+    // Display current room name in red followed by cleared/total, e.g.:
+    // <color=red>Room_2</color>: 1/5
+    private void UpdateRoomProgressUI()
+    {
+        if (infoText == null) return;
+        if (rooms == null || rooms.Length == 0)
+        {
+            infoText.text = "Rooms: 0/0";
+            return;
+        }
+
+        int clearedCount = Mathf.Clamp(currentRoomIndex, 0, rooms.Length);
+        infoText.text = $"<color=#FF0000>Rooms</color>: {clearedCount}/{rooms.Length}";
     }
 
     // Called by a WinTrigger when the player reaches the goal
