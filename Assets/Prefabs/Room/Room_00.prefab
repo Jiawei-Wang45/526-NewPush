@@ -964,7 +964,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnInterval: 5
-  spawnAmount: 1
+  spawnAmount: 5
   enemySpawnList:
   - {fileID: 2834873648303903019, guid: 0810de3e989fb2a46b9f6a974ca641b1, type: 3}
   - {fileID: 4670447388552369797, guid: 2333d313260042b4e9ab6f3b3468d6ce, type: 3}
@@ -974,7 +974,7 @@ MonoBehaviour:
   enemyHealthBar: {fileID: 7869302362511925162, guid: 3e42b41c175a32a4b9b8697391c7dbde, type: 3}
   gameManager: {fileID: 0}
   spawnBox: {fileID: 177841893781875243}
-  spawnBudget: 1
+  spawnBudget: 10
   waveBudgets: 
   loopWaves: 0
   totalWaves: 2
