@@ -52,33 +52,6 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "ShieldGhost",
-                    "type": "Button",
-                    "id": "0ae8a37b-0205-4416-a34d-e977966df830",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Invincible",
-                    "type": "Button",
-                    "id": "869a7e1a-7068-400d-9cc9-73946aa8f26f",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "SpecialBullet",
-                    "type": "Button",
-                    "id": "386dbe10-ae02-4403-9ee1-52fb26310f4b",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "AttackingAbility",
                     "type": "Button",
                     "id": "f0fbb363-91a7-4fd0-a98f-7514b6a73726",
@@ -203,39 +176,6 @@
                     "processors": "",
                     "groups": "",
                     "action": "Pause",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "e93f46bf-7532-417a-8cac-d12a66d91a60",
-                    "path": "<Keyboard>/2",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "ShieldGhost",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "06ba6bde-8f44-479f-af1e-f45e6e3ad49d",
-                    "path": "<Keyboard>/3",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Invincible",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "f002529e-11d6-4ea0-a34c-85b9f4c3032d",
-                    "path": "<Keyboard>/space",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "SpecialBullet",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

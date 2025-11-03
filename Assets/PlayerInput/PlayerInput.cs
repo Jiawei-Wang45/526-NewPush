@@ -138,33 +138,6 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""ShieldGhost"",
-                    ""type"": ""Button"",
-                    ""id"": ""0ae8a37b-0205-4416-a34d-e977966df830"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Invincible"",
-                    ""type"": ""Button"",
-                    ""id"": ""869a7e1a-7068-400d-9cc9-73946aa8f26f"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""SpecialBullet"",
-                    ""type"": ""Button"",
-                    ""id"": ""386dbe10-ae02-4403-9ee1-52fb26310f4b"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
                     ""name"": ""AttackingAbility"",
                     ""type"": ""Button"",
                     ""id"": ""f0fbb363-91a7-4fd0-a98f-7514b6a73726"",
@@ -294,39 +267,6 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""e93f46bf-7532-417a-8cac-d12a66d91a60"",
-                    ""path"": ""<Keyboard>/2"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""ShieldGhost"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""06ba6bde-8f44-479f-af1e-f45e6e3ad49d"",
-                    ""path"": ""<Keyboard>/3"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Invincible"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""f002529e-11d6-4ea0-a34c-85b9f4c3032d"",
-                    ""path"": ""<Keyboard>/space"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""SpecialBullet"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""a4c3cb14-7616-4ccc-ab74-f4b51fe75387"",
                     ""path"": ""<Keyboard>/1"",
                     ""interactions"": """",
@@ -370,9 +310,6 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         m_Default_Escape = m_Default.FindAction("Escape", throwIfNotFound: true);
         m_Default_Reload = m_Default.FindAction("Reload", throwIfNotFound: true);
         m_Default_Pause = m_Default.FindAction("Pause", throwIfNotFound: true);
-        m_Default_ShieldGhost = m_Default.FindAction("ShieldGhost", throwIfNotFound: true);
-        m_Default_Invincible = m_Default.FindAction("Invincible", throwIfNotFound: true);
-        m_Default_SpecialBullet = m_Default.FindAction("SpecialBullet", throwIfNotFound: true);
         m_Default_AttackingAbility = m_Default.FindAction("AttackingAbility", throwIfNotFound: true);
         m_Default_DefenseAbility = m_Default.FindAction("DefenseAbility", throwIfNotFound: true);
         m_Default_Interact = m_Default.FindAction("Interact", throwIfNotFound: true);
@@ -461,9 +398,6 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Default_Escape;
     private readonly InputAction m_Default_Reload;
     private readonly InputAction m_Default_Pause;
-    private readonly InputAction m_Default_ShieldGhost;
-    private readonly InputAction m_Default_Invincible;
-    private readonly InputAction m_Default_SpecialBullet;
     private readonly InputAction m_Default_AttackingAbility;
     private readonly InputAction m_Default_DefenseAbility;
     private readonly InputAction m_Default_Interact;
@@ -498,18 +432,6 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Default/Pause".
         /// </summary>
         public InputAction @Pause => m_Wrapper.m_Default_Pause;
-        /// <summary>
-        /// Provides access to the underlying input action "Default/ShieldGhost".
-        /// </summary>
-        public InputAction @ShieldGhost => m_Wrapper.m_Default_ShieldGhost;
-        /// <summary>
-        /// Provides access to the underlying input action "Default/Invincible".
-        /// </summary>
-        public InputAction @Invincible => m_Wrapper.m_Default_Invincible;
-        /// <summary>
-        /// Provides access to the underlying input action "Default/SpecialBullet".
-        /// </summary>
-        public InputAction @SpecialBullet => m_Wrapper.m_Default_SpecialBullet;
         /// <summary>
         /// Provides access to the underlying input action "Default/AttackingAbility".
         /// </summary>
@@ -563,15 +485,6 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @Pause.started += instance.OnPause;
             @Pause.performed += instance.OnPause;
             @Pause.canceled += instance.OnPause;
-            @ShieldGhost.started += instance.OnShieldGhost;
-            @ShieldGhost.performed += instance.OnShieldGhost;
-            @ShieldGhost.canceled += instance.OnShieldGhost;
-            @Invincible.started += instance.OnInvincible;
-            @Invincible.performed += instance.OnInvincible;
-            @Invincible.canceled += instance.OnInvincible;
-            @SpecialBullet.started += instance.OnSpecialBullet;
-            @SpecialBullet.performed += instance.OnSpecialBullet;
-            @SpecialBullet.canceled += instance.OnSpecialBullet;
             @AttackingAbility.started += instance.OnAttackingAbility;
             @AttackingAbility.performed += instance.OnAttackingAbility;
             @AttackingAbility.canceled += instance.OnAttackingAbility;
@@ -607,15 +520,6 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @Pause.started -= instance.OnPause;
             @Pause.performed -= instance.OnPause;
             @Pause.canceled -= instance.OnPause;
-            @ShieldGhost.started -= instance.OnShieldGhost;
-            @ShieldGhost.performed -= instance.OnShieldGhost;
-            @ShieldGhost.canceled -= instance.OnShieldGhost;
-            @Invincible.started -= instance.OnInvincible;
-            @Invincible.performed -= instance.OnInvincible;
-            @Invincible.canceled -= instance.OnInvincible;
-            @SpecialBullet.started -= instance.OnSpecialBullet;
-            @SpecialBullet.performed -= instance.OnSpecialBullet;
-            @SpecialBullet.canceled -= instance.OnSpecialBullet;
             @AttackingAbility.started -= instance.OnAttackingAbility;
             @AttackingAbility.performed -= instance.OnAttackingAbility;
             @AttackingAbility.canceled -= instance.OnAttackingAbility;
@@ -700,27 +604,6 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnPause(InputAction.CallbackContext context);
-        /// <summary>
-        /// Method invoked when associated input action "ShieldGhost" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
-        /// </summary>
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnShieldGhost(InputAction.CallbackContext context);
-        /// <summary>
-        /// Method invoked when associated input action "Invincible" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
-        /// </summary>
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnInvincible(InputAction.CallbackContext context);
-        /// <summary>
-        /// Method invoked when associated input action "SpecialBullet" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
-        /// </summary>
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnSpecialBullet(InputAction.CallbackContext context);
         /// <summary>
         /// Method invoked when associated input action "AttackingAbility" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>

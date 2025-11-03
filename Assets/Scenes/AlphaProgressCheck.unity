@@ -5316,7 +5316,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   firePoint: {fileID: 50638741}
-  currentWeapon: {fileID: 11400000, guid: c77634c28d420b74e8cd29f62f1f25b1, type: 2}
+  currentWeapon: {fileID: 0}
   clusterBullet: {fileID: 5358768197015200844, guid: f449467209d75b44f8544093264294de, type: 3}
   reloadTime: 1.5
   reloadBar: {fileID: 1219950475}

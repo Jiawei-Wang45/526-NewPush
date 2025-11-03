@@ -16,11 +16,6 @@ public class FireAbility: MonoBehaviour
     public PlayerWeapon currentWeapon;
     private bool isFiring = false;
     private bool hasFired = false;
-
-    //special ammo
-    [Header("Special Ammo attributes")]
-    public GameObject clusterBullet;
-
     //reload variables
     [Header("Reloading parameters")]
     public float reloadTime = 1.5f;
@@ -53,10 +48,6 @@ public class FireAbility: MonoBehaviour
         //fire input binding
         playerInput.Default.Fire.performed += OnFireTriggered;
         playerInput.Default.Fire.canceled += OnFireTriggered;
-
-        //special bullet binding
-        playerInput.Default.SpecialBullet.performed += OnSpecialBulletTriggered;
-
 
         //reload input binding
         playerInput.Default.Reload.performed += OnReloadTriggered;
@@ -157,17 +148,6 @@ public class FireAbility: MonoBehaviour
         }
     }
     #endregion
-    #region Special Bullet
-    private void OnSpecialBulletTriggered(InputAction.CallbackContext context)
-    {
-        GameObject specialBullet = Instantiate(clusterBullet, firePoint.position, firePoint.rotation);
-        Bullet_Cluster bulletAttributes = specialBullet.GetComponent<Bullet_Cluster>();
-        bulletAttributes.InitBullet(bulletAttributes.parentBulletSpeed, bulletAttributes.parentBulletDamage, stats.playerColor);
-    }
-
-
-    #endregion
-
     #region Reload
     private void OnReloadTriggered(InputAction.CallbackContext context)
     {

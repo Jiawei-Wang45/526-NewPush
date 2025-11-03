@@ -64,7 +64,7 @@ public class TracesetAbility : MonoBehaviour
             {
                 input.Default.Fire.Disable();
                 // also disable any special fire actions if present
-                if (input.Default.SpecialBullet != null) input.Default.SpecialBullet.Disable();
+                //if (input.Default.SpecialBullet != null) input.Default.SpecialBullet.Disable();
             }
         }
         catch { }
@@ -90,7 +90,7 @@ public class TracesetAbility : MonoBehaviour
             if (input != null)
             {
                 input.Default.Fire.Enable();
-                if (input.Default.SpecialBullet != null) input.Default.SpecialBullet.Enable();
+                //if (input.Default.SpecialBullet != null) input.Default.SpecialBullet.Enable();
             }
         }
         catch { }

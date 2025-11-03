@@ -80,7 +80,7 @@ public class InvincibleAbility : BaseAbility
     }
     private void OnDestroy()
     {
-        pc.playerInput.Default.Invincible.performed -= OnInvincibleTriggered;
+        pc.playerInput.Default.DefenseAbility.performed -= OnInvincibleTriggered;
         GameManager.instance.onReset -= ResetStates;
     }
 }

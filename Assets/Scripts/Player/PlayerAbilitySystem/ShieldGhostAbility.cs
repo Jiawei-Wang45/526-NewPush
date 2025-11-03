@@ -29,7 +29,7 @@ public class ShieldGhostAbility : BaseAbility
     }
     private void Start()
     {
-        pc.playerInput.Default.ShieldGhost.performed += OnShieldGhostTriggered;
+        pc.playerInput.Default.DefenseAbility.performed += OnShieldGhostTriggered;
         GameManager.instance.onReset += ResetStates;
 
     }
