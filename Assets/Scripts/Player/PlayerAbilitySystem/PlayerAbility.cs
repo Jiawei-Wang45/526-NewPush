@@ -1,0 +1,9 @@
+using UnityEngine;
+
+[CreateAssetMenu(fileName = "New Ability", menuName = "Ability")]
+public class PlayerAbility : ScriptableObject
+{
+    public string abilityName;
+    public Sprite menuIcon;
+    public GameObject abilityPrefab;
+}

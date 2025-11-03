@@ -35,7 +35,7 @@ public class TracesetAbility : MonoBehaviour
             catch { }
             try
             {
-                pc.OnResetCalled += ResetLocal;
+                GameManager.instance.onReset += ResetLocal;
             }
             catch { }
         }
@@ -129,9 +129,9 @@ public class TracesetAbility : MonoBehaviour
         try
         {
             // trigger global pause events without analytics or PauseAbility cooldown
-            if (PauseAbility.instance != null)
+            if (PauseManager.instance != null)
             {
-                PauseAbility.instance.TriggerPauseEvents(pauseDuration, pauseStrength);
+                PauseManager.instance.RequestPause(pauseDuration, pauseStrength);
             }
         }
         catch { }

@@ -249,15 +249,6 @@ public class GameManager : MonoBehaviour
 
     public void Reset()
     {
-
-        player.Reset();
-
-
-        //EnemyController[] enemyObjects = FindObjectsByType<EnemyController>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-        //foreach (EnemyController e in enemyObjects)
-        //{
-        //    e.ResetStates();
-        //}
         onReset?.Invoke();
         // Destroy all enemy spawn indicators to prevent spawning during reset
         //EnemySpawnIndicator[] indicators = FindObjectsByType<EnemySpawnIndicator>(FindObjectsInactive.Include, FindObjectsSortMode.None); 

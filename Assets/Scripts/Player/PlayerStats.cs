@@ -16,23 +16,17 @@ public class PlayerStats : MonoBehaviour
     public HSLColor playerColor = new HSLColor();
     public float originalH=0;
 
-    //public int maxAmmo;
-    //public int currentAmmo;
-
     public float reloadTime = 1.5f;
-    //private bool isReloading = false;
 
     public float hRecoverySpeed = 1f;
     public float hRecoveryDelay = 2f; 
     public float hRecoveryTimer = 0f;
     public bool isRecoveringH = false;
 
-    //public GameObject reloadBar;
-    //public GameObject handle;
-    //public float targetOffsetX;
 
     public delegate void HealthChangedDelegate();
     public event HealthChangedDelegate OnHealthChanged;
+    #region routine functions
     private void Awake()
     {
         pc= GetComponent<PlayerControllerTest>();
@@ -40,11 +34,19 @@ public class PlayerStats : MonoBehaviour
     private void Start()
     {
         ResetStates();
-        if (!isGhost)
-        {
-            pc.OnResetCalled += ResetStates;
-        }     
+        //if (!isGhost)
+        //{
+        //    pc.OnResetCalled += ResetStates;
+        //}
+        GameManager.instance.onReset += ResetStates;
     }
+    private void Update()
+    {
+        UpdatePlayerColor();
+    }
+    #endregion routine functions
+
+    #region damage, health functions
     public void TakeDamage(float damage, HSLColor bulletColor)
     {
         //if (isInvincible) return;
@@ -73,49 +75,34 @@ public class PlayerStats : MonoBehaviour
         health = newHealth;
         OnHealthChanged?.Invoke();
     }
-    //public void StartReload()
-    //{
-    //    if (!isReloading)
-    //    {
-    //        StartCoroutine(ReloadCoroutine());
-    //    }
-    //}
+    #endregion damage, health functions
 
-    //private IEnumerator ReloadCoroutine()
-    //{
-    //    isReloading = true;
-    //    reloadBar.SetActive(true);
-    //    float accumulateTime = 0;
-    //    while(true)
-    //    {
-    //        setHandleOffsetX(accumulateTime / reloadTime);
-    //        accumulateTime += Time.deltaTime;
-    //        if (accumulateTime > reloadTime)
-    //            break;
-    //        yield return null;
-    //    }
-    //    currentAmmo = maxAmmo;
-    //    playerColor.S = 100f;
-    //    ResetReload();
-    //}
-    //public void ResetReload()
-    //{
-    //    reloadBar.SetActive(false);
-    //    isReloading = false;
-    //}
-    //private void setHandleOffsetX(float percent)
-    //{
-    //    Vector3 handleLocalPos = handle.transform.localPosition;
-    //    handleLocalPos.x = (percent-0.5f) * targetOffsetX;
-    //    handle.transform.localPosition = handleLocalPos;
-    //}
-    private void StartHRecovery()
+    #region color functions
+    private void UpdatePlayerColor()
     {
-        hRecoveryTimer = 0f;
-        isRecoveringH = true;
+        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+        if (spriteRenderer != null)
+        {
+            Color baseColor = playerColor.ToRGB();
+            if (isInvincible)
+            {
+                // half transparent when invincible
+                baseColor.a = 0.5f;
+            }
+            else
+            {
+                baseColor.a = 1f;
+            }
+            spriteRenderer.color = baseColor;
+        }
     }
-    
+    public void SetInvincible(bool Invincible)
+    {
+        isInvincible = Invincible;
+    }
+    #endregion color functions
 
+    #region reset functions
     public void ResetH()
     {
         playerColor.H = originalH;
@@ -125,50 +112,44 @@ public class PlayerStats : MonoBehaviour
 
 
     }
-
     public void ResetStates()
     {
         ChangeHealth(maxHealth);
         ResetH();
-        //ResetReload();
+        
     }
-
-    //public bool CanFire()
+    #endregion reset functions
+    //private void UpdateHRecovery()
     //{
-    //    return currentAmmo > 0 && !isReloading;
+    //    if (isRecoveringH)
+    //    {
+    //        hRecoveryTimer += Time.deltaTime;
+
+    //        if (hRecoveryTimer >= hRecoveryDelay)
+    //        {
+
+    //            float recoveryProgress = (hRecoveryTimer - hRecoveryDelay) * hRecoverySpeed;
+    //            recoveryProgress = Mathf.Clamp01(recoveryProgress);
+
+
+    //            float lerpSpeed = hRecoverySpeed * Time.deltaTime;
+    //            playerColor.H = Mathf.Lerp(playerColor.H, originalH, lerpSpeed);
+
+
+    //            if (Mathf.Abs(playerColor.H - originalH) < 0.5f)
+    //            {
+    //                playerColor.H = originalH;
+    //                isRecoveringH = false;
+    //                hRecoveryTimer = 0f;
+    //                Debug.Log("H back to normal" + originalH);
+    //            }
+    //        }
+    //    }
+    //}
+    //private void StartHRecovery()
+    //{
+    //    hRecoveryTimer = 0f;
+    //    isRecoveringH = true;
     //}
 
-
-    private void UpdateHRecovery()
-    {
-        if (isRecoveringH)
-        {
-            hRecoveryTimer += Time.deltaTime;
-
-            if (hRecoveryTimer >= hRecoveryDelay)
-            {
-
-                float recoveryProgress = (hRecoveryTimer - hRecoveryDelay) * hRecoverySpeed;
-                recoveryProgress = Mathf.Clamp01(recoveryProgress);
-                
-
-                float lerpSpeed = hRecoverySpeed * Time.deltaTime;
-                playerColor.H = Mathf.Lerp(playerColor.H, originalH, lerpSpeed);
-                
-
-                if (Mathf.Abs(playerColor.H - originalH) < 0.5f)
-                {
-                    playerColor.H = originalH;
-                    isRecoveringH = false;
-                    hRecoveryTimer = 0f;
-                    Debug.Log("H back to normal" + originalH);
-                }
-            }
-        }
-    }
-    public void SetInvincible(bool Invincible)
-    {
-        isInvincible=Invincible;
-    }
-  
 }

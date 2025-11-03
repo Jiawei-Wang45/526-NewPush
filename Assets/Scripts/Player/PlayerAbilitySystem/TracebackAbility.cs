@@ -21,7 +21,7 @@ public class TracebackAbility : MonoBehaviour
     }
     private void Start()
     {
-        GetComponent<PlayerControllerTest>().OnResetCalled += ResetStates;
+        GameManager.instance.onReset += ResetStates;
     }
     private void FixedUpdate()
     {

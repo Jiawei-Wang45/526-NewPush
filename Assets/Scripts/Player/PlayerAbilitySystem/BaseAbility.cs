@@ -5,28 +5,52 @@ using UnityEngine.UI;
 
 public class BaseAbility : MonoBehaviour
 {
-    [Header("cooldown UI parameters")]
-    [SerializeField] protected Image filledImage;
-    [SerializeField] protected TextMeshProUGUI cooldownText;
-    protected bool isCooldown = false;
-    private Coroutine disableRoutine = null;
+    //components
+    protected PlayerControllerTest pc;
+    protected PlayerStats stats;
 
-    protected bool isEnabled = true;
+    //cooldown UI parameters
+    [Header("UI object reference")]
+    public Image backgroundImage;
+    public Image filledImage;
+    public TextMeshProUGUI cooldownText;
+    [Header("UI updating assets")]
+    public Sprite cooldownIcon;
+    [Header("Ability parameter")]
+    protected bool isCooldown = false;
+    //private Coroutine disableRoutine = null;
+
+    //protected bool isEnabled = true;
+    public void BindUI(Image inBackgroundImage, Image inFilledImage, TextMeshProUGUI inCooldownText)
+    {
+        backgroundImage = inBackgroundImage;
+        filledImage= inFilledImage;
+        cooldownText = inCooldownText;
+        // initialize the cooldown Icon, since different ability contains different Icon
+        backgroundImage.sprite = cooldownIcon;
+        filledImage.sprite = cooldownIcon;
+        ResetAbilityUI();
+    }
+    //protected virtual void Awake()
+    //{  
+    //    ResetAbilityUI();
+    //}
     protected virtual void Awake()
     {
-        ResetAbilityUI();
+        pc = GetComponentInParent<PlayerControllerTest>();
+        stats = GetComponentInParent<PlayerStats>();
     }
     protected virtual void ResetStates()
     {
-        if (isCooldown)
-        {
-            ResetAbilityUI();
-        }
+        StopAllCoroutines();
+        ResetAbilityUI();
+        isCooldown = false;
     }
     protected IEnumerator AbilityCooldownCoroutine(float cooldownTime)
     {
-        float cooldownRemainTime = cooldownTime;
+        isCooldown = true;
         cooldownText.gameObject.SetActive(true);
+        float cooldownRemainTime = cooldownTime;
         while (true)
         {
             cooldownRemainTime -= Time.deltaTime;
@@ -44,6 +68,7 @@ public class BaseAbility : MonoBehaviour
             yield return null;
         }
         cooldownText.gameObject.SetActive(false);
+        AudioManager.instance.PlaySound("cooldownFinish");
         isCooldown = false;
     }
 
@@ -53,19 +78,19 @@ public class BaseAbility : MonoBehaviour
         cooldownText.gameObject.SetActive(false);
     }
 
-    public void DisableAbility(float duration)
-    {
-        if (disableRoutine != null) StopCoroutine(disableRoutine);
-        disableRoutine = StartCoroutine(DisableCoroutine(duration));
-    }
+    //public void DisableAbility(float duration)
+    //{
+    //    if (disableRoutine != null) StopCoroutine(disableRoutine);
+    //    disableRoutine = StartCoroutine(DisableCoroutine(duration));
+    //}
     
-    protected IEnumerator DisableCoroutine(float cooldownTime)
-    {
-        isEnabled = false;
-        yield return new WaitForSeconds(cooldownTime);
-        isEnabled = true;
-        disableRoutine = null;
-    }
+    //protected IEnumerator DisableCoroutine(float cooldownTime)
+    //{
+    //    isEnabled = false;
+    //    yield return new WaitForSeconds(cooldownTime);
+    //    isEnabled = true;
+    //    disableRoutine = null;
+    //}
 
 
     protected void SendAnalytics(string abilityType)

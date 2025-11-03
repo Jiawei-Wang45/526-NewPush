@@ -54,8 +54,8 @@ public class EnemyController : MonoBehaviour, IDamagable
 
         //call back bindings
         enemyStats.OnHealthChanged += BoundHealthbar.GetComponentInChildren<EnemyHealthbar>().HandleHealthChanged;
-        PauseAbility.instance.OnPauseStart += PauseStart;
-        PauseAbility.instance.OnPauseEnd += PauseEnd;
+        PauseManager.instance.OnPauseStart += PauseStart;
+        PauseManager.instance.OnPauseEnd += PauseEnd;
         
         isAlive(false);
     }
@@ -439,8 +439,8 @@ public class EnemyController : MonoBehaviour, IDamagable
     }
     private void OnDestroy()
     {
-        PauseAbility.instance.OnPauseStart -= PauseStart;
-        PauseAbility.instance.OnPauseEnd -= PauseEnd;
+        PauseManager.instance.OnPauseStart -= PauseStart;
+        PauseManager.instance.OnPauseEnd -= PauseEnd;
         gameManager.onReset -= ResetStates;
     }
 }

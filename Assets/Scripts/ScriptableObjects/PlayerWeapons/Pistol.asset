@@ -23,5 +23,5 @@ MonoBehaviour:
   weaponBulletSpread: 0
   maxAmmoNums: 7
   weaponName: Pistol
+  weaponIcon: {fileID: -2486516503001456370, guid: fa8720e752f1f184e9c2717d32582035, type: 3}
   bulletType: {fileID: 8604903965720594084, guid: 2904f1b643d26f24ea817c2a40263281, type: 3}
-  weaponImage: {fileID: 0}

@@ -45,8 +45,8 @@ public class FireAbility: MonoBehaviour
     }
     private void Start()
     {
-        maxAmmo = currentWeapon.maxAmmoNums;
-        currentAmmo = maxAmmo;
+        //maxAmmo = currentWeapon.maxAmmoNums;
+        //currentAmmo = maxAmmo;
         reloadBar.SetActive(false);
 
         playerInput = pc.playerInput;
@@ -62,7 +62,7 @@ public class FireAbility: MonoBehaviour
         playerInput.Default.Reload.performed += OnReloadTriggered;
 
         //reset binding
-        pc.OnResetCalled += ResetStates;
+        GameManager.instance.onReset += ResetStates;
     }
     #endregion
 
@@ -135,7 +135,6 @@ public class FireAbility: MonoBehaviour
     public void ConsumeAmmo(int amount)
     {
         currentAmmo -= amount;
-        if (currentAmmo < 0) currentAmmo = 0;
         // update player color saturation based on ammo proportion
         if (stats != null && maxAmmo > 0)
         {
@@ -215,14 +214,24 @@ public class FireAbility: MonoBehaviour
     #endregion
 
     #region callback
-    public void OnWeaponChanged(PlayerWeapon newWeapon)
+    public void InitializeWeapon(PlayerWeapon weapon)
     {
-        currentWeapon= newWeapon;
+        currentWeapon = weapon;
         maxAmmo = currentWeapon.maxAmmoNums;
         currentAmmo = maxAmmo;
         if (stats != null)
         {
             stats.playerColor.S = 100f;
+        }
+    }
+    public void OnWeaponChanged(PlayerWeapon weapon)
+    {
+        currentWeapon= weapon;
+        maxAmmo = currentWeapon.maxAmmoNums;
+        currentAmmo = 0;
+        if (stats != null)
+        {
+            stats.playerColor.S = 0;
         }
         //TODO: May change reloadTime for different types of weapons
     }

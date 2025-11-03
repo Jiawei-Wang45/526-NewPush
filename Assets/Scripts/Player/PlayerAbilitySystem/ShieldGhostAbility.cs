@@ -29,8 +29,8 @@ public class ShieldGhostAbility : BaseAbility
     }
     private void Start()
     {
-        GetComponent<PlayerControllerTest>().playerInput.Default.ShieldGhost.performed += OnShieldGhostTriggered;
-        GetComponent<PlayerControllerTest>().OnResetCalled += ResetStates;
+        pc.playerInput.Default.ShieldGhost.performed += OnShieldGhostTriggered;
+        GameManager.instance.onReset += ResetStates;
 
     }
     private void OnShieldGhostTriggered(InputAction.CallbackContext context)
@@ -39,10 +39,10 @@ public class ShieldGhostAbility : BaseAbility
     }
     public void ActivateShieldGhost()
     {
-        Debug.Log($"Shield Ghost Ability enabled: {isEnabled}");
-        if (isCooldown || !isEnabled) return;
+        //Debug.Log($"Shield Ghost Ability enabled: {isEnabled}");
+        if (isCooldown/* || !isEnabled*/) return;
         SendAnalytics("ShieldGhost");
-        GetComponent<PauseAbility>().DisableAbility(pauseDuration);
+        //GetComponent<PauseAbility>().DisableAbility(pauseDuration);
         StartCoroutine(ShieldGhostCoroutine(pauseDuration));
         StartCoroutine(AbilityCooldownCoroutine(pauseDuration + pauseCooldown));
     }

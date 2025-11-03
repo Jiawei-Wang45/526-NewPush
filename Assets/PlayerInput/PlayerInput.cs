@@ -163,6 +163,33 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""AttackingAbility"",
+                    ""type"": ""Button"",
+                    ""id"": ""f0fbb363-91a7-4fd0-a98f-7514b6a73726"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""DefenseAbility"",
+                    ""type"": ""Button"",
+                    ""id"": ""254421ba-2c00-4b7d-94b5-ab90c97b4b5c"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Interact"",
+                    ""type"": ""Button"",
+                    ""id"": ""627f9a4f-267e-494a-8c00-02c189c83d82"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -297,6 +324,39 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""action"": ""SpecialBullet"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a4c3cb14-7616-4ccc-ab74-f4b51fe75387"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""AttackingAbility"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b2bcd8ef-21fe-43d5-96c9-b77659af3ade"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DefenseAbility"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c75b0839-f74f-4a3a-bb91-91da2702b616"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -313,6 +373,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         m_Default_ShieldGhost = m_Default.FindAction("ShieldGhost", throwIfNotFound: true);
         m_Default_Invincible = m_Default.FindAction("Invincible", throwIfNotFound: true);
         m_Default_SpecialBullet = m_Default.FindAction("SpecialBullet", throwIfNotFound: true);
+        m_Default_AttackingAbility = m_Default.FindAction("AttackingAbility", throwIfNotFound: true);
+        m_Default_DefenseAbility = m_Default.FindAction("DefenseAbility", throwIfNotFound: true);
+        m_Default_Interact = m_Default.FindAction("Interact", throwIfNotFound: true);
     }
 
     ~@PlayerInput()
@@ -401,6 +464,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Default_ShieldGhost;
     private readonly InputAction m_Default_Invincible;
     private readonly InputAction m_Default_SpecialBullet;
+    private readonly InputAction m_Default_AttackingAbility;
+    private readonly InputAction m_Default_DefenseAbility;
+    private readonly InputAction m_Default_Interact;
     /// <summary>
     /// Provides access to input actions defined in input action map "Default".
     /// </summary>
@@ -444,6 +510,18 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Default/SpecialBullet".
         /// </summary>
         public InputAction @SpecialBullet => m_Wrapper.m_Default_SpecialBullet;
+        /// <summary>
+        /// Provides access to the underlying input action "Default/AttackingAbility".
+        /// </summary>
+        public InputAction @AttackingAbility => m_Wrapper.m_Default_AttackingAbility;
+        /// <summary>
+        /// Provides access to the underlying input action "Default/DefenseAbility".
+        /// </summary>
+        public InputAction @DefenseAbility => m_Wrapper.m_Default_DefenseAbility;
+        /// <summary>
+        /// Provides access to the underlying input action "Default/Interact".
+        /// </summary>
+        public InputAction @Interact => m_Wrapper.m_Default_Interact;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -494,6 +572,15 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @SpecialBullet.started += instance.OnSpecialBullet;
             @SpecialBullet.performed += instance.OnSpecialBullet;
             @SpecialBullet.canceled += instance.OnSpecialBullet;
+            @AttackingAbility.started += instance.OnAttackingAbility;
+            @AttackingAbility.performed += instance.OnAttackingAbility;
+            @AttackingAbility.canceled += instance.OnAttackingAbility;
+            @DefenseAbility.started += instance.OnDefenseAbility;
+            @DefenseAbility.performed += instance.OnDefenseAbility;
+            @DefenseAbility.canceled += instance.OnDefenseAbility;
+            @Interact.started += instance.OnInteract;
+            @Interact.performed += instance.OnInteract;
+            @Interact.canceled += instance.OnInteract;
         }
 
         /// <summary>
@@ -529,6 +616,15 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @SpecialBullet.started -= instance.OnSpecialBullet;
             @SpecialBullet.performed -= instance.OnSpecialBullet;
             @SpecialBullet.canceled -= instance.OnSpecialBullet;
+            @AttackingAbility.started -= instance.OnAttackingAbility;
+            @AttackingAbility.performed -= instance.OnAttackingAbility;
+            @AttackingAbility.canceled -= instance.OnAttackingAbility;
+            @DefenseAbility.started -= instance.OnDefenseAbility;
+            @DefenseAbility.performed -= instance.OnDefenseAbility;
+            @DefenseAbility.canceled -= instance.OnDefenseAbility;
+            @Interact.started -= instance.OnInteract;
+            @Interact.performed -= instance.OnInteract;
+            @Interact.canceled -= instance.OnInteract;
         }
 
         /// <summary>
@@ -625,5 +721,26 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnSpecialBullet(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "AttackingAbility" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnAttackingAbility(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "DefenseAbility" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnDefenseAbility(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Interact" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnInteract(InputAction.CallbackContext context);
     }
 }

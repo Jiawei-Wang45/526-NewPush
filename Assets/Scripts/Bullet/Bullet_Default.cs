@@ -36,8 +36,8 @@ public class Bullet_Default: MonoBehaviour
     protected virtual void Awake()
     {
         rb= GetComponent<Rigidbody2D>();
-        PauseAbility.instance.OnPauseStart += PauseStart;
-        PauseAbility.instance.OnPauseEnd += PauseEnd;
+        PauseManager.instance.OnPauseStart += PauseStart;
+        PauseManager.instance.OnPauseEnd += PauseEnd;
     }
 
     private void Start()
@@ -166,7 +166,7 @@ public class Bullet_Default: MonoBehaviour
     }
     protected virtual void OnDestroy()
     {
-        PauseAbility.instance.OnPauseStart -= PauseStart;
-        PauseAbility.instance.OnPauseEnd -= PauseEnd;
+        PauseManager.instance.OnPauseStart -= PauseStart;
+        PauseManager.instance.OnPauseEnd -= PauseEnd;
     }
 }

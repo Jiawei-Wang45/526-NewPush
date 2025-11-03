@@ -21,7 +21,8 @@ public class PlayerWeapon : ScriptableObject
     public int maxAmmoNums;
 
     public string weaponName;
+    public Sprite weaponIcon;
     public GameObject bulletType;  //type of the bullet we are gonna use
-    public Sprite weaponImage;
+    
 
 }
