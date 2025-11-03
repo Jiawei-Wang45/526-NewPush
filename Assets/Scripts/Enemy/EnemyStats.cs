@@ -7,7 +7,7 @@ public class EnemyStats : MonoBehaviour
     public float enemyMovementSpeed;
     //public float enemyDamage;
     public float health;
-    private EnemySpawner spawner;
+    public EnemySpawner spawner;
 
     public HSLColor enemyColor = new HSLColor();
     public delegate void HealthChangedDelegate();
@@ -20,7 +20,10 @@ public class EnemyStats : MonoBehaviour
         health = maxHealth;
 
         enemyColor = new HSLColor(200f, 100f, 50f);
-        spawner = FindFirstObjectByType<EnemySpawner>();
+        if (spawner == null)
+        {
+            spawner = FindFirstObjectByType<EnemySpawner>();
+        }
     }
     public void TakeDamage(float damage)
     {
