@@ -14,4 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   abilityName: Pause
   menuIcon: {fileID: 2581912503230910102, guid: c41a3619e9ffa974d8e0aaf31bf56a4c, type: 3}
+  cooldownIcon: {fileID: 7482667652216324306, guid: b64f79c2337ef4d2fb7e679aafd0c9b0, type: 3}
   abilityPrefab: {fileID: 3957815333772846262, guid: 2e0e4f77aabc65546b16095a6e12d38c, type: 3}

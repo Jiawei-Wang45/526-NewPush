@@ -5,5 +5,6 @@ public class PlayerAbility : ScriptableObject
 {
     public string abilityName;
     public Sprite menuIcon;
+    public Sprite cooldownIcon;
     public GameObject abilityPrefab;
 }

@@ -28,7 +28,7 @@ public class GameManager : MonoBehaviour
     private SendToGoogle sendToGoogle;
     //delegate for reset states
     public delegate void OnResetDelegate();
-    public OnResetDelegate onReset;
+    public event OnResetDelegate onReset;
     public int CurrentWave => waveCount;
     /*
         void OnEnable()

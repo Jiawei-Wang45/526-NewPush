@@ -6,15 +6,11 @@ using UnityEngine.UI;
 
 public class CharacterHandler: MonoBehaviour
 {
-    [Header("UI object reference for ability1")]
-    public Image backgroundImage_1;
-    public Image filledImage_1;
-    public TextMeshProUGUI cooldownText_1;
+    [Header("UI object reference for attackingAbility")]
+    public AbilityIcon attackingAbilityIcon;
 
-    [Header("UI object reference for ability2")]
-    public Image backgroundImage_2;
-    public Image filledImage_2;
-    public TextMeshProUGUI cooldownText_2;
+    [Header("UI object reference for defenseAbility")]
+    public AbilityIcon defenseAbilityIcon;
 
     private PlayerControllerTest pc;
     private List<PlayerWeapon> weapons;
@@ -40,7 +36,8 @@ public class CharacterHandler: MonoBehaviour
             Destroy(attackingAbility);
         }
         attackingAbility = Instantiate(ability.abilityPrefab, transform);
-        attackingAbility.GetComponent<BaseAbility>().BindUI(backgroundImage_1, filledImage_1, cooldownText_1);
+
+        attackingAbilityIcon.BindToAbility(attackingAbility.GetComponent<BaseAbility>(), ability.cooldownIcon);
     }
     public void SetDefenseAbility(PlayerAbility ability)
     {
@@ -49,7 +46,7 @@ public class CharacterHandler: MonoBehaviour
             Destroy(defenseAbility);
         }
         defenseAbility = Instantiate(ability.abilityPrefab, transform);
-        defenseAbility.GetComponent<BaseAbility>().BindUI(backgroundImage_2, filledImage_2, cooldownText_2);
+        defenseAbilityIcon.BindToAbility(defenseAbility.GetComponent<BaseAbility>(), ability.cooldownIcon);
     }
    
 }

@@ -10,26 +10,41 @@ public class BaseAbility : MonoBehaviour
     protected PlayerStats stats;
 
     //cooldown UI parameters
-    [Header("UI object reference")]
-    public Image backgroundImage;
-    public Image filledImage;
-    public TextMeshProUGUI cooldownText;
-    [Header("UI updating assets")]
-    public Sprite cooldownIcon;
+    //[Header("UI object reference")]
+    //public Image backgroundImage;
+    //public Image filledImage;
+    //public TextMeshProUGUI cooldownText;
+    //[Header("UI updating assets")]
+    //public Sprite cooldownIcon;
     [Header("Ability parameter")]
     protected bool isCooldown = false;
+
+    //ability Icon 
+    private AbilityIcon boundIcon;
+    ////cooldown delegate
+    //public delegate void OnCooldownStartDelegate(float cooldownTime);
+    //public event OnCooldownStartDelegate onCooldownStart;
+
+    //public delegate void OnCooldownUpdate(float ratio);
+    //public event OnCooldownUpdate onCooldownUpdate;
+
+
     //private Coroutine disableRoutine = null;
 
     //protected bool isEnabled = true;
-    public void BindUI(Image inBackgroundImage, Image inFilledImage, TextMeshProUGUI inCooldownText)
+    //public void BindUI(Image inBackgroundImage, Image inFilledImage, TextMeshProUGUI inCooldownText)
+    //{
+    //    backgroundImage = inBackgroundImage;
+    //    filledImage= inFilledImage;
+    //    cooldownText = inCooldownText;
+    //    // initialize the cooldown Icon, since different ability contains different Icon
+    //    backgroundImage.sprite = cooldownIcon;
+    //    filledImage.sprite = cooldownIcon;
+    //    ResetAbilityUI();
+    //}
+    public void SetboundIcon(AbilityIcon Icon)
     {
-        backgroundImage = inBackgroundImage;
-        filledImage= inFilledImage;
-        cooldownText = inCooldownText;
-        // initialize the cooldown Icon, since different ability contains different Icon
-        backgroundImage.sprite = cooldownIcon;
-        filledImage.sprite = cooldownIcon;
-        ResetAbilityUI();
+        boundIcon = Icon;
     }
     //protected virtual void Awake()
     //{  
@@ -43,40 +58,33 @@ public class BaseAbility : MonoBehaviour
     protected virtual void ResetStates()
     {
         StopAllCoroutines();
-        ResetAbilityUI();
+        //ResetAbilityUI();
         isCooldown = false;
     }
     protected IEnumerator AbilityCooldownCoroutine(float cooldownTime)
     {
         isCooldown = true;
-        cooldownText.gameObject.SetActive(true);
+        //cooldownText.gameObject.SetActive(true);
+        boundIcon.StartCooldown(cooldownTime);
         float cooldownRemainTime = cooldownTime;
         while (true)
         {
             cooldownRemainTime -= Time.deltaTime;
-            filledImage.fillAmount = 1 - cooldownRemainTime / cooldownTime;
-            if (cooldownRemainTime < 1)
-            {
-                cooldownText.SetText(cooldownRemainTime.ToString("F1"));
-            }
-            else
-            {
-                cooldownText.SetText(cooldownRemainTime.ToString("F0"));
-            }
+            boundIcon.UpdateCooldown(cooldownRemainTime);
             if (cooldownRemainTime <= 0)
                 break;
             yield return null;
         }
-        cooldownText.gameObject.SetActive(false);
+        boundIcon.EndCooldown();
         AudioManager.instance.PlaySound("cooldownFinish");
         isCooldown = false;
     }
 
-    protected void ResetAbilityUI()
-    {
-        filledImage.fillAmount = 1;
-        cooldownText.gameObject.SetActive(false);
-    }
+    //protected void ResetAbilityUI()
+    //{
+    //    filledImage.fillAmount = 1;
+    //    cooldownText.gameObject.SetActive(false);
+    //}
 
     //public void DisableAbility(float duration)
     //{
