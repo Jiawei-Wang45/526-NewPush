@@ -135,7 +135,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!212 &7115219
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1109,7 +1109,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &264686738
 Transform:
   m_ObjectHideFlags: 0
@@ -1395,7 +1395,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &373476907
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1421,6 +1421,10 @@ MonoBehaviour:
   gameManager: {fileID: 850232882}
   spawnBox: {fileID: 963978957}
   spawnBudget: 20
+  waveBudgets: 
+  loopWaves: 1
+  totalWaves: 1
+  currentWaveIndex: 0
 --- !u!4 &373476908
 Transform:
   m_ObjectHideFlags: 0
@@ -3812,9 +3816,9 @@ MonoBehaviour:
   player: {fileID: 1335872719}
   ghost: {fileID: 6080577275780738487, guid: 3da4563d95aee4e269ed80e3113f8e78, type: 3}
   enemySpawner: {fileID: 373476907}
+  rooms: []
   isInLevel: 1
   levelStartTime: 0
-  resetsRemainingText: {fileID: 612018814}
   infoText: {fileID: 1025013844}
   displayScoreText: {fileID: 31600350}
 --- !u!4 &850232883
@@ -7480,6 +7484,64 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1960272963
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1960272964}
+  - component: {fileID: 1960272965}
+  m_Layer: 0
+  m_Name: DungeonGenerator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1960272964
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1960272963}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -10.109543, y: -91.97956, z: -0.70636505}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1960272965
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1960272963}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54960c483288e8a4aaee36fc7140d632, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  roomPrefabs:
+  - {fileID: 4811822070566930807, guid: 5d94691c52701b1489a00a4023f4c3ff, type: 3}
+  startRoomPrefab: {fileID: 4811822070566930807, guid: e07f8302e3eca3140a39b0eb926f03af, type: 3}
+  endRoomPrefab: {fileID: 4811822070566930807, guid: 62f308bd673f4e94184496830d3fd217, type: 3}
+  roadPrefab: {fileID: 5586165495642614983, guid: ca43d6c8fd477534797884aef3869258, type: 3}
+  generateOnStart: 1
+  assignRoomsToGameManager: 1
+  gridWidth: 5
+  gridHeight: 5
+  roomCount: 9
+  cellSize: {x: 75, y: 75}
+  roomScale: 1
+  doorOutsideOffset: 1
+  adjacencyProbability: 1
 --- !u!1 &1966936145
 GameObject:
   m_ObjectHideFlags: 0
@@ -8276,3 +8338,4 @@ SceneRoots:
   - {fileID: 264686738}
   - {fileID: 1335872715}
   - {fileID: 373476908}
+  - {fileID: 1960272964}

@@ -31,7 +31,6 @@ public class GameManager : MonoBehaviour
     //delegate for reset states
     public delegate void OnResetDelegate();
     public event OnResetDelegate onReset;
-    public int CurrentWave => waveCount;
     /*
         void OnEnable()
         {
