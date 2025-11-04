@@ -5,21 +5,23 @@ using UnityEngine.Networking;
 
 public class SendToGoogle : MonoBehaviour
 {
-    [SerializeField] private string URL = "https://docs.google.com/forms/u/2/d/e/1FAIpQLSdMv2OjR-wEv6eOubeQ4n7LzH69-5BVpZs1KIMNYE3fg0vl1w/formResponse";
-    [SerializeField] private string WaveURL = "https://docs.google.com/forms/u/2/d/e/1FAIpQLScablE3Fmg8MNJkDhF9fbZDj89CHzYVwf_-R3rmSS9B7a0Fgg/formResponse";
-    [SerializeField] private string GameSummaryURL = "https://docs.google.com/forms/u/2/d/e/1FAIpQLSeW9pjkvfOi6P7DYz_Q80-lzYAGcoV1tygJCieJoyRDpaES4Q/formResponse";
+    [SerializeField] private string TimerURL = "https://docs.google.com/forms/u/2/d/e/1FAIpQLSeQYt1oz7owR6m0aq2l06AjYu39TZzs6AoKogqTJiN2Jzv_EQ/formResponse";
+    [SerializeField] private string AbilityUsageURL = "https://docs.google.com/forms/u/2/d/e/1FAIpQLSd_BBrcB4RPYBtHgK43YJNURHGRGxHtWYOS2kl0m9XhNQVinw/formResponse";
+    [SerializeField] private string AbilityURL = "https://docs.google.com/forms/u/2/d/e/1FAIpQLSepImIACWgwQG4mlqo907E4wAC4d5Pe7WxYqOqoW4JfEmSXnQ/formResponse";
 
-    private long _sessionID;
-    private const string FIELD_SESSION = "entry.222600633"; // Session
-    private const string FIELD_TIME = "entry.2115569534"; // Time since start to ability use
-    private const string FIELD_WAVE = "entry.865303843"; // wave number
-    private const string FIELD_POSITION = "entry.1199288425"; // player position x,y
-    private const string FIELD_ABILITY_TYPE = "entry.845977060"; // ability type
-    private const string FIELD_WAVE_DURATION = "entry.2115569534"; // Wave duration
-    private const string FIELD_WAVE_NUMBER = "entry.865303843"; // Wave number
-    private const string FIELD_TOTAL_SURVIVAL_TIME = "entry.2115569534"; // Total survival time
-    private const string FIELD_FINAL_WAVE_COUNT = "entry.865303843"; // Final wave count
-       [SerializeField] private int currentWave = 0;
+    private string _sessionID;
+    private const string FIELD_SESSION = "entry.177888417"; // Session ID
+    private const string FIELD_TIME = "entry.1373821541"; // Time
+    private const string FIELD_PASSED = "entry.1713529862"; // Passed (boolean)
+    private const string FIELD_ROOM_NUMBER = "entry.686191148"; // Room number
+    private const string FIELD_WEAPON_COUNT = "entry.652169316"; // Weapon count
+    private const string FIELD_ATTACKING_ABILITIES_COUNT = "entry.108973933"; // Attacking abilities count
+    private const string FIELD_DEFENSE_ABILITIES_COUNT = "entry.676975950"; // Defense abilities count
+    private const string FIELD_SURVIVE_TIME = "entry.1373821541"; // Survive time
+    private const string FIELD_WIN = "entry.1713529862"; // Win (boolean)
+    private const string FIELD_WEAPON_TYPE = "entry.652169316"; // Weapon type
+    private const string FIELD_ATTACKING_ABILITIES = "entry.108973933"; // Attacking abilities
+    private const string FIELD_DEFENSE_ABILITIES = "entry.676975950"; // Defense abilities
 
     private float _startTime;
     [Header("Networking")]
@@ -28,64 +30,79 @@ public class SendToGoogle : MonoBehaviour
     private void Awake()
     {
         // Assign sessionID to identify playtests
-        _sessionID = DateTime.Now.Ticks;
+        string prefix = "";
+#if UNITY_EDITOR
+        prefix = "LOCAL_";
+#elif UNITY_WEBGL
+        // Check if running on GitHub Pages or similar web hosting
+        if (Application.absoluteURL.Contains("github.io") || Application.absoluteURL.Contains("pages.github.com"))
+        {
+            prefix = "WEB_";
+        }
+        else
+        {
+            prefix = "WEB_LOCAL_";
+        }
+#else
+        prefix = "BUILD_";
+#endif
+        _sessionID = prefix + DateTime.Now.Ticks;
         _startTime = Time.realtimeSinceStartup;
-        Debug.Log($"[SendToGoogle] Awake - sessionID={_sessionID} startTime={_startTime} URL={URL}");
+        Debug.Log($"[SendToGoogle] Awake - sessionID={_sessionID} startTime={_startTime} URL={Application.absoluteURL}");
     }
-    // Send ability usage with concrete tracked fields
-    public void SendAbilityUse(Vector2 playerPosition, int waveOverride = -1, string abilityType = "")
+
+    // Send timer data
+    public void SendTimerData(float roomTime, bool passed, int roomNumber)
     {
-        long session = _sessionID;
-        float timeSinceStart = Time.realtimeSinceStartup - _startTime;
-        int waveToSend = waveOverride >= 0 ? waveOverride : currentWave;
+        string session = _sessionID;
+        string sessionStr = session;
+        string timeStr = roomTime.ToString("F3");
+        string passedStr = passed.ToString().ToLower();
+        string roomStr = roomNumber.ToString();
 
-        string sessionStr = session.ToString();
-        string timeStr = timeSinceStart.ToString("F3");
-        string waveStr = waveToSend.ToString();
-        string posStr = playerPosition.x.ToString("F3") + "," + playerPosition.y.ToString("F3");
-
-        Debug.Log($"[SendToGoogle] SendAbilityUse -> session:{sessionStr} time:{timeStr} wave:{waveStr} position:{posStr} abilityType:{abilityType}");
-        StartCoroutine(PostAbility(sessionStr, timeStr, waveStr, posStr, abilityType));
+        Debug.Log($"[SendToGoogle] SendTimerData -> session:{sessionStr} time:{timeStr} passed:{passedStr} room:{roomStr}");
+        StartCoroutine(PostTimer(sessionStr, timeStr, passedStr, roomStr));
     }
 
-    // Send wave data
-    public void SendWaveData(float waveDuration, int waveNumber)
+    // Send ability usage data
+    public void SendAbilityUsageData(int weaponCount, int attackingAbilitiesCount, int defenseAbilitiesCount, float surviveTime, bool win, int roomNumber)
     {
-        long session = _sessionID;
-        string sessionStr = session.ToString();
-        string durationStr = waveDuration.ToString("F3");
-        string waveStr = waveNumber.ToString();
+        string session = _sessionID;
+        string sessionStr = session;
+        string weaponCountStr = weaponCount.ToString();
+        string attackingCountStr = attackingAbilitiesCount.ToString();
+        string defenseCountStr = defenseAbilitiesCount.ToString();
+        string surviveTimeStr = surviveTime.ToString("F3");
+        string winStr = win.ToString().ToLower();
+        string roomStr = roomNumber.ToString();
 
-        Debug.Log($"[SendToGoogle] SendWaveData -> session:{sessionStr} duration:{durationStr} wave:{waveStr}");
-        StartCoroutine(PostWave(sessionStr, durationStr, waveStr));
+        Debug.Log($"[SendToGoogle] SendAbilityUsageData -> session:{sessionStr} weaponCount:{weaponCountStr} attacking:{attackingCountStr} defense:{defenseCountStr} surviveTime:{surviveTimeStr} win:{winStr} room:{roomStr}");
+        StartCoroutine(PostAbilityUsage(sessionStr, weaponCountStr, attackingCountStr, defenseCountStr, surviveTimeStr, winStr, roomStr));
     }
 
-    // Send game summary data
-    public void SendGameSummary(float totalSurvivalTime, int finalWaveCount)
+    // Send ability data
+    public void SendAbilityData(string weaponType, string attackingAbilities, string defenseAbilities)
     {
-        long session = _sessionID;
-        string sessionStr = session.ToString();
-        string timeStr = totalSurvivalTime.ToString("F3");
-        string waveStr = finalWaveCount.ToString();
+        string session = _sessionID;
+        string sessionStr = session;
 
-        Debug.Log($"[SendToGoogle] SendGameSummary -> session:{sessionStr} totalTime:{timeStr} finalWave:{waveStr}");
-        StartCoroutine(PostGameSummary(sessionStr, timeStr, waveStr));
+        Debug.Log($"[SendToGoogle] SendAbilityData -> session:{sessionStr} weaponType:{weaponType} attacking:{attackingAbilities} defense:{defenseAbilities}");
+        StartCoroutine(PostAbility(sessionStr, weaponType, attackingAbilities, defenseAbilities));
     }
 
-    private IEnumerator PostAbility(string sessionID, string time, string wave, string position, string abilityType)
+    private IEnumerator PostTimer(string sessionID, string time, string passed, string roomNumber)
     {
         WWWForm form = new WWWForm();
 
         form.AddField(FIELD_SESSION, sessionID);
         form.AddField(FIELD_TIME, time);
-        form.AddField(FIELD_WAVE, wave);
-        form.AddField(FIELD_POSITION, position);
-        form.AddField(FIELD_ABILITY_TYPE, abilityType);
+        form.AddField(FIELD_PASSED, passed);
+        form.AddField(FIELD_ROOM_NUMBER, roomNumber);
 
         // Log form contents
-        Debug.Log($"[SendToGoogle] Posting to {URL} with fields: {FIELD_SESSION}={sessionID}, {FIELD_TIME}={time}, {FIELD_WAVE}={wave}, {FIELD_POSITION}={position}, {FIELD_ABILITY_TYPE}={abilityType}");
+        Debug.Log($"[SendToGoogle] Posting timer to {TimerURL} with fields: {FIELD_SESSION}={sessionID}, {FIELD_TIME}={time}, {FIELD_PASSED}={passed}, {FIELD_ROOM_NUMBER}={roomNumber}");
 
-        using (UnityWebRequest www = UnityWebRequest.Post(URL, form))
+        using (UnityWebRequest www = UnityWebRequest.Post(TimerURL, form))
         {
             // set timeout (Unity 2020.1+ supports timeout property)
             try { www.timeout = requestTimeoutSeconds; } catch { }
@@ -97,30 +114,34 @@ public class SendToGoogle : MonoBehaviour
             if (www.isNetworkError || www.isHttpError)
 #endif
             {
-                Debug.LogError($"[SendToGoogle] failed: {www.error}  statusCode: {www.responseCode}");
+                Debug.LogError($"[SendToGoogle] Timer post failed: {www.error}  statusCode: {www.responseCode}");
                 // also log response text if any (may be empty)
                 string resp = www.downloadHandler != null ? www.downloadHandler.text : "<no-downloadHandler>";
                 Debug.LogWarning($"[SendToGoogle] response body: {resp}");
             }
             else
             {
-                Debug.Log($"[SendToGoogle] Form upload complete! statusCode: {www.responseCode}");
+                Debug.Log($"[SendToGoogle] Timer form upload complete! statusCode: {www.responseCode}");
             }
         }
     }
 
-    private IEnumerator PostWave(string sessionID, string duration, string wave)
+    private IEnumerator PostAbilityUsage(string sessionID, string weaponCount, string attackingCount, string defenseCount, string surviveTime, string win, string roomNumber)
     {
         WWWForm form = new WWWForm();
 
         form.AddField(FIELD_SESSION, sessionID);
-        form.AddField(FIELD_WAVE_DURATION, duration);
-        form.AddField(FIELD_WAVE_NUMBER, wave);
+        form.AddField(FIELD_WEAPON_COUNT, weaponCount);
+        form.AddField(FIELD_ATTACKING_ABILITIES_COUNT, attackingCount);
+        form.AddField(FIELD_DEFENSE_ABILITIES_COUNT, defenseCount);
+        form.AddField(FIELD_SURVIVE_TIME, surviveTime);
+        form.AddField(FIELD_WIN, win);
+        form.AddField(FIELD_ROOM_NUMBER, roomNumber);
 
         // Log form contents
-        Debug.Log($"[SendToGoogle] Posting wave to {WaveURL} with fields: {FIELD_SESSION}={sessionID}, {FIELD_WAVE_DURATION}={duration}, {FIELD_WAVE_NUMBER}={wave}");
+        Debug.Log($"[SendToGoogle] Posting ability usage to {AbilityUsageURL} with fields: {FIELD_SESSION}={sessionID}, {FIELD_WEAPON_COUNT}={weaponCount}, {FIELD_ATTACKING_ABILITIES_COUNT}={attackingCount}, {FIELD_DEFENSE_ABILITIES_COUNT}={defenseCount}, {FIELD_SURVIVE_TIME}={surviveTime}, {FIELD_WIN}={win}, {FIELD_ROOM_NUMBER}={roomNumber}");
 
-        using (UnityWebRequest www = UnityWebRequest.Post(WaveURL, form))
+        using (UnityWebRequest www = UnityWebRequest.Post(AbilityUsageURL, form))
         {
             // set timeout (Unity 2020.1+ supports timeout property)
             try { www.timeout = requestTimeoutSeconds; } catch { }
@@ -132,30 +153,31 @@ public class SendToGoogle : MonoBehaviour
             if (www.isNetworkError || www.isHttpError)
 #endif
             {
-                Debug.LogError($"[SendToGoogle] Wave post failed: {www.error}  statusCode: {www.responseCode}");
+                Debug.LogError($"[SendToGoogle] Ability usage post failed: {www.error}  statusCode: {www.responseCode}");
                 // also log response text if any (may be empty)
                 string resp = www.downloadHandler != null ? www.downloadHandler.text : "<no-downloadHandler>";
                 Debug.LogWarning($"[SendToGoogle] response body: {resp}");
             }
             else
             {
-                Debug.Log($"[SendToGoogle] Wave form upload complete! statusCode: {www.responseCode}");
+                Debug.Log($"[SendToGoogle] Ability usage form upload complete! statusCode: {www.responseCode}");
             }
         }
     }
 
-    private IEnumerator PostGameSummary(string sessionID, string totalTime, string finalWave)
+    private IEnumerator PostAbility(string sessionID, string weaponType, string attackingAbilities, string defenseAbilities)
     {
         WWWForm form = new WWWForm();
 
         form.AddField(FIELD_SESSION, sessionID);
-        form.AddField(FIELD_TOTAL_SURVIVAL_TIME, totalTime);
-        form.AddField(FIELD_FINAL_WAVE_COUNT, finalWave);
+        form.AddField(FIELD_WEAPON_TYPE, weaponType);
+        form.AddField(FIELD_ATTACKING_ABILITIES, attackingAbilities);
+        form.AddField(FIELD_DEFENSE_ABILITIES, defenseAbilities);
 
         // Log form contents
-        Debug.Log($"[SendToGoogle] Posting game summary to {GameSummaryURL} with fields: {FIELD_SESSION}={sessionID}, {FIELD_TOTAL_SURVIVAL_TIME}={totalTime}, {FIELD_FINAL_WAVE_COUNT}={finalWave}");
+        Debug.Log($"[SendToGoogle] Posting ability to {AbilityURL} with fields: {FIELD_SESSION}={sessionID}, {FIELD_WEAPON_TYPE}={weaponType}, {FIELD_ATTACKING_ABILITIES}={attackingAbilities}, {FIELD_DEFENSE_ABILITIES}={defenseAbilities}");
 
-        using (UnityWebRequest www = UnityWebRequest.Post(GameSummaryURL, form))
+        using (UnityWebRequest www = UnityWebRequest.Post(AbilityURL, form))
         {
             // set timeout (Unity 2020.1+ supports timeout property)
             try { www.timeout = requestTimeoutSeconds; } catch { }
@@ -167,14 +189,14 @@ public class SendToGoogle : MonoBehaviour
             if (www.isNetworkError || www.isHttpError)
 #endif
             {
-                Debug.LogError($"[SendToGoogle] Game summary post failed: {www.error}  statusCode: {www.responseCode}");
+                Debug.LogError($"[SendToGoogle] Ability post failed: {www.error}  statusCode: {www.responseCode}");
                 // also log response text if any (may be empty)
                 string resp = www.downloadHandler != null ? www.downloadHandler.text : "<no-downloadHandler>";
                 Debug.LogWarning($"[SendToGoogle] response body: {resp}");
             }
             else
             {
-                Debug.Log($"[SendToGoogle] Game summary form upload complete! statusCode: {www.responseCode}");
+                Debug.Log($"[SendToGoogle] Ability form upload complete! statusCode: {www.responseCode}");
             }
         }
     }

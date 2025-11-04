@@ -23,11 +23,51 @@ public class GameManager : MonoBehaviour
     private int currentRoomIndex = -1;
     public bool isInLevel;
     public float levelStartTime;
+    private float roomStartTime;
     
     public TMP_Text infoText;
     public TMP_Text displayScoreText;
-    // Google analytics temporarily disabled: keep field commented for now
-    // private SendToGoogle sendToGoogle;
+    // Google analytics
+    private SendToGoogle sendToGoogle;
+    // Ability usage counters
+    private int weaponUseCount = 0;
+    private int attackingAbilitiesUseCount = 0;
+    private int defenseAbilitiesUseCount = 0;
+
+    // Analytics sent flags to prevent duplicate sends
+    private bool hasSentAbilityData = false;
+    private bool hasSentAbilityUsage = false;
+    private int lastSentTimerRoom = -1;
+
+    // Methods to increment counters
+    public void IncrementWeaponUseCount()
+    {
+        weaponUseCount++;
+    }
+
+    public void IncrementAttackingAbilitiesUseCount()
+    {
+        attackingAbilitiesUseCount++;
+    }
+
+    public void IncrementDefenseAbilitiesUseCount()
+    {
+        defenseAbilitiesUseCount++;
+    }
+
+    // Send ability data (weapon and ability names)
+    private void SendAbilityData()
+    {
+        if (sendToGoogle != null && !hasSentAbilityData)
+        {
+            string weaponType = CharacterConfigHolder.instance != null && CharacterConfigHolder.instance.weapon != null ? CharacterConfigHolder.instance.weapon.name : "Unknown";
+            string attackingAbilities = CharacterConfigHolder.instance != null && CharacterConfigHolder.instance.attackingAbility != null ? CharacterConfigHolder.instance.attackingAbility.abilityName : "Unknown";
+            string defenseAbilities = CharacterConfigHolder.instance != null && CharacterConfigHolder.instance.defenseAbility != null ? CharacterConfigHolder.instance.defenseAbility.abilityName : "Unknown";
+
+            sendToGoogle.SendAbilityData(weaponType, attackingAbilities, defenseAbilities);
+            hasSentAbilityData = true;
+        }
+    }
     //delegate for reset states
     public delegate void OnResetDelegate();
     public event OnResetDelegate onReset;
@@ -67,7 +107,7 @@ public class GameManager : MonoBehaviour
             InGameWinMenu.SetActive(false);
             PlayerControllerTest pcTest = FindFirstObjectByType<PlayerControllerTest>();
             pcTest.playerInput.Default.Escape.performed += OnEscapeTriggered;
-            // sendToGoogle = FindFirstObjectByType<SendToGoogle>(); // disabled
+            sendToGoogle = FindFirstObjectByType<SendToGoogle>();
         }
         Time.timeScale = 0.0f;
     }
@@ -83,6 +123,14 @@ public class GameManager : MonoBehaviour
     {
         TutorialText.SetActive(false);
         Time.timeScale = 1.0f;
+        // Reset analytics flags for new game
+        hasSentAbilityData = false;
+        hasSentAbilityUsage = false;
+        lastSentTimerRoom = -1;
+        // Reset counters
+        weaponUseCount = 0;
+        attackingAbilitiesUseCount = 0;
+        defenseAbilitiesUseCount = 0;
         // Start dungeon flow: activate first room (if any)
         StartDungeon();
     }
@@ -97,8 +145,12 @@ public class GameManager : MonoBehaviour
             return;
         }
         currentRoomIndex = 0;
+        roomStartTime = Time.time;
         // Refresh the room progress UI
         UpdateRoomProgressUI();
+
+        // Send ability data at the start of the game
+        SendAbilityData();
     }
 
     // Called by RoomManager when a room is cleared
@@ -107,8 +159,19 @@ public class GameManager : MonoBehaviour
         // Only advance if the cleared room matches the current room (defensive)
         if (currentRoomIndex >= 0 && currentRoomIndex < rooms.Length)
         {
+            int roomNumber = currentRoomIndex;
+            float roomTime = Time.time - roomStartTime;
+
+            // Send timer data only for rooms 1 and above (skip room0)
+            if (sendToGoogle != null && roomNumber >= 1 && lastSentTimerRoom != roomNumber)
+            {
+                sendToGoogle.SendTimerData(roomTime, true, roomNumber);
+                lastSentTimerRoom = roomNumber;
+            }
+
             Debug.Log($"GameManager: Room '{room.name}' cleared. Advancing to room {currentRoomIndex + 1}");
             currentRoomIndex++;
+            roomStartTime = Time.time; // Reset for next room
             UpdateRoomProgressUI();
         }
     }
@@ -152,7 +215,25 @@ public class GameManager : MonoBehaviour
         float totalSurvivalTime = Time.time - levelStartTime;
         displayScoreText.text = $"<size=20><color=#FF0000>Time Survived: </color>{totalSurvivalTime:F1}s</size>";
 
-    // Google analytics disabled in GameOver
+        // Send data only for rooms 1 and above (skip room0)
+        int roomNumber = currentRoomIndex;
+        if (roomNumber >= 1)
+        {
+            // Send timer data for the current room (death) only if not already sent
+            if (sendToGoogle != null && lastSentTimerRoom != roomNumber)
+            {
+                float roomTime = Time.time - roomStartTime;
+                sendToGoogle.SendTimerData(roomTime, false, roomNumber);
+                lastSentTimerRoom = roomNumber;
+            }
+
+            // Send ability usage data on game over (death) only once
+            if (sendToGoogle != null && !hasSentAbilityUsage)
+            {
+                sendToGoogle.SendAbilityUsageData(weaponUseCount, attackingAbilitiesUseCount, defenseAbilitiesUseCount, totalSurvivalTime, false, roomNumber);
+                hasSentAbilityUsage = true;
+            }
+        }
     }
     // Main Menu button's functions
     public void NewGame()
@@ -226,13 +307,17 @@ public class GameManager : MonoBehaviour
             gaManager.SendLevelCompletedEvent(levelName, completionTime);
         }
 
-        // Google analytics disabled in ShowWinMenu
-        // if (sendToGoogle != null)
-        // {
-        //     float totalSurvivalTime = Time.time - levelStartTime;
-        //     int finalWaveCount = waveCount - 1; // Assuming waveCount is the next wave, so completed waves are waveCount - 1
-        //     sendToGoogle.SendGameSummary(totalSurvivalTime, finalWaveCount);
-        // }
+        // Send data only for rooms 1 and above (skip room0)
+        int roomNumber = currentRoomIndex;
+        if (roomNumber >= 1)
+        {
+            // Send ability usage data on win only once
+            if (sendToGoogle != null && !hasSentAbilityUsage)
+            {
+                sendToGoogle.SendAbilityUsageData(weaponUseCount, attackingAbilitiesUseCount, defenseAbilitiesUseCount, completionTime, true, roomNumber);
+                hasSentAbilityUsage = true;
+            }
+        }
     }
 
     //public void ResetWithGhost()
@@ -247,6 +332,13 @@ public class GameManager : MonoBehaviour
     public void Reset()
     {
         onReset?.Invoke();
+        // Reset analytics flags and counters
+        hasSentAbilityData = false;
+        hasSentAbilityUsage = false;
+        lastSentTimerRoom = -1;
+        weaponUseCount = 0;
+        attackingAbilitiesUseCount = 0;
+        defenseAbilitiesUseCount = 0;
         // Destroy all enemy spawn indicators to prevent spawning during reset
         //EnemySpawnIndicator[] indicators = FindObjectsByType<EnemySpawnIndicator>(FindObjectsInactive.Include, FindObjectsSortMode.None); 
         //foreach (EnemySpawnIndicator i in indicators)

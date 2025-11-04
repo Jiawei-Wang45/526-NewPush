@@ -9,6 +9,7 @@ public class ClusterBombAbility : BaseAbility
     protected override void Awake()
     {
         base.Awake();
+        abilityType = AbilityType.Attacking;
         firePoint = pc.transform.Find("PlayerAim/FirePoint");
     }
     private void Start()
@@ -27,6 +28,7 @@ public class ClusterBombAbility : BaseAbility
         StartCoroutine(AbilityCooldownCoroutine(shootingCooldown));
         Bullet_Cluster spawnedBullet = Instantiate(clusterBullet, firePoint.position, firePoint.rotation);
         spawnedBullet.InitBullet(spawnedBullet.parentBulletSpeed, spawnedBullet.parentBulletDamage, stats.playerColor);
+        SendAnalytics("ClusterBomb");
     }
     protected override void ResetStates()
     {

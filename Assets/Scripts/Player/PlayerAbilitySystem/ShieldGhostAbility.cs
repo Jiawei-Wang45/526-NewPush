@@ -23,6 +23,7 @@ public class ShieldGhostAbility : BaseAbility
     protected override void Awake()
     {
         base.Awake();
+        abilityType = AbilityType.Defense;
         tracesetAbility = GetComponent<TracesetAbility>();
         tracebackAbility = GetComponent<TracebackAbility>();
         fireAbility=GetComponent<FireAbility>();

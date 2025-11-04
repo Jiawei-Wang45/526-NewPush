@@ -110,6 +110,13 @@ public class FireAbility: MonoBehaviour
         }
         OnFire?.Invoke();
         ConsumeAmmo(1);
+
+        // Increment weapon use count for analytics
+        if (GameManager.instance != null)
+        {
+            GameManager.instance.IncrementWeaponUseCount();
+        }
+
         float bulletTiltAngle = -(currentWeapon.weaponBulletInOneShot - 1) * currentWeapon.weaponFiringAngle / 2;
         for (int i = 0; i < currentWeapon.weaponBulletInOneShot; i++)
         {

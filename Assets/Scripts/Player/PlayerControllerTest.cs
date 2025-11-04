@@ -16,8 +16,7 @@ public class PlayerControllerTest : MonoBehaviour, IDamagable
     // revive parameter
     public Vector2 initialPosition;
     //Analytics
-    [Header("Analytics")]
-    [SerializeField] public SendToGoogle sendToGoogle;
+    // [SerializeField] public SendToGoogle sendToGoogle;
     private void Awake()
     {
         if (instance==null)
@@ -32,34 +31,34 @@ public class PlayerControllerTest : MonoBehaviour, IDamagable
         rb = GetComponent<Rigidbody2D>();
         stats = GetComponent<PlayerStats>();
         // ensure sendToGoogle is assigned
-        if (sendToGoogle == null)
-        {
-            // try to find any enabled instance first
-            sendToGoogle = FindFirstObjectByType<SendToGoogle>();
-            // if still null, try to find inactive instances (Unity API that returns array)
-            if (sendToGoogle == null)
-            {
-                try
-                {
-                    SendToGoogle[] all = FindObjectsByType<SendToGoogle>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-                    if (all != null && all.Length > 0)
-                    {
-                        sendToGoogle = all[0];
-                    }
-                }
-                catch
-                {
-                    // fallback: use FindObjectOfType that supports inactive when available
-                    try
-                    {
-                        sendToGoogle = FindObjectOfType<SendToGoogle>(true);
-                    }
-                    catch { }
-                }
-            }
-        }
+        // if (sendToGoogle == null)
+        // {
+        //     // try to find any enabled instance first
+        //     sendToGoogle = FindFirstObjectByType<SendToGoogle>();
+        //     // if still null, try to find inactive instances (Unity API that returns array)
+        //     if (sendToGoogle == null)
+        //     {
+        //         try
+        //         {
+        //             SendToGoogle[] all = FindObjectsByType<SendToGoogle>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        //             if (all != null && all.Length > 0)
+        //             {
+        //                 sendToGoogle = all[0];
+        //             }
+        //         }
+        //         catch
+        //         {
+        //             // fallback: use FindObjectOfType that supports inactive when available
+        //             try
+        //             {
+        //                 sendToGoogle = FindObjectOfType<SendToGoogle>(true);
+        //             }
+        //             catch { }
+        //         }
+        //     }
+        // }
 
-        Debug.Log($"[PlayerControllerTest] Awake auto-assign sendToGoogle: {sendToGoogle != null} (object: {sendToGoogle?.gameObject.name})");
+        // Debug.Log($"[PlayerControllerTest] Awake auto-assign sendToGoogle: {sendToGoogle != null} (object: {sendToGoogle?.gameObject.name})");
     }
     private void OnEnable()
     {

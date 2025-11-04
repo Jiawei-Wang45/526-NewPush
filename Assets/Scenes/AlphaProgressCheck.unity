@@ -794,7 +794,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &122595262
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3911,7 +3911,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: Use <size=20><color=#FF0000>WASD</color></size> to move, <size=20><color=#FF0000>MOUSE</color></size>
-    to aim and fire\n<size=20><color=#FF0000>1/2/3</color> keys to use abilities.\n\nDefeat
+    to aim and fire\n<size=20><color=#FF0000>1/2</color> keys to use abilities.\n\nDefeat
     all enemies and survive as long as you can
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 2a280115a77d9fd42a429972ddb21e7c, type: 2}
@@ -4439,7 +4439,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: <size=20><color=#FF0000>WASD</color></size> to move, <size=20><color=#FF0000>MOUSE</color></size>
-    to fire\n<size=20><color=#FF0000>1/2/3</color> to use abilities
+    to fire\n<size=20><color=#FF0000>1/2</color> to use abilities
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 2a280115a77d9fd42a429972ddb21e7c, type: 2}
   m_sharedMaterial: {fileID: -4619050269489390830, guid: 2a280115a77d9fd42a429972ddb21e7c, type: 2}

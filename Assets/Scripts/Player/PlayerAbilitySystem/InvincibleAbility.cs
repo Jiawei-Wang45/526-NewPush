@@ -16,6 +16,7 @@ public class InvincibleAbility : BaseAbility
     protected override void Awake()
     {
         base.Awake();
+        abilityType = AbilityType.Defense;
         particleEffect= GetComponent<ParticleSystem>();
         subParticleEffect= transform.Find("SubEmitter").GetComponent<ParticleSystem>();
     }

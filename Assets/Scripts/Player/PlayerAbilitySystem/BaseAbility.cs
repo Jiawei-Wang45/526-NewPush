@@ -19,6 +19,11 @@ public class BaseAbility : MonoBehaviour
     [Header("Ability parameter")]
     protected bool isCooldown = false;
 
+    // Ability type for analytics
+    public enum AbilityType { Attacking, Defense }
+    [Header("Analytics")]
+    public AbilityType abilityType = AbilityType.Attacking;
+
     //ability Icon 
     private AbilityIcon boundIcon;
     ////cooldown delegate
@@ -103,12 +108,17 @@ public class BaseAbility : MonoBehaviour
 
     protected void SendAnalytics(string abilityType)
     {
-        // Analytics temporarily disabled: do not send ability-use events with wave data
-        // if (PlayerControllerTest.instance != null && PlayerControllerTest.instance.sendToGoogle != null)
-        // {
-        //     GameManager gm = FindFirstObjectByType<GameManager>();
-        //     int waveToSend = gm != null ? gm.CurrentWave : 0;
-        //     PlayerControllerTest.instance.sendToGoogle.SendAbilityUse(PlayerControllerTest.instance.transform.position, waveToSend, abilityType);
-        // }
+        // Increment ability use counters
+        if (GameManager.instance != null)
+        {
+            if (this.abilityType == AbilityType.Attacking)
+            {
+                GameManager.instance.IncrementAttackingAbilitiesUseCount();
+            }
+            else if (this.abilityType == AbilityType.Defense)
+            {
+                GameManager.instance.IncrementDefenseAbilitiesUseCount();
+            }
+        }
     } 
 }

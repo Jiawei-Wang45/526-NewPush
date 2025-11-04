@@ -13,6 +13,7 @@ public class PauseAbility : BaseAbility
     protected override void Awake()
     {
         base.Awake();
+        abilityType = AbilityType.Defense;
     }
     private void Start()
     {
