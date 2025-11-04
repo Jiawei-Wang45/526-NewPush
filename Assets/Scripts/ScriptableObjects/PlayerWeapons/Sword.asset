@@ -14,13 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponClass: 3
   weaponBulletLifeTime: 2
-  weaponBulletDamage: 2
+  weaponBulletDamage: 20
   weaponBulletSpeed: 35
-  weaponFireRate: 7
+  weaponFireRate: 1
   weaponBulletInOneShot: 1
   weaponFiringAngle: 0
   weaponBulletSpread: 0
   maxAmmoNums: 25
-  weaponName: Uzi
+  weaponName: Sword
   weaponIcon: {fileID: 0}
   bulletType: {fileID: 2202325304361377499, guid: a47a15db111e8294194bbd23b76a3ca9, type: 3}
