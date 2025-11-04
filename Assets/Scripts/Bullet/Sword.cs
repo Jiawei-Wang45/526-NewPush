@@ -58,9 +58,10 @@ public class Sword : MonoBehaviour
         if(collision.collider.gameObject.layer == LayerMask.NameToLayer("EnemyBullet") && isReflecting)
         {
             float distance = Vector2.Distance(transform.position, collision.collider.gameObject.transform.position);
-            if(distance > 2.0f && distance < 3.0f)
+            Debug.Log("distance: " + distance);
+            Debug.Log("gameObject.layer: " + gameObject.layer);
+            if(distance > 2.0f && distance < 4.0f)
             {
-                Debug.Log("distance: " + distance);
                 float speed = collision.collider.gameObject.GetComponent<Bullet_Default>().bulletSpeed;
                 float damage = collision.collider.gameObject.GetComponent<Bullet_Default>().bulletDamage;
                 Vector2 position = collision.collider.gameObject.transform.position;
@@ -83,8 +84,8 @@ public class Sword : MonoBehaviour
         if(isSwinging) yield break;
         isSwinging = true;
         isReflecting = true;
+        gameObject.layer = LayerMask.NameToLayer("Reflecting");
         float timeElapsed = 0f;
-        Debug.Log("Swinging");
         while (timeElapsed < swingDuration/2.0f)
         {
             timeElapsed += Time.deltaTime;
@@ -92,6 +93,7 @@ public class Sword : MonoBehaviour
             yield return null;
         }
         isReflecting = false;
+        gameObject.layer = LayerMask.NameToLayer("Sword");
         while (timeElapsed < swingDuration)
         {
             timeElapsed += Time.deltaTime;
