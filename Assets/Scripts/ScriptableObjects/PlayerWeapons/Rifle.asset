@@ -12,8 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1460bd2a199a59e498f68ec5804284d0, type: 3}
   m_Name: Rifle
   m_EditorClassIdentifier: 
-  weaponType: 0
-  triggerType: 1
+  weaponClass: 1
   weaponBulletLifeTime: 2
   weaponBulletDamage: 10
   weaponBulletSpeed: 20

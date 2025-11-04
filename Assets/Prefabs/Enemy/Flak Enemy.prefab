@@ -294,6 +294,7 @@ MonoBehaviour:
   maxHealth: 20
   enemyMovementSpeed: 1
   health: 0
+  spawner: {fileID: 0}
   enemyColor:
     H: 0
     S: 100

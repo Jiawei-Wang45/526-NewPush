@@ -15,7 +15,10 @@ public class FireAbility: MonoBehaviour
     public Transform firePoint;
     public PlayerWeapon currentWeapon;
     private bool isFiring = false;
-    private bool hasFired = false;
+    private bool isCoroutineRunning = false;
+    public GameObject laser;
+    private GameObject sword;
+    private Sword swordAttributes;
     //reload variables
     [Header("Reloading parameters")]
     public float reloadTime = 1.5f;
@@ -46,7 +49,7 @@ public class FireAbility: MonoBehaviour
 
         playerInput = pc.playerInput;
         //fire input binding
-        playerInput.Default.Fire.performed += OnFireTriggered;
+        playerInput.Default.Fire.started += OnFireTriggered;
         playerInput.Default.Fire.canceled += OnFireTriggered;
 
         //reload input binding
@@ -60,52 +63,17 @@ public class FireAbility: MonoBehaviour
     #region Update
     private void Update()
     {
-        if (currentWeapon == null)
-            return;
-        if (currentWeapon.weaponType == WeaponType.Passive)
+        if(currentWeapon != null && currentWeapon.weaponClass == WeaponClass.Melee && sword != null && !swordAttributes.Swinging())
         {
-            Fire();
-        }
-        else
-        {
-            if (currentWeapon.triggerType == TriggerType.Automatic)
-            {
-               
-                if (isFiring && fireTimer >= 1 / currentWeapon.weaponFireRate)
-                {
-                    Fire();                  
-                    fireTimer = 0;
-                }
-                else
-                {
-                    fireTimer += Time.deltaTime;
-                }
-            }
-            else if (currentWeapon.triggerType == TriggerType.SemiAutomatic)
-            {
-               
-                if (isFiring && !hasFired && fireTimer >= 1 / currentWeapon.weaponFireRate)
-                {
-                    Fire();
-                    fireTimer = 0;
-                    hasFired = true;
-                }
-                else
-                {
-                    fireTimer += Time.deltaTime;
-                }
-            }
+            sword.transform.rotation = firePoint.rotation;
         }
     }
-
     #endregion
 
     #region Fire
     private void Fire()
     {
-        if (!CanFire())
-        {
-            ActivateReload();
+        if(isReloading){
             return;
         }
         OnFire?.Invoke();
@@ -120,16 +88,70 @@ public class FireAbility: MonoBehaviour
         float bulletTiltAngle = -(currentWeapon.weaponBulletInOneShot - 1) * currentWeapon.weaponFiringAngle / 2;
         for (int i = 0; i < currentWeapon.weaponBulletInOneShot; i++)
         {
+            float bulletSpeed = currentWeapon.weaponBulletSpeed;
+            float bulletDamage = currentWeapon.weaponBulletDamage;
+            int bounceCount = 0;
+            if(PauseManager.instance.isPausing)
+            {
+                if(pc.combinationIndex == 1)
+                {
+                    Quaternion laserRotation = firePoint.rotation * Quaternion.Euler(0, 0, 90.0f+ bulletTiltAngle + Random.Range(-currentWeapon.weaponBulletSpread, currentWeapon.weaponBulletSpread));
+                    
+                    GameObject spawnedLaser = Instantiate(laser, firePoint.position - laserRotation * Vector2.up * 50.0f, laserRotation);
+                    Bullet_Laser laserAttributes = spawnedLaser.GetComponent<Bullet_Laser>();
+                    laserAttributes.InitBullet(0.0f, bulletDamage*5.0f,stats.playerColor);
+                    continue;
+                }
+            }
+            if(stats.isInvincible)
+            {
+                Debug.Log("Invincible: " + stats.isInvincible);
+                if(pc.combinationIndex == 5)
+                {
+                    bulletDamage *= 2.0f;
+                    bounceCount = 7;
+                }
+            }
             GameObject spawnedBullet = Instantiate(currentWeapon.bulletType, firePoint.position, firePoint.rotation * Quaternion.Euler(0, 0, bulletTiltAngle + Random.Range(-currentWeapon.weaponBulletSpread, currentWeapon.weaponBulletSpread)));
-            Bullet_Default bulletAttributes = spawnedBullet.GetComponent<Bullet_Default>();
-            bulletAttributes.InitBullet(currentWeapon.weaponBulletSpeed, currentWeapon.weaponBulletDamage,stats.playerColor);     
+            Bullet_Default bulletAttributes = spawnedBullet.GetComponent<Bullet_Default>();     
+            bulletAttributes.InitBullet(bulletSpeed, bulletDamage,stats.playerColor, bounceCount);
+            if(PauseManager.instance.isPausing)
+            {
+                if(pc.combinationIndex == 2)
+                {
+                    bulletAttributes.PauseStart(PauseManager.instance.activePauseStrength * 2);
+                }
+            }
             bulletTiltAngle += currentWeapon.weaponFiringAngle;
         }
+        if(pc.combinationIndex == 6)
+        {
+            // Apply knockback in the opposite direction of firing
+            Vector2 knockbackDirection = -(firePoint.rotation * Vector2.right);
+            pc.AddForcePlayer(knockbackDirection * 20.0f);
+        }
+        if(pc.combinationIndex == 2)
+        {
+            PauseManager.instance.extendDuration += 1.0f;
+        }
+        if (currentAmmo <= 0)
+        {
+            ActivateReload();
+        }
     }
-    public bool CanFire()
+
+    private void Swing(float swingDuration)
     {
-        return currentAmmo > 0 && !isReloading;
+        OnFire?.Invoke();
+
+        // Increment weapon use count for analytics
+        if (GameManager.instance != null)
+        {
+            GameManager.instance.IncrementWeaponUseCount();
+        }
+        swordAttributes.Swing(swingDuration);
     }
+
     public void ConsumeAmmo(int amount)
     {
         currentAmmo -= amount;
@@ -144,13 +166,12 @@ public class FireAbility: MonoBehaviour
         if (currentWeapon == null) return;
         switch (context.phase)
         {
-            case InputActionPhase.Performed:
+            case InputActionPhase.Started:
                 isFiring = true;
+                StartCoroutine(FireCoroutine());
                 break;
             case InputActionPhase.Canceled:
                 isFiring = false;
-                if (currentWeapon.triggerType == TriggerType.SemiAutomatic)
-                    hasFired = false;
                 break;
         }
     }
@@ -168,6 +189,60 @@ public class FireAbility: MonoBehaviour
     
     }
 
+    private IEnumerator FireCoroutine()
+    {
+        if (currentWeapon == null || isCoroutineRunning)
+            yield break;
+        switch (currentWeapon.weaponClass)
+        {
+            case WeaponClass.Shotgun:
+            case WeaponClass.SemiAuto:
+                Fire();
+                break;
+            case WeaponClass.FullAuto:
+                isCoroutineRunning = true;
+                Fire();
+                float fireIntervalMultiplier = (pc.combinationIndex == 0 && PauseManager.instance.isPausing) ? 0.3f : 1.0f;
+                yield return new WaitForSeconds(1 / currentWeapon.weaponFireRate * fireIntervalMultiplier);
+                isCoroutineRunning = false;
+                if (isFiring)
+                {
+                    StartCoroutine(FireCoroutine());
+                }
+                break;
+            case WeaponClass.Melee:
+                isCoroutineRunning = true;
+                if(pc.combinationIndex == 7)
+                {
+                    // Dash forward with invincible effect
+                    Vector2 knockbackDirection = (firePoint.rotation * Vector2.right);
+                    pc.AddForcePlayer(knockbackDirection * 10.0f);
+                }
+                Swing((1 / currentWeapon.weaponFireRate )/ 2.0f);
+                yield return new WaitForSeconds(1 / currentWeapon.weaponFireRate);
+                isCoroutineRunning = false;
+                if (isFiring)
+                {
+                    StartCoroutine(FireCoroutine());
+                }
+                break;
+            case WeaponClass.None:
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void SetAmmoToMax()
+    {
+        currentAmmo = maxAmmo;
+        if (stats != null)
+        {
+            stats.playerColor.S = 100f;
+        }
+        ResetReload();
+    }
+
     private IEnumerator ReloadCoroutine()
     {
         reloadBar.SetActive(true);
@@ -180,12 +255,7 @@ public class FireAbility: MonoBehaviour
                 break;
             yield return null;
         }
-        currentAmmo = maxAmmo;
-        if (stats != null)
-        {
-            stats.playerColor.S = 100f;
-        }
-        ResetReload();
+        SetAmmoToMax();
     }
     private void setHandleOffsetX(float percent)
     {
@@ -205,6 +275,14 @@ public class FireAbility: MonoBehaviour
     {
         currentWeapon = weapon;
         maxAmmo = currentWeapon.maxAmmoNums;
+        Debug.Log("currentWeapon: " + currentWeapon);
+        if(currentWeapon.weaponClass == WeaponClass.Melee)
+        {
+            sword = Instantiate(currentWeapon.bulletType, pc.transform);
+            swordAttributes = sword.GetComponent<Sword>();
+            swordAttributes.pc = pc;
+            swordAttributes.InitSword(currentWeapon.weaponBulletDamage, stats.playerColor);
+        }
         currentAmmo = maxAmmo;
         if (stats != null)
         {
@@ -229,7 +307,7 @@ public class FireAbility: MonoBehaviour
 
         // firing variables reset
         isFiring = false;
-        hasFired = false;
+        isCoroutineRunning = false;
         ResetReload();
     }
     #endregion

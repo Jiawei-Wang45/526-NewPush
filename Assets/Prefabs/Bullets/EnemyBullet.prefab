@@ -103,10 +103,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bulletSpeed: 0
-  bulletLifeTime: 0
   bulletDamage: 0
-  bulletType: 
-  ClusterBullet: {fileID: 0}
+  bounceCount: 0
   bulletColor:
     H: 0
     S: 100
@@ -121,7 +119,7 @@ CircleCollider2D:
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: f88b446078e7ae14ea807e3185aaddce, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0

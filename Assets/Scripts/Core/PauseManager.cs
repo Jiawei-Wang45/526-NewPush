@@ -7,7 +7,9 @@ public class PauseManager : MonoBehaviour
     public static PauseManager instance;
 
     //pause variables
-    private bool isPausing = false;
+    public bool isPausing = false;
+    public float activePauseStrength = 1.0f;
+    public float extendDuration = 0.0f;
     //pause delegate
     public delegate void PauseStartDelegate(float pauseStrength);
     public event PauseStartDelegate OnPauseStart;
@@ -39,9 +41,28 @@ public class PauseManager : MonoBehaviour
     private IEnumerator PauseCoroutine(float pauseDuration, float pauseStrength)
     {
         isPausing = true;
+        activePauseStrength = pauseStrength;
         OnPauseStart?.Invoke(pauseStrength);
+        if(PlayerControllerTest.instance.combinationIndex == 3)
+        {
+            PlayerControllerTest.instance.stats.SetInvincible(true);
+            PlayerControllerTest.instance.stats.preventDamage = true;
+        }
         yield return new WaitForSeconds(pauseDuration);
+        while(extendDuration > 0.0f)
+        {
+            float extendTime = extendDuration;
+            yield return new WaitForSeconds(extendDuration);
+            extendDuration -= extendTime;
+        }
         OnPauseEnd?.Invoke();
+        if(PlayerControllerTest.instance.combinationIndex == 3)
+        {
+            PlayerControllerTest.instance.stats.SetInvincible(false);
+            PlayerControllerTest.instance.stats.preventDamage = false;
+        }
+        // FIXME: I think this should be a invoke event thing but I don't know how to do it
+        // so i will do my GPT impression :(
         isPausing = false;
     }
     public void ResetStates()

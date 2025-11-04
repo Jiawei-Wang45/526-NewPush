@@ -12,6 +12,7 @@ public class PlayerStats : MonoBehaviour
 
     // Invincibility flag for testing or power-ups
     public bool isInvincible = false;
+    public bool preventDamage = false;
 
     public HSLColor playerColor = new HSLColor();
     public float originalH=0;
@@ -49,7 +50,7 @@ public class PlayerStats : MonoBehaviour
     #region damage, health functions
     public void TakeDamage(float damage, HSLColor bulletColor)
     {
-        //if (isInvincible) return;
+        if (preventDamage) return;
         ChangeHealth(Mathf.Clamp(health - damage, 0, maxHealth));
         playerColor.L = 50f + (1 - (health / maxHealth)) * 25f;
         /*
@@ -96,6 +97,7 @@ public class PlayerStats : MonoBehaviour
             spriteRenderer.color = baseColor;
         }
     }
+
     public void SetInvincible(bool Invincible)
     {
         isInvincible = Invincible;

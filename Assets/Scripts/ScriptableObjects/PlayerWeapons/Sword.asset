@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1460bd2a199a59e498f68ec5804284d0, type: 3}
-  m_Name: Shotgun
+  m_Name: Sword
   m_EditorClassIdentifier: 
-  weaponClass: 2
+  weaponClass: 3
   weaponBulletLifeTime: 2
-  weaponBulletDamage: 4
-  weaponBulletSpeed: 20
-  weaponFireRate: 2
-  weaponBulletInOneShot: 5
-  weaponFiringAngle: 10
+  weaponBulletDamage: 2
+  weaponBulletSpeed: 35
+  weaponFireRate: 7
+  weaponBulletInOneShot: 1
+  weaponFiringAngle: 0
   weaponBulletSpread: 0
-  maxAmmoNums: 7
-  weaponName: Shotgun
+  maxAmmoNums: 25
+  weaponName: Uzi
   weaponIcon: {fileID: 0}
-  bulletType: {fileID: 8604903965720594084, guid: 2904f1b643d26f24ea817c2a40263281, type: 3}
+  bulletType: {fileID: 2202325304361377499, guid: a47a15db111e8294194bbd23b76a3ca9, type: 3}

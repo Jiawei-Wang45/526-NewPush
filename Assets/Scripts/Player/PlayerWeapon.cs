@@ -4,8 +4,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Weapon", menuName = "Weapon")]
 public class PlayerWeapon : ScriptableObject
 {
-    public WeaponType weaponType;
-    public TriggerType triggerType;
+    public WeaponClass weaponClass;
 
     //bullet attributes
     public float weaponBulletLifeTime;

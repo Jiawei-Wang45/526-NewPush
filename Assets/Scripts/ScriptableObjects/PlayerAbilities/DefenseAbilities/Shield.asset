@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ffef3970b0db5a418fd6f86e3887ae2, type: 3}
   m_Name: Shield
   m_EditorClassIdentifier: 
+  abilityClass: 2
   abilityName: 
-  icon: {fileID: 0}
-  abilityAsset: {fileID: 0}
+  menuIcon: {fileID: 0}
+  cooldownIcon: {fileID: 0}
+  abilityPrefab: {fileID: 0}

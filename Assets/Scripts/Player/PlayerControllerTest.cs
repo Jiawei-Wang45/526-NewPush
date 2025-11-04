@@ -10,9 +10,11 @@ public class PlayerControllerTest : MonoBehaviour, IDamagable
     private Rigidbody2D rb;
     public PlayerStats stats;
     public PlayerInput playerInput;
+    public int combinationIndex = 0;
     // movement parameter
     public float speed;
     public Vector2 movement;
+    public Vector2 knockback;
     // revive parameter
     public Vector2 initialPosition;
     //Analytics
@@ -79,10 +81,22 @@ public class PlayerControllerTest : MonoBehaviour, IDamagable
         GameManager.instance.onReset += Reset;
     }
 
+    public void AddForcePlayer(Vector2 force)
+    {
+        knockback += force;
+        stats.SetInvincible(true);
+        stats.preventDamage = true;
+    }
 
     private void FixedUpdate()
     {
-        rb.linearVelocity = movement * speed;
+        rb.linearVelocity = movement * speed + knockback;
+        knockback -= knockback * 0.05f;
+        if((combinationIndex == 6 || combinationIndex == 7) && knockback.magnitude < 1.0f)
+        {
+            stats.SetInvincible(false);
+            stats.preventDamage = false;
+        }
     }
 
     public void TakeDamage(float damage, HSLColor bulletColor)

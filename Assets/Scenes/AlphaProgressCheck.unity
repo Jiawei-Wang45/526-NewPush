@@ -3848,10 +3848,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ce1e833126436c46b530ea443d5ab5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  URL: https://docs.google.com/forms/u/2/d/e/1FAIpQLSdMv2OjR-wEv6eOubeQ4n7LzH69-5BVpZs1KIMNYE3fg0vl1w/formResponse
-  WaveURL: https://docs.google.com/forms/u/2/d/e/1FAIpQLScablE3Fmg8MNJkDhF9fbZDj89CHzYVwf_-R3rmSS9B7a0Fgg/formResponse
-  GameSummaryURL: https://docs.google.com/forms/u/2/d/e/1FAIpQLSeW9pjkvfOi6P7DYz_Q80-lzYAGcoV1tygJCieJoyRDpaES4Q/formResponse
-  currentWave: 0
+  TimerURL: https://docs.google.com/forms/u/2/d/e/1FAIpQLSeQYt1oz7owR6m0aq2l06AjYu39TZzs6AoKogqTJiN2Jzv_EQ/formResponse
+  AbilityUsageURL: https://docs.google.com/forms/u/2/d/e/1FAIpQLSd_BBrcB4RPYBtHgK43YJNURHGRGxHtWYOS2kl0m9XhNQVinw/formResponse
+  AbilityURL: https://docs.google.com/forms/u/2/d/e/1FAIpQLSepImIACWgwQG4mlqo907E4wAC4d5Pe7WxYqOqoW4JfEmSXnQ/formResponse
   requestTimeoutSeconds: 10
 --- !u!1 &855916485
 GameObject:
@@ -5234,7 +5233,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDamping: 0
+  m_LinearDamping: 0.5
   m_AngularDamping: 0.05
   m_GravityScale: 0
   m_Material: {fileID: 0}
@@ -5307,10 +5306,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stats: {fileID: 0}
+  combinationIndex: 0
   speed: 0
   movement: {x: 0, y: 0}
+  knockback: {x: 0, y: 0}
   initialPosition: {x: 0, y: 0}
-  sendToGoogle: {fileID: 0}
 --- !u!114 &1335872720
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5329,6 +5329,7 @@ MonoBehaviour:
   health: 0
   isGhost: 0
   isInvincible: 0
+  preventDamage: 0
   playerColor:
     H: 0
     S: 100
@@ -5353,6 +5354,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   firePoint: {fileID: 50638741}
   currentWeapon: {fileID: 0}
+  laser: {fileID: 3935374861718379042, guid: e434ac2d0536a9d4eb68dc3b8cb3ea17, type: 3}
   reloadTime: 1.5
   reloadBar: {fileID: 1219950475}
   handle: {fileID: 702276450}
@@ -5534,6 +5536,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2913e24e20158f84d892325d41d1baed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isPausing: 0
+  activePauseStrength: 1
+  extendDuration: 0
 --- !u!4 &1366551677
 Transform:
   m_ObjectHideFlags: 0

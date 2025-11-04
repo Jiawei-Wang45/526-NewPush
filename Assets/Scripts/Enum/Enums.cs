@@ -1,20 +1,17 @@
 using UnityEngine;
 
-public enum WeaponType
+public enum AbilityClass
 {
-    Active,
-    Passive
-}
-public enum TriggerType
-{
-    Automatic,
-    SemiAutomatic,
+    Pause,
+    Dash,
     None
 }
 
-public enum AbilityType
+public enum WeaponClass
 {
-    ShieldGhost,
-    GhostDash,
+    FullAuto, 
+    SemiAuto, 
+    Shotgun, 
+    Melee, 
     None
 }

@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ffef3970b0db5a418fd6f86e3887ae2, type: 3}
   m_Name: InvincibleDash
   m_EditorClassIdentifier: 
+  abilityClass: 1
   abilityName: Invincible Dash
   menuIcon: {fileID: -205270267638800340, guid: ae524bb3d309bc24f87a6aa570dcf7f0, type: 3}
   cooldownIcon: {fileID: 7482667652216324306, guid: b64f79c2337ef4d2fb7e679aafd0c9b0, type: 3}

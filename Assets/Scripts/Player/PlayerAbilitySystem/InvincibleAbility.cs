@@ -40,7 +40,11 @@ public class InvincibleAbility : BaseAbility
     }
     private IEnumerator InvincibleCoroutine()
     {
-        stats.SetInvincible(true);  //update color purpose
+        pc.GetComponent<PlayerStats>().SetInvincible(true);
+        if(pc.combinationIndex == 4)
+        {
+            pc.GetComponent<FireAbility>().SetAmmoToMax();
+        }
         pc.speed = stats.movementSpeed * speedMultiplier;
         gameObject.layer = LayerMask.NameToLayer("Invincible");
         particleEffect.Play();
@@ -63,10 +67,14 @@ public class InvincibleAbility : BaseAbility
             }
             yield return null;
         }
-        stats.SetInvincible(false);
         pc.speed = stats.movementSpeed;
         gameObject.layer = LayerMask.NameToLayer("Player");
         particleEffect.Stop();
+        pc.GetComponent<PlayerStats>().SetInvincible(false);
+        if(pc.combinationIndex == 4)
+        {
+            pc.GetComponent<FireAbility>().SetAmmoToMax();
+        }
     }
     protected override void ResetStates()
     {
