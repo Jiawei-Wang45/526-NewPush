@@ -21,6 +21,7 @@ MonoBehaviour:
   weaponFiringAngle: 10
   weaponBulletSpread: 0
   maxAmmoNums: 7
+  reloadTime: 3
   weaponName: Shotgun
   weaponIcon: {fileID: 0}
   bulletType: {fileID: 8604903965720594084, guid: 2904f1b643d26f24ea817c2a40263281, type: 3}
