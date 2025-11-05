@@ -68,6 +68,7 @@ public class BaseAbility : MonoBehaviour
     }
     protected IEnumerator AbilityCooldownCoroutine(float cooldownTime)
     {
+        Debug.Log($"Cooldown length: {cooldownTime}");
         isCooldown = true;
         //cooldownText.gameObject.SetActive(true);
         boundIcon.StartCooldown(cooldownTime);

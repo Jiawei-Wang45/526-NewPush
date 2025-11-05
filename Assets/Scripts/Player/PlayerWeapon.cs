@@ -18,6 +18,7 @@ public class PlayerWeapon : ScriptableObject
     public float weaponFiringAngle;  //scattering angle between bullets, is useless if weaponBulletInOneShot=1
     public float weaponBulletSpread;
     public int maxAmmoNums;
+    public float reloadTime = 1.0f;
 
     public string weaponName;
     public Sprite weaponIcon;

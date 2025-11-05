@@ -8,7 +8,7 @@ public class PauseAbility : BaseAbility
     [Header("Pause parameters")]
     public float pauseDuration = 4.0f;  
     public float pauseStrength = 20.0f;                       
-    public float pauseCooldown = 7.0f;   //the overall cooldown time since the initiation                                           
+    public float pauseCooldown = 20.0f;   //the overall cooldown time since the initiation                                           
 
     protected override void Awake()
     {
@@ -30,7 +30,7 @@ public class PauseAbility : BaseAbility
         if (isCooldown) return;
         SendAnalytics("Pause");
         PauseManager.instance.RequestPause(pauseDuration, pauseStrength);
-        StartCoroutine(AbilityCooldownCoroutine(pauseCooldown));
+        StartCoroutine(AbilityCooldownCoroutine(pauseDuration + pauseCooldown));
     }
 
     // Trigger only the pause events (OnPauseStart/OnPauseEnd) without sending analytics or starting cooldown.

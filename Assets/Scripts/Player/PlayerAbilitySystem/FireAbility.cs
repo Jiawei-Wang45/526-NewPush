@@ -21,7 +21,6 @@ public class FireAbility: MonoBehaviour
     private Sword swordAttributes;
     //reload variables
     [Header("Reloading parameters")]
-    public float reloadTime = 1.5f;
     private int maxAmmo;
     private int currentAmmo;
     private bool isReloading = false;
@@ -132,7 +131,7 @@ public class FireAbility: MonoBehaviour
         }
         if(pc.combinationIndex == 2)
         {
-            PauseManager.instance.extendDuration += 1.0f;
+            PauseManager.instance.extendDuration += 0.1f;
         }
         if (currentAmmo <= 0)
         {
@@ -252,9 +251,9 @@ public class FireAbility: MonoBehaviour
         float accumulateTime = 0;
         while (true)
         {
-            setHandleOffsetX(accumulateTime / reloadTime);
+            setHandleOffsetX(accumulateTime / currentWeapon.reloadTime);
             accumulateTime += Time.deltaTime;
-            if (accumulateTime > reloadTime)
+            if (accumulateTime > currentWeapon.reloadTime)
                 break;
             yield return null;
         }

@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 848095434710331340}
   - component: {fileID: 7825354234053493148}
-  - component: {fileID: 3117772643109310955}
   m_Layer: 0
   m_Name: Room_S01
   m_TagString: Untagged
@@ -46,20 +45,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   roomTrigger: {fileID: 0}
-  enemySpawner: {fileID: 0}
-  isRoomActive: 0
---- !u!114 &3117772643109310955
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4811822070566930807}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe584f8137d71cf48bde143cd48001a5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  doorNorth: {fileID: 0}
+  doorEast: {fileID: 0}
+  doorSouth: {fileID: 0}
+  doorWest: {fileID: 0}
+  doorNorthMode: 0
+  doorEastMode: 0
+  doorSouthMode: 0
+  doorWestMode: 0
   floorPrefab: {fileID: 8985250233356799001, guid: f84a54893a23c7b4ab27eb16b909096b, type: 3}
   wallPrefab: {fileID: 4770911442484851634, guid: 7ef3e531565953f44844cd01396a0fd4, type: 3}
   doorPrefab: {fileID: 1718955756871633245, guid: c38b70b6bf15f57408f831ec3c90cac5, type: 3}
@@ -67,3 +60,5 @@ MonoBehaviour:
   doorOutsideOffset: 1
   defaultSize: 30
   clearExistingChildren: 0
+  enemySpawner: {fileID: 0}
+  isRoomActive: 0
