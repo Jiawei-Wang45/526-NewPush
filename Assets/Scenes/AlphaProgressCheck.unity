@@ -5355,7 +5355,6 @@ MonoBehaviour:
   firePoint: {fileID: 50638741}
   currentWeapon: {fileID: 0}
   laser: {fileID: 3935374861718379042, guid: e434ac2d0536a9d4eb68dc3b8cb3ea17, type: 3}
-  reloadTime: 1.5
   reloadBar: {fileID: 1219950475}
   handle: {fileID: 702276450}
   targetOffsetX: 3

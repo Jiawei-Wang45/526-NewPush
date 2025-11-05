@@ -6,20 +6,25 @@ public static class ProceduralDungeonInstantiator
     // Instantiate rooms and roads from a GenerationResult produced by ProceduralGraphGenerator
     public static List<GameObject> InstantiateFromGraph(
         ProceduralGraphGenerator.GenerationResult graphResult,
-    GameObject[] roomPrefabs,
-    GameObject startRoomPrefab,
-    GameObject endRoomPrefab,
-    GameObject roadPrefab,
-    Vector2 cellSize,
-    float roomScale,
-    Vector3 dungeonOffset,
-    Transform parent)
+        GameObject[] roomPrefabs,
+        GameObject startRoomPrefab,
+        GameObject endRoomPrefab,
+        GameObject roadPrefab,
+        Vector2 cellSize,
+        float roomScale,
+        Vector3 dungeonOffset,
+        Transform parent)
     {
         var instantiatedRooms = new List<GameObject>();
         var occupiedCells = graphResult.occupiedCells;
         var adjacencyGraph = graphResult.adjacencyGraph;
 
-    // Instantiate rooms at cell centers
+        // Build cell->index map so we can query neighbors quickly
+        var cellToIndex = new Dictionary<Vector2Int, int>(occupiedCells.Count);
+        for (int ci = 0; ci < occupiedCells.Count; ci++) cellToIndex[occupiedCells[ci]] = ci;
+
+        // Instantiate rooms at cell centers and initialize door modes based on adjacency
+        Vector2Int[] cardinalDirs = new Vector2Int[] { Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left };
         for (int i = 0; i < occupiedCells.Count; i++)
         {
             var cell = occupiedCells[i];
@@ -29,6 +34,7 @@ public static class ProceduralDungeonInstantiator
             if (i == graphResult.startIndex && startRoomPrefab != null) prefabToUse = startRoomPrefab;
             else if (i == graphResult.endIndex && endRoomPrefab != null) prefabToUse = endRoomPrefab;
             else if (roomPrefabs != null && roomPrefabs.Length > 0) prefabToUse = roomPrefabs[UnityEngine.Random.Range(0, roomPrefabs.Length)];
+
             if (prefabToUse != null)
             {
                 roomInstance = Object.Instantiate(prefabToUse, worldPos, Quaternion.identity, parent);
@@ -44,56 +50,19 @@ public static class ProceduralDungeonInstantiator
             var rm = roomInstance.GetComponent<RoomManager>();
             if (rm == null) rm = roomInstance.AddComponent<RoomManager>();
 
-            // Apply scale first so any builder-created geometry will be sized correctly in world space
+            // Apply scale so any built geometry matches intended world size
             roomInstance.transform.localScale = Vector3.one * roomScale;
 
-            // Prefer letting a RoomBuilder create the room geometry and trigger so the
-            // prefab's configured sizes (builder.defaultSize) are respected. If no builder
-            // is present, fall back to creating a BoxCollider2D sized to the cell.
-            var builder = roomInstance.GetComponentInChildren<RoomBuilder>(true);
-            if (builder != null)
+            // Use RoomManager's settings and static RoomBuilder to create or update geometry
+            RoomBuilder.Build(roomInstance.transform, rm.defaultSize, rm.floorPrefab, rm.wallPrefab, rm.doorPrefab, rm.wallThickness, rm.doorOutsideOffset, rm.clearExistingChildren);
+            rm.roomTrigger = roomInstance.GetComponentInChildren<BoxCollider2D>(true);
+
+            // Determine connectivity for each cardinal direction from adjacency graph
+            for (int d = 0; d < cardinalDirs.Length; d++)
             {
-                // Build using the builder's configured default size. The transform scale
-                // already applied above will affect final world size (defaultSize * roomScale).
-                builder.Build(builder.defaultSize);
-
-                // Adopt the trigger created by the builder (if any) onto the RoomManager
-                rm.roomTrigger = roomInstance.GetComponentInChildren<BoxCollider2D>(true);
-            }
-            else
-            {
-                if (rm.roomTrigger == null)
-                {
-                    var trigger = roomInstance.AddComponent<BoxCollider2D>();
-                    trigger.isTrigger = true;
-                    trigger.size = cellSize * roomScale;
-                    rm.roomTrigger = trigger;
-                }
-            }
-
-            // Ensure doors exist/positioned now so generator can read door transforms immediately
-            rm.InitializeDoors();
-
-            instantiatedRooms.Add(roomInstance);
-        }
-
-        // Apply door modes based on adjacency graph
-        // build cell->index map (occupiedCells list index already matches)
-        for (int i = 0; i < occupiedCells.Count; i++)
-        {
-            var roomGO = instantiatedRooms[i];
-            if (roomGO == null) continue;
-            var rm = roomGO.GetComponent<RoomManager>();
-            if (rm == null) continue;
-
-            Vector2Int[] dirs = new Vector2Int[] { Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left };
-            for (int d = 0; d < dirs.Length; d++)
-            {
-                var nbCell = occupiedCells[i] + dirs[d];
+                var nbCell = cell + cardinalDirs[d];
                 bool connected = false;
-                // find index of neighbor cell
-                int nbIndex = occupiedCells.FindIndex(v => v == nbCell);
-                if (nbIndex >= 0)
+                if (cellToIndex.TryGetValue(nbCell, out int nbIndex))
                 {
                     if (adjacencyGraph.TryGetValue(i, out var neighs) && neighs.Contains(nbIndex)) connected = true;
                 }
@@ -102,14 +71,10 @@ public static class ProceduralDungeonInstantiator
                 rm.SetDoorMode(dirEnum, connected ? RoomManager.DoorMode.Normal : RoomManager.DoorMode.PermanentlyLocked);
             }
 
-            var all = rm.GetAllDoors();
-            for (int k = 0; k < all.Length; k++)
-            {
-                var door = all[k];
-                if (door == null) continue;
-                var mode = rm.GetDoorMode((RoomManager.DoorDirection)k);
-                if (mode == RoomManager.DoorMode.PermanentlyLocked) door.SetActive(true); else door.SetActive(false);
-            }
+            // Ensure doors exist and apply open/closed state immediately
+            rm.InitializeDoors();
+
+            instantiatedRooms.Add(roomInstance);
         }
 
         // Create roads
