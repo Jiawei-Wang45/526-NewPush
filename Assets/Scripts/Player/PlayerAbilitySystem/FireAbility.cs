@@ -32,8 +32,8 @@ public class FireAbility: MonoBehaviour
     public float targetOffsetX;
 
     //delegate declaration
-    public delegate void FireDelegate();
-    public event FireDelegate OnFire;
+    //public delegate void FireDelegate();
+    //public event FireDelegate OnFire;
 
     #region initialization
     private void Awake()
@@ -76,7 +76,7 @@ public class FireAbility: MonoBehaviour
         if(isReloading){
             return;
         }
-        OnFire?.Invoke();
+        //OnFire?.Invoke();
         ConsumeAmmo(1);
 
         // Increment weapon use count for analytics
@@ -142,7 +142,7 @@ public class FireAbility: MonoBehaviour
 
     private void Swing(float swingDuration)
     {
-        OnFire?.Invoke();
+        //OnFire?.Invoke();
 
         // Increment weapon use count for analytics
         if (GameManager.instance != null)
@@ -198,6 +198,9 @@ public class FireAbility: MonoBehaviour
             case WeaponClass.Shotgun:
             case WeaponClass.SemiAuto:
                 Fire();
+                isCoroutineRunning = true;
+                yield return new WaitForSeconds(1f);
+                isCoroutineRunning = false;
                 break;
             case WeaponClass.FullAuto:
                 isCoroutineRunning = true;

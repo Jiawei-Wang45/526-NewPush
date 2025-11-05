@@ -294,12 +294,15 @@ MonoBehaviour:
   maxHealth: 10
   enemyMovementSpeed: 1
   health: 0
+  spawner: {fileID: 0}
   enemyColor:
     H: 0
     S: 100
     L: 50
   droppableItems: {fileID: 11400000, guid: a6bab4fc5fbd71c49a5f65af40143fd8, type: 2}
   dyingEffect: {fileID: 4296032697232908170, guid: 9c4b2aba842fcaa4cb15e255307712f1, type: 3}
+  whiteFlashMat: {fileID: 2100000, guid: b71a4dc4bee5a9442820229e94dd9b15, type: 2}
+  restoreDefaultMatTime: 0.1
 --- !u!114 &4258157441187923356
 MonoBehaviour:
   m_ObjectHideFlags: 0

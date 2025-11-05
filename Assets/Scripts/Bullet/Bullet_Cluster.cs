@@ -8,11 +8,12 @@ public class Bullet_Cluster : Bullet_Default
     [Header("parentBullet attributes ")]
     public float parentBulletDamage;
     public float parentBulletSpeed;
+    public float blastRadius;
     public GameObject explosionEffect;
     public float initialSpeedForChild;
     public Bullet_Cluster childToSpawn;
     public int childNums;
-
+    public LayerMask enemyLayer;
     [Header("childBullet attributes")]
     public float dampingFactor;
     public float minBulletSpeed;
@@ -34,6 +35,16 @@ public class Bullet_Cluster : Bullet_Default
     {
         if (isParentBullet)
         {
+            Collider2D[] enemiesInRadius = Physics2D.OverlapCircleAll(transform.position, blastRadius, enemyLayer);
+            foreach(Collider2D enemy in enemiesInRadius)
+            {
+                IDamagable damagable = enemy.gameObject.GetComponent<IDamagable>();
+                if (damagable != null)
+                {
+                    damagable.TakeDamage(parentBulletDamage, bulletColor);
+                }
+            }
+
             AudioManager.instance.PlaySound("explosion");
             Instantiate(explosionEffect, transform.position, new Quaternion());
             //spawn children
@@ -43,10 +54,13 @@ public class Bullet_Cluster : Bullet_Default
                 Bullet_Cluster child=Instantiate(childToSpawn, transform.position, Quaternion.Euler(0, 0, angle));
                 child.InitBullet(initialSpeedForChild, bulletDamage / 10, bulletColor);
 
-            }   
+            }
+            Destroy(gameObject);
         }
-
-        base.OnCollisionEnter2D(collision);
+        else
+        {
+            base.OnCollisionEnter2D(collision);
+        }         
     }
     protected override void OnDestroy() { }
 
