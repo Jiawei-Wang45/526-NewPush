@@ -18,7 +18,7 @@ public class PauseAbility : BaseAbility
     private void Start()
     {
         pc.playerInput.Default.DefenseAbility.performed += OnPauseTriggered;
-        GameManager.instance.onReset += ResetStates;
+        //GameManager.instance.onReset += ResetStates;
     }
     private void OnPauseTriggered(InputAction.CallbackContext context)
     {
@@ -55,17 +55,17 @@ public class PauseAbility : BaseAbility
     //    AudioManager.instance.PlaySound("cooldownFinish");
     //    ResetStates();
     //}
-    protected override void ResetStates()
-    {
-        if (isCooldown)
-        {
-            base.ResetStates();
-        }
+    //protected override void ResetStates()
+    //{
+    //    if (isCooldown)
+    //    {
+    //        base.ResetStates();
+    //    }
         
-    }
+    //}
     private void OnDestroy()
     {
         pc.playerInput.Default.Pause.performed -= OnPauseTriggered;
-        GameManager.instance.onReset -= ResetStates;
+        //GameManager.instance.onReset -= ResetStates;
     }
 }

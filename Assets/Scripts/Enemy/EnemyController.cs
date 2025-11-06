@@ -37,7 +37,7 @@ public class EnemyController : MonoBehaviour, IDamagable
         rb = GetComponent<Rigidbody2D>();
         enemyStats = GetComponent<EnemyStats>();
         gameManager = GameManager.instance;
-        gameManager.onReset += ResetStates;
+        //gameManager.onReset += ResetStates;
     }
     private void Start()
     {
@@ -301,13 +301,13 @@ public class EnemyController : MonoBehaviour, IDamagable
         Destroy(gameObject);
     }
 
-    public void ResetStates()
-    {
-        StopAllCoroutines();
-        enemyStats.Reset();
-        timeToFire = weapon.fireRate - 0.6f;
-        isAlive(false);
-    }
+    //public void ResetStates()
+    //{
+    //    StopAllCoroutines();
+    //    enemyStats.Reset();
+    //    timeToFire = weapon.fireRate - 0.6f;
+    //    isAlive(false);
+    //}
 
     private void UpdateEnemyColor()
     {
@@ -340,6 +340,6 @@ public class EnemyController : MonoBehaviour, IDamagable
     {
         PauseManager.instance.OnPauseStart -= PauseStart;
         PauseManager.instance.OnPauseEnd -= PauseEnd;
-        gameManager.onReset -= ResetStates;
+        //gameManager.onReset -= ResetStates;
     }
 }

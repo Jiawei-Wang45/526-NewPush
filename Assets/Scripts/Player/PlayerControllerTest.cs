@@ -8,7 +8,7 @@ public class PlayerControllerTest : MonoBehaviour, IDamagable
     //components
     public static PlayerControllerTest instance;
     private Rigidbody2D rb;
-    public PlayerStats stats;
+    private PlayerStats stats;
     public PlayerInput playerInput;
     public int combinationIndex = 0;
     // movement parameter
@@ -32,35 +32,6 @@ public class PlayerControllerTest : MonoBehaviour, IDamagable
         playerInput = new PlayerInput();
         rb = GetComponent<Rigidbody2D>();
         stats = GetComponent<PlayerStats>();
-        // ensure sendToGoogle is assigned
-        // if (sendToGoogle == null)
-        // {
-        //     // try to find any enabled instance first
-        //     sendToGoogle = FindFirstObjectByType<SendToGoogle>();
-        //     // if still null, try to find inactive instances (Unity API that returns array)
-        //     if (sendToGoogle == null)
-        //     {
-        //         try
-        //         {
-        //             SendToGoogle[] all = FindObjectsByType<SendToGoogle>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-        //             if (all != null && all.Length > 0)
-        //             {
-        //                 sendToGoogle = all[0];
-        //             }
-        //         }
-        //         catch
-        //         {
-        //             // fallback: use FindObjectOfType that supports inactive when available
-        //             try
-        //             {
-        //                 sendToGoogle = FindObjectOfType<SendToGoogle>(true);
-        //             }
-        //             catch { }
-        //         }
-        //     }
-        // }
-
-        // Debug.Log($"[PlayerControllerTest] Awake auto-assign sendToGoogle: {sendToGoogle != null} (object: {sendToGoogle?.gameObject.name})");
     }
     private void OnEnable()
     {
@@ -78,7 +49,7 @@ public class PlayerControllerTest : MonoBehaviour, IDamagable
         playerInput.Default.Move.performed += OnMoveTriggered;
         playerInput.Default.Move.canceled += OnMoveTriggered;
 
-        GameManager.instance.onReset += Reset;
+        //GameManager.instance.onReset += Reset;
     }
 
     public void AddForcePlayer(Vector2 force)
@@ -107,10 +78,10 @@ public class PlayerControllerTest : MonoBehaviour, IDamagable
     {
         movement = context.ReadValue<Vector2>();
     }
-    public void Reset()
-    {
-        transform.position = initialPosition;
-    }
+    //public void Reset()
+    //{
+    //    transform.position = initialPosition;
+    //}
 
     public void UponWaveClear()
     {

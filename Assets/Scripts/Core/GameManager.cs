@@ -4,41 +4,50 @@ using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using System;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
+    //components and external reference
+    [NonSerialized] private PlayerControllerTest pc;
+
+    [Header("UI paramaters")]
     public bool isPlayerAlive = true;
     public bool isPaused = false;
     public GameObject InGamePauseMenu;
     public GameObject InGameEndingMenu;
     public GameObject InGameWinMenu;
+    public DungeonRoomInfo InGameDungeonRoomInfo;
+    public SurvivalTime InGameSurvivalTime;
     public GameObject TutorialText;
-    public PlayerControllerTest player;
-    public PlayerGhost ghost;
-    public EnemySpawner enemySpawner;
+    public bool isInLevel; //in contrast with tutorial level
+
+
     [Header("Dungeon Rooms")]
     // Rooms in dungeon order. Assign in the inspector or dynamically at runtime.
     public RoomManager[] rooms;
-    private int currentRoomIndex = -1;
-    public bool isInLevel;
+    private int currentRoomIndex = -1;  
     public float levelStartTime;
     private float roomStartTime;
     
-    public TMP_Text infoText;
-    public TMP_Text displayScoreText;
-    // Google analytics
+    
+    //Google analytics
     private SendToGoogle sendToGoogle;
     // Ability usage counters
     private int weaponUseCount = 0;
     private int attackingAbilitiesUseCount = 0;
     private int defenseAbilitiesUseCount = 0;
-
     // Analytics sent flags to prevent duplicate sends
     private bool hasSentAbilityData = false;
     private bool hasSentAbilityUsage = false;
     private int lastSentTimerRoom = -1;
 
+    ////delegate for reset states
+    //public delegate void OnResetDelegate();
+    //public event OnResetDelegate onReset;
+
+    #region analytics
     // Methods to increment counters
     public void IncrementWeaponUseCount()
     {
@@ -68,24 +77,40 @@ public class GameManager : MonoBehaviour
             hasSentAbilityData = true;
         }
     }
-    //delegate for reset states
-    public delegate void OnResetDelegate();
-    public event OnResetDelegate onReset;
-    /*
-        void OnEnable()
+    public void GameOver()
+    {
+        //player.gameObject.SetActive(false);
+        isPlayerAlive = false;
+        Time.timeScale = 0;
+        InGameEndingMenu.SetActive(true);
+        // Show survival time instead of wave count (waves managed by rooms)
+        float totalSurvivalTime = Time.time - levelStartTime;
+        InGameSurvivalTime.UpdateSurvivalTime(totalSurvivalTime);
+
+        // Send data only for rooms 1 and above (skip room0)
+        int roomNumber = currentRoomIndex;
+        if (roomNumber >= 1)
         {
-            InputSystem.actions["Reset"].performed += OnReset;
+            // Send timer data for the current room (death) only if not already sent
+            if (sendToGoogle != null && lastSentTimerRoom != roomNumber)
+            {
+                float roomTime = Time.time - roomStartTime;
+                sendToGoogle.SendTimerData(roomTime, false, roomNumber);
+                lastSentTimerRoom = roomNumber;
+            }
+
+            // Send ability usage data on game over (death) only once
+            if (sendToGoogle != null && !hasSentAbilityUsage)
+            {
+                sendToGoogle.SendAbilityUsageData(weaponUseCount, attackingAbilitiesUseCount, defenseAbilitiesUseCount, totalSurvivalTime, false, roomNumber);
+                hasSentAbilityUsage = true;
+            }
         }
+    }
+    #endregion analytics
 
-        void OnDisable()
-        {
-            InputSystem.actions["Reset"].performed -= OnReset;
 
-        }
-        */
-
-    //private void OnReset(InputAction.CallbackContext ctx) => ResetWithGhost();
-
+    #region initialization
     private void Awake()
     {
         if (instance == null)
@@ -99,17 +124,22 @@ public class GameManager : MonoBehaviour
     }
     private void Start()
     {
+        pc= FindFirstObjectByType<PlayerControllerTest>();
+        
+        InGamePauseMenu.SetActive(false);
+        InGameEndingMenu.SetActive(false);
+        InGameWinMenu.SetActive(false);
         if (isInLevel)
         {
             levelStartTime = Time.time;
-            InGamePauseMenu.SetActive(false);
-            InGameEndingMenu.SetActive(false);
-            InGameWinMenu.SetActive(false);
-            PlayerControllerTest pcTest = FindFirstObjectByType<PlayerControllerTest>();
-            pcTest.playerInput.Default.Escape.performed += OnEscapeTriggered;
+            pc.playerInput.Default.Escape.performed += OnEscapeTriggered;
             sendToGoogle = FindFirstObjectByType<SendToGoogle>();
         }
-        Time.timeScale = 0.0f;
+        else
+        {
+            TutorialText.SetActive(false);
+        }
+        //Time.timeScale = 0.0f;
     }
     //private void Update()
     //{
@@ -152,7 +182,9 @@ public class GameManager : MonoBehaviour
         // Send ability data at the start of the game
         SendAbilityData();
     }
+    #endregion initialization
 
+    #region dungeon update
     // Called by RoomManager when a room is cleared
     public void RoomCleared(RoomManager room)
     {
@@ -175,20 +207,16 @@ public class GameManager : MonoBehaviour
             UpdateRoomProgressUI();
         }
     }
+    #endregion dungeon update
+
+    #region UI update call
 
     // Display current room name in red followed by cleared/total, e.g.:
     // <color=red>Room_2</color>: 1/5
     private void UpdateRoomProgressUI()
     {
-        if (infoText == null) return;
-        if (rooms == null || rooms.Length == 0)
-        {
-            infoText.text = "Rooms: 0/0";
-            return;
-        }
-
         int clearedCount = Mathf.Clamp(currentRoomIndex, 0, rooms.Length);
-        infoText.text = $"<color=#FF0000>Rooms</color>: {clearedCount}/{rooms.Length}";
+        InGameDungeonRoomInfo.UpdateRoomInfo(clearedCount, rooms.Length);
     }
 
     // Called by a WinTrigger when the player reaches the goal
@@ -202,54 +230,54 @@ public class GameManager : MonoBehaviour
         // No more resets: when player is destroyed, immediately end the game
         GameOver();
     }
-
-    // Wave lifecycle is now handled by RoomManager and EnemySpawner.
-    
-    public void GameOver()
+    public void ShowWinMenu()
     {
-        //player.gameObject.SetActive(false);
         isPlayerAlive = false;
         Time.timeScale = 0;
-        InGameEndingMenu.SetActive(true);
-        // Show survival time instead of wave count (waves managed by rooms)
-        float totalSurvivalTime = Time.time - levelStartTime;
-        displayScoreText.text = $"<size=20><color=#FF0000>Time Survived: </color>{totalSurvivalTime:F1}s</size>";
+        InGameWinMenu.SetActive(true);
+
+        // Record level completion time
+        float completionTime = Time.time - levelStartTime;
+        string levelName = SceneManager.GetActiveScene().name;
+        GameAnalyticsManager gaManager = FindFirstObjectByType<GameAnalyticsManager>();
+        if (gaManager != null)
+        {
+            gaManager.SendLevelCompletedEvent(levelName, completionTime);
+        }
 
         // Send data only for rooms 1 and above (skip room0)
         int roomNumber = currentRoomIndex;
         if (roomNumber >= 1)
         {
-            // Send timer data for the current room (death) only if not already sent
-            if (sendToGoogle != null && lastSentTimerRoom != roomNumber)
-            {
-                float roomTime = Time.time - roomStartTime;
-                sendToGoogle.SendTimerData(roomTime, false, roomNumber);
-                lastSentTimerRoom = roomNumber;
-            }
-
-            // Send ability usage data on game over (death) only once
+            // Send ability usage data on win only once
             if (sendToGoogle != null && !hasSentAbilityUsage)
             {
-                sendToGoogle.SendAbilityUsageData(weaponUseCount, attackingAbilitiesUseCount, defenseAbilitiesUseCount, totalSurvivalTime, false, roomNumber);
+                sendToGoogle.SendAbilityUsageData(weaponUseCount, attackingAbilitiesUseCount, defenseAbilitiesUseCount, completionTime, true, roomNumber);
                 hasSentAbilityUsage = true;
             }
         }
     }
-    // Main Menu button's functions
-    public void NewGame()
-    {
-        SceneManager.LoadScene("AlphaProgressCheck");
-    }
-    public void Exit()
-    {
-        #if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false; 
-        #else
-            Application.Quit(); 
-        #endif
-    }
+    // Wave lifecycle is now handled by RoomManager and EnemySpawner.
 
+    #endregion UI update call
 
+    #region MainMenu button callback
+    //public void NewGame()
+    //{
+    //    SceneManager.LoadScene("AlphaProgressCheck");
+    //}
+    //public void Exit()
+    //{
+    //    #if UNITY_EDITOR
+    //        UnityEditor.EditorApplication.isPlaying = false; 
+    //    #else
+    //        Application.Quit(); 
+    //    #endif
+    //}
+
+    #endregion MainMenu button callback
+
+    #region AlphaProgressCheck button callback
     //InGameMenu button's functions
 
     public void Resume()
@@ -282,79 +310,46 @@ public class GameManager : MonoBehaviour
         }
 
     }
-    private void InitializePauseStat()
-    {
-        //isPaused = false;
-        Time.timeScale = 1;
-    }
+    
     private void OnEscapeTriggered(InputAction.CallbackContext Context)
     {
         if (isPlayerAlive)
             ChangePauseStat();
     }
-    public void ShowWinMenu()
-    {
-        isPlayerAlive = false;
-        Time.timeScale = 0;
-        InGameWinMenu.SetActive(true);
+    #endregion AlphaProgressCheck button callback
 
-        // Record level completion time
-        float completionTime = Time.time - levelStartTime;
-        string levelName = SceneManager.GetActiveScene().name;
-        GameAnalyticsManager gaManager = FindFirstObjectByType<GameAnalyticsManager>();
-        if (gaManager != null)
-        {
-            gaManager.SendLevelCompletedEvent(levelName, completionTime);
-        }
-
-        // Send data only for rooms 1 and above (skip room0)
-        int roomNumber = currentRoomIndex;
-        if (roomNumber >= 1)
-        {
-            // Send ability usage data on win only once
-            if (sendToGoogle != null && !hasSentAbilityUsage)
-            {
-                sendToGoogle.SendAbilityUsageData(weaponUseCount, attackingAbilitiesUseCount, defenseAbilitiesUseCount, completionTime, true, roomNumber);
-                hasSentAbilityUsage = true;
-            }
-        }
-    }
-
-    //public void ResetWithGhost()
+    //private void InitializePauseStat()
     //{
-    //    List<ObjectState> playerStates = new List<ObjectState>(player.sendStates());
-    //    Reset();
-    //    GhostController newGhost = Instantiate(ghost);
-    //    newGhost.InitializeGhost(player.initialPosition, playerStates);
-
+    //    //isPaused = false;
+    //    Time.timeScale = 1;
     //}
 
-    public void Reset()
-    {
-        onReset?.Invoke();
-        // Reset analytics flags and counters
-        hasSentAbilityData = false;
-        hasSentAbilityUsage = false;
-        lastSentTimerRoom = -1;
-        weaponUseCount = 0;
-        attackingAbilitiesUseCount = 0;
-        defenseAbilitiesUseCount = 0;
-        // Destroy all enemy spawn indicators to prevent spawning during reset
-        //EnemySpawnIndicator[] indicators = FindObjectsByType<EnemySpawnIndicator>(FindObjectsInactive.Include, FindObjectsSortMode.None); 
-        //foreach (EnemySpawnIndicator i in indicators)
-        //{
-        //        Destroy(i.gameObject);
-        //}
+    //public void Reset()
+    //{
+    //    onReset?.Invoke();
+    //    // Reset analytics flags and counters
+    //    hasSentAbilityData = false;
+    //    hasSentAbilityUsage = false;
+    //    lastSentTimerRoom = -1;
+    //    weaponUseCount = 0;
+    //    attackingAbilitiesUseCount = 0;
+    //    defenseAbilitiesUseCount = 0;
+    //    // Destroy all enemy spawn indicators to prevent spawning during reset
+    //    //EnemySpawnIndicator[] indicators = FindObjectsByType<EnemySpawnIndicator>(FindObjectsInactive.Include, FindObjectsSortMode.None); 
+    //    //foreach (EnemySpawnIndicator i in indicators)
+    //    //{
+    //    //        Destroy(i.gameObject);
+    //    //}
 
-        Bullet_Default[] bullets = FindObjectsByType<Bullet_Default>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-        foreach (Bullet_Default b in bullets)
-        {
-            Destroy(b.gameObject);
-        }
+    //    Bullet_Default[] bullets = FindObjectsByType<Bullet_Default>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+    //    foreach (Bullet_Default b in bullets)
+    //    {
+    //        Destroy(b.gameObject);
+    //    }
 
-        // Reset no longer directly triggers enemy spawner; RoomManager/EnemySpawner
-        // will handle spawning for their rooms. If needed, individual spawners
-        // can be reset via their own APIs or via the onReset delegate listeners.
+    //    // Reset no longer directly triggers enemy spawner; RoomManager/EnemySpawner
+    //    // will handle spawning for their rooms. If needed, individual spawners
+    //    // can be reset via their own APIs or via the onReset delegate listeners.
 
-    }
+    //}
 }

@@ -23,7 +23,7 @@ public class InvincibleAbility : BaseAbility
     private void Start()
     {
         pc.playerInput.Default.DefenseAbility.performed += OnInvincibleTriggered;
-        GameManager.instance.onReset += ResetStates;
+        //GameManager.instance.onReset += ResetStates;
     }
     public void OnInvincibleTriggered(InputAction.CallbackContext context)
     {
@@ -76,20 +76,20 @@ public class InvincibleAbility : BaseAbility
             pc.GetComponent<FireAbility>().SetAmmoToMax();
         }
     }
-    protected override void ResetStates()
-    {
-        if (isCooldown)
-        {
-            base.ResetStates();
-            stats.SetInvincible(false);
-            pc.speed = stats.movementSpeed;
-            gameObject.layer = LayerMask.NameToLayer("Player");
-            particleEffect.Stop();
-        }
-    }
+    //protected override void ResetStates()
+    //{
+    //    if (isCooldown)
+    //    {
+    //        base.ResetStates();
+    //        stats.SetInvincible(false);
+    //        pc.speed = stats.movementSpeed;
+    //        gameObject.layer = LayerMask.NameToLayer("Player");
+    //        particleEffect.Stop();
+    //    }
+    //}
     private void OnDestroy()
     {
         pc.playerInput.Default.DefenseAbility.performed -= OnInvincibleTriggered;
-        GameManager.instance.onReset -= ResetStates;
+        //GameManager.instance.onReset -= ResetStates;
     }
 }

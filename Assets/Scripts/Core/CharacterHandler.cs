@@ -24,19 +24,22 @@ public class CharacterHandler: MonoBehaviour
     }
     private void Start()
     {
-        weapons.Add(CharacterConfigHolder.instance.weapon);
-        pc.GetComponent<FireAbility>().InitializeWeapon(weapons[0]);
-        SetAttackingAbility(CharacterConfigHolder.instance.attackingAbility);
-        SetDefenseAbility(CharacterConfigHolder.instance.defenseAbility);
-        pc.combinationIndex = (int)CharacterConfigHolder.instance.weapon.weaponClass + (int)CharacterConfigHolder.instance.defenseAbility.abilityClass * 4;
-        Debug.Log("combinationIndex: " + pc.combinationIndex);
-        // Current Ability/weapon Matrix: 
-        //       Pause  Dash
-        // FullAuto 0     4
-        // SemiAuto 1     5
-        // Shotgun  2     6
-        // Melee    3     7
-        //
+        if (CharacterConfigHolder.instance)
+        {
+            weapons.Add(CharacterConfigHolder.instance.weapon);
+            pc.GetComponent<FireAbility>().InitializeWeapon(weapons[0]);
+            SetAttackingAbility(CharacterConfigHolder.instance.attackingAbility);
+            SetDefenseAbility(CharacterConfigHolder.instance.defenseAbility);
+            pc.combinationIndex = (int)CharacterConfigHolder.instance.weapon.weaponClass + (int)CharacterConfigHolder.instance.defenseAbility.abilityClass * 4;
+            Debug.Log("combinationIndex: " + pc.combinationIndex);
+            // Current Ability/weapon Matrix: 
+            //       Pause  Dash
+            // FullAuto 0     4
+            // SemiAuto 1     5
+            // Shotgun  2     6
+            // Melee    3     7
+            //
+        }
     }
     public void SetAttackingAbility(PlayerAbility ability)
     {

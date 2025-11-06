@@ -51,7 +51,10 @@ public class EnemyStats : MonoBehaviour
             main.startColor = enemyColor.ToRGB();
 
             GetComponent<EnemyController>().isAlive(false);
-            spawner.EnemyDestroyed();
+            if (spawner)
+            {
+                spawner.EnemyDestroyed();
+            }   
         }
         else
         {
@@ -63,12 +66,12 @@ public class EnemyStats : MonoBehaviour
         health = newHealth;
         OnHealthChanged?.Invoke();
     }
-    public void Reset()
-    
-    {
-        SetHealth(maxHealth);
-        OnHealthChanged?.Invoke();
-    }
+    //public void Reset()
+
+    //{
+    //    SetHealth(maxHealth);
+    //    OnHealthChanged?.Invoke();
+    //}
     private void RandomDropItems()
     {
         if (!droppableItems) return;

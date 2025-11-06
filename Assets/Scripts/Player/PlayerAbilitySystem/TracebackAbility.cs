@@ -21,7 +21,7 @@ public class TracebackAbility : MonoBehaviour
     }
     private void Start()
     {
-        GameManager.instance.onReset += ResetStates;
+        //GameManager.instance.onReset += ResetStates;
     }
     private void FixedUpdate()
     {
@@ -46,19 +46,19 @@ public class TracebackAbility : MonoBehaviour
         ghostInstance = Instantiate(GhostType);
         ghostInstance.InitializeGhost(recordedStates[0].currentPosition, recordedStates);
         isRecording = false;
-        ResetStates();
+        //ResetStates();
     }
-    public void ResetStates()
-    {
-        if (isRecording)
-        {
-            StopAllCoroutines();
-            if (ghostInstance != null)
-                Destroy(ghostInstance);
-            ghostInstance= null;
-            //currentWeapon = null;
-            isRecording = false;
-        }
+    //public void ResetStates()
+    //{
+    //    if (isRecording)
+    //    {
+    //        StopAllCoroutines();
+    //        if (ghostInstance != null)
+    //            Destroy(ghostInstance);
+    //        ghostInstance= null;
+    //        //currentWeapon = null;
+    //        isRecording = false;
+    //    }
         
-    }
+    //}
 }

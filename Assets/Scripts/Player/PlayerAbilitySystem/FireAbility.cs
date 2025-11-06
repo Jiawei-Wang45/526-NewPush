@@ -55,7 +55,7 @@ public class FireAbility: MonoBehaviour
         playerInput.Default.Reload.performed += OnReloadTriggered;
 
         //reset binding
-        GameManager.instance.onReset += ResetStates;
+        //GameManager.instance.onReset += ResetStates;
     }
     #endregion
 
@@ -303,14 +303,14 @@ public class FireAbility: MonoBehaviour
         //TODO: May change reloadTime for different types of weapons
     }
 
-    private void ResetStates()
-    {
-        StopAllCoroutines();
+    //private void ResetStates()
+    //{
+    //    StopAllCoroutines();
 
-        // firing variables reset
-        isFiring = false;
-        isCoroutineRunning = false;
-        ResetReload();
-    }
+    //    // firing variables reset
+    //    isFiring = false;
+    //    isCoroutineRunning = false;
+    //    ResetReload();
+    //}
     #endregion
 }

@@ -5,7 +5,7 @@ public class PauseManager : MonoBehaviour
 {
     //components
     public static PauseManager instance;
-
+    private PlayerStats playerStats;
     //pause variables
     public bool isPausing = false;
     public float activePauseStrength = 1.0f;
@@ -30,7 +30,8 @@ public class PauseManager : MonoBehaviour
     }
     private void Start()
     {
-        GameManager.instance.onReset += ResetStates;
+        playerStats = PlayerStats.Instance;
+        //GameManager.instance.onReset += ResetStates;
     }
     public void RequestPause(float pauseDuration, float pauseStrength)
     {
@@ -45,8 +46,8 @@ public class PauseManager : MonoBehaviour
         OnPauseStart?.Invoke(pauseStrength);
         if(PlayerControllerTest.instance.combinationIndex == 3)
         {
-            PlayerControllerTest.instance.stats.SetInvincible(true);
-            PlayerControllerTest.instance.stats.preventDamage = true;
+            playerStats.SetInvincible(true);
+            playerStats.preventDamage = true;
         }
         yield return new WaitForSeconds(pauseDuration);
         while(extendDuration > 0.0f)
@@ -58,21 +59,21 @@ public class PauseManager : MonoBehaviour
         OnPauseEnd?.Invoke();
         if(PlayerControllerTest.instance.combinationIndex == 3)
         {
-            PlayerControllerTest.instance.stats.SetInvincible(false);
-            PlayerControllerTest.instance.stats.preventDamage = false;
+            playerStats.SetInvincible(false);
+            playerStats.preventDamage = false;
         }
         // FIXME: I think this should be a invoke event thing but I don't know how to do it
         // so i will do my GPT impression :(
         isPausing = false;
     }
-    public void ResetStates()
-    {
-        if (isPausing)
-        {
-            StopAllCoroutines();
-            OnPauseEnd?.Invoke();
-            isPausing = false;
-        }
-    }
+    //public void ResetStates()
+    //{
+    //    if (isPausing)
+    //    {
+    //        StopAllCoroutines();
+    //        OnPauseEnd?.Invoke();
+    //        isPausing = false;
+    //    }
+    //}
 
 }

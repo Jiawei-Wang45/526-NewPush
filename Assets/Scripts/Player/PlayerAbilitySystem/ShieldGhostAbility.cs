@@ -31,7 +31,7 @@ public class ShieldGhostAbility : BaseAbility
     private void Start()
     {
         pc.playerInput.Default.DefenseAbility.performed += OnShieldGhostTriggered;
-        GameManager.instance.onReset += ResetStates;
+        //GameManager.instance.onReset += ResetStates;
 
     }
     private void OnShieldGhostTriggered(InputAction.CallbackContext context)
@@ -66,19 +66,19 @@ public class ShieldGhostAbility : BaseAbility
         yield return new WaitForSeconds(pauseCooldown);
         AudioManager.instance.PlaySound("cooldownFinish");
         isCooldown = false;
-        ResetStates();
+        //ResetStates();
     }
-    protected override void ResetStates()
-    {
-        base.ResetStates();
-        if (isCooldown)
-        {
-            StopAllCoroutines();
-            shieldShape.SetActive(false);
-            hitboxShape.SetActive(false);
-            Destroy(returnPointInstance);
-            returnPointInstance= null;
-            isCooldown = false;
-        }
-    }
+    //protected override void ResetStates()
+    //{
+    //    base.ResetStates();
+    //    if (isCooldown)
+    //    {
+    //        StopAllCoroutines();
+    //        shieldShape.SetActive(false);
+    //        hitboxShape.SetActive(false);
+    //        Destroy(returnPointInstance);
+    //        returnPointInstance= null;
+    //        isCooldown = false;
+    //    }
+    //}
 }

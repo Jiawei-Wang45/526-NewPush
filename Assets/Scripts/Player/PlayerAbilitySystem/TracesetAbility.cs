@@ -35,7 +35,7 @@ public class TracesetAbility : MonoBehaviour
             catch { }
             try
             {
-                GameManager.instance.onReset += ResetLocal;
+                //GameManager.instance.onReset += ResetLocal;
             }
             catch { }
         }

@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 public class PlayerStats : MonoBehaviour
 {
+    public static PlayerStats Instance;
     public PlayerControllerTest pc;
     public float movementSpeed = 10f;
     public float maxHealth = 5.0f;
@@ -30,16 +31,21 @@ public class PlayerStats : MonoBehaviour
     #region routine functions
     private void Awake()
     {
-        pc= GetComponent<PlayerControllerTest>();
+        if (Instance != null)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+        }
+        pc = GetComponent<PlayerControllerTest>();
     }
     private void Start()
     {
-        ResetStates();
-        //if (!isGhost)
-        //{
-        //    pc.OnResetCalled += ResetStates;
-        //}
-        GameManager.instance.onReset += ResetStates;
+        ChangeHealth(maxHealth);
+        ResetH();
+        //GameManager.instance.onReset += ResetStates;
     }
     private void Update()
     {
@@ -114,44 +120,13 @@ public class PlayerStats : MonoBehaviour
 
 
     }
-    public void ResetStates()
-    {
-        ChangeHealth(maxHealth);
-        ResetH();
-        
-    }
+    //public void ResetStates()
+    //{
+    //    ChangeHealth(maxHealth);
+    //    ResetH();
+
+    //}
     #endregion reset functions
-    //private void UpdateHRecovery()
-    //{
-    //    if (isRecoveringH)
-    //    {
-    //        hRecoveryTimer += Time.deltaTime;
 
-    //        if (hRecoveryTimer >= hRecoveryDelay)
-    //        {
-
-    //            float recoveryProgress = (hRecoveryTimer - hRecoveryDelay) * hRecoverySpeed;
-    //            recoveryProgress = Mathf.Clamp01(recoveryProgress);
-
-
-    //            float lerpSpeed = hRecoverySpeed * Time.deltaTime;
-    //            playerColor.H = Mathf.Lerp(playerColor.H, originalH, lerpSpeed);
-
-
-    //            if (Mathf.Abs(playerColor.H - originalH) < 0.5f)
-    //            {
-    //                playerColor.H = originalH;
-    //                isRecoveringH = false;
-    //                hRecoveryTimer = 0f;
-    //                Debug.Log("H back to normal" + originalH);
-    //            }
-    //        }
-    //    }
-    //}
-    //private void StartHRecovery()
-    //{
-    //    hRecoveryTimer = 0f;
-    //    isRecoveringH = true;
-    //}
 
 }

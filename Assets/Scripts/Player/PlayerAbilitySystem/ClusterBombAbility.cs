@@ -15,7 +15,7 @@ public class ClusterBombAbility : BaseAbility
     private void Start()
     {
         pc.playerInput.Default.AttackingAbility.performed += OnClusterBombTriggered;
-        GameManager.instance.onReset += ResetStates;
+        //GameManager.instance.onReset += ResetStates;
     }
 
     public void OnClusterBombTriggered(InputAction.CallbackContext context)
@@ -30,16 +30,16 @@ public class ClusterBombAbility : BaseAbility
         spawnedBullet.InitBullet(spawnedBullet.parentBulletSpeed, spawnedBullet.parentBulletDamage, stats.playerColor);
         SendAnalytics("ClusterBomb");
     }
-    protected override void ResetStates()
-    {
-       if (isCooldown)
-        {
-            base.ResetStates();
-        }
-    }
+    //protected override void ResetStates()
+    //{
+    //   if (isCooldown)
+    //    {
+    //        base.ResetStates();
+    //    }
+    //}
     private void OnDestroy()
     {
         pc.playerInput.Default.AttackingAbility.performed -= OnClusterBombTriggered;
-        GameManager.instance.onReset -= ResetStates;
+        //GameManager.instance.onReset -= ResetStates;
     }
 }

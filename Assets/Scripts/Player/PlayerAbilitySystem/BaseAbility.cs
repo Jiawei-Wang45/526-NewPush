@@ -25,7 +25,7 @@ public class BaseAbility : MonoBehaviour
     public AbilityType abilityType = AbilityType.Attacking;
 
     //ability Icon 
-    private AbilityIcon boundIcon;
+    public AbilityIcon boundIcon;
     ////cooldown delegate
     //public delegate void OnCooldownStartDelegate(float cooldownTime);
     //public event OnCooldownStartDelegate onCooldownStart;
@@ -60,12 +60,12 @@ public class BaseAbility : MonoBehaviour
         pc = GetComponentInParent<PlayerControllerTest>();
         stats = GetComponentInParent<PlayerStats>();
     }
-    protected virtual void ResetStates()
-    {
-        StopAllCoroutines();
-        //ResetAbilityUI();
-        isCooldown = false;
-    }
+    //protected virtual void ResetStates()
+    //{
+    //    StopAllCoroutines();
+    //    //ResetAbilityUI();
+    //    isCooldown = false;
+    //}
     protected IEnumerator AbilityCooldownCoroutine(float cooldownTime)
     {
         Debug.Log($"Cooldown length: {cooldownTime}");
