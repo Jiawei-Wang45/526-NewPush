@@ -12,13 +12,12 @@ public class ClusterBombAbility : BaseAbility
         abilityType = AbilityType.Attacking;
         firePoint = pc.transform.Find("PlayerAim/FirePoint");
     }
-    private void Start()
-    {
-        pc.playerInput.Default.AttackingAbility.performed += OnClusterBombTriggered;
-        GameManager.instance.onReset += ResetStates;
-    }
-
-    public void OnClusterBombTriggered(InputAction.CallbackContext context)
+    //private void Start()
+    //{
+    //    pc.playerInput.Default.AttackingAbility.performed += OnClusterBombTriggered;
+    //    //GameManager.instance.onReset += ResetStates;
+    //}
+    public override void ActivateAbility() 
     {
         ActivateClusterBomb();
     }
@@ -27,19 +26,19 @@ public class ClusterBombAbility : BaseAbility
         if (isCooldown) return;
         StartCoroutine(AbilityCooldownCoroutine(shootingCooldown));
         Bullet_Cluster spawnedBullet = Instantiate(clusterBullet, firePoint.position, firePoint.rotation);
-        spawnedBullet.InitBullet(spawnedBullet.parentBulletSpeed, spawnedBullet.parentBulletDamage, stats.playerColor);
+        spawnedBullet.InitBullet(spawnedBullet.parentBulletSpeed, spawnedBullet.parentBulletDamage);
         SendAnalytics("ClusterBomb");
     }
-    protected override void ResetStates()
-    {
-       if (isCooldown)
-        {
-            base.ResetStates();
-        }
-    }
-    private void OnDestroy()
-    {
-        pc.playerInput.Default.AttackingAbility.performed -= OnClusterBombTriggered;
-        GameManager.instance.onReset -= ResetStates;
-    }
+    //protected override void ResetStates()
+    //{
+    //   if (isCooldown)
+    //    {
+    //        base.ResetStates();
+    //    }
+    //}
+    //private void OnDestroy()
+    //{
+    //    pc.playerInput.Default.AttackingAbility.performed -= OnClusterBombTriggered;
+    //    //GameManager.instance.onReset -= ResetStates;
+    //}
 }

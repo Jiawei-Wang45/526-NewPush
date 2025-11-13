@@ -14,7 +14,7 @@ public class AbilityIcon : MonoBehaviour
     private void Start()
     {
         ResetAbilityUI();
-        GameManager.instance.onReset += ResetAbilityUI;
+        //GameManager.instance.onReset += ResetAbilityUI;
     }
     public void BindToAbility(BaseAbility ability,Sprite cooldownIcon)
     {
@@ -46,7 +46,7 @@ public class AbilityIcon : MonoBehaviour
     {
         cooldownText.gameObject.SetActive(false);
     }
-    private void ResetAbilityUI()
+    public void ResetAbilityUI()
     {
         filledImage.fillAmount = 1;
         cooldownText.gameObject.SetActive(false);

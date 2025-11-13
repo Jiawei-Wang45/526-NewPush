@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   abilityClass: 1
   abilityName: Invincible Dash
-  menuIcon: {fileID: -205270267638800340, guid: ae524bb3d309bc24f87a6aa570dcf7f0, type: 3}
+  menuIcon: {fileID: -5504308754007793267, guid: e5bbdb73bfdf7f2458a0e2bfb07bcae5, type: 3}
   cooldownIcon: {fileID: 7482667652216324306, guid: b64f79c2337ef4d2fb7e679aafd0c9b0, type: 3}
   abilityPrefab: {fileID: 892802141710095966, guid: ab3287bfeacd55f4e87f64ce4504797e, type: 3}

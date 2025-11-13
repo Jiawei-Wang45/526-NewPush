@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -5,30 +6,34 @@ using UnityEngine.InputSystem;
 public class InvincibleAbility : BaseAbility
 {
     //components
-    private ParticleSystem particleEffect;
-    private ParticleSystem subParticleEffect;
+    [NonSerialized] private ParticleSystem particleEffect;
+    [NonSerialized] private ParticleSystem subParticleEffect;
+    [NonSerialized] private SpriteRenderer parentSprite;
     //Invincible parameter
     [Header("Invincible parameters")]
     public float speedMultiplier = 2.0f; // how many times faster during dash
     public float invincibleDuration = 3.0f; // seconds the dash lasts
     public float invincibleCooldown = 7.0f; //the overall cooldown time since the initiation 
-
+    private float cachedSpeed;
     protected override void Awake()
     {
         base.Awake();
         abilityType = AbilityType.Defense;
-        particleEffect= GetComponent<ParticleSystem>();
+        cachedSpeed = pc.speed;
+        particleEffect = GetComponent<ParticleSystem>();
         subParticleEffect= transform.Find("SubEmitter").GetComponent<ParticleSystem>();
+        parentSprite = GetComponentInParent<SpriteRenderer>();
     }
-    private void Start()
-    {
-        pc.playerInput.Default.DefenseAbility.performed += OnInvincibleTriggered;
-        GameManager.instance.onReset += ResetStates;
-    }
-    public void OnInvincibleTriggered(InputAction.CallbackContext context)
+    //private void Start()
+    //{
+    //    pc.playerInput.Default.DefenseAbility.performed += OnInvincibleTriggered;
+    //    //GameManager.instance.onReset += ResetStates;
+    //}
+    public override void ActivateAbility()
     {
         ActivateInvincible();
     }
+
     public void ActivateInvincible()
     {
         //if (isCooldown || !isEnabled) return;
@@ -45,9 +50,10 @@ public class InvincibleAbility : BaseAbility
         {
             pc.GetComponent<FireAbility>().SetAmmoToMax();
         }
-        pc.speed = stats.movementSpeed * speedMultiplier;
-        gameObject.layer = LayerMask.NameToLayer("Invincible");
+        pc.speed = cachedSpeed * speedMultiplier;
+        pc.gameObject.layer = LayerMask.NameToLayer("Invincible");
         particleEffect.Play();
+        ChangeVisuality(0.5f);
         float AccumulationTime = 0;
         Vector3 lastPostion=transform.position;
         while (true)
@@ -67,29 +73,39 @@ public class InvincibleAbility : BaseAbility
             }
             yield return null;
         }
-        pc.speed = stats.movementSpeed;
-        gameObject.layer = LayerMask.NameToLayer("Player");
+        pc.speed = cachedSpeed;
+        pc.gameObject.layer = LayerMask.NameToLayer("Player");
         particleEffect.Stop();
+        ChangeVisuality(1);
         pc.GetComponent<PlayerStats>().SetInvincible(false);
         if(pc.combinationIndex == 4)
         {
             pc.GetComponent<FireAbility>().SetAmmoToMax();
         }
     }
-    protected override void ResetStates()
+    //protected override void ResetStates()
+    //{
+    //    if (isCooldown)
+    //    {
+    //        base.ResetStates();
+    //        stats.SetInvincible(false);
+    //        pc.speed = stats.movementSpeed;
+    //        gameObject.layer = LayerMask.NameToLayer("Player");
+    //        particleEffect.Stop();
+    //    }
+    //}
+    private void ChangeVisuality(float alpha)
     {
-        if (isCooldown)
-        {
-            base.ResetStates();
-            stats.SetInvincible(false);
-            pc.speed = stats.movementSpeed;
-            gameObject.layer = LayerMask.NameToLayer("Player");
-            particleEffect.Stop();
-        }
+        Color color = parentSprite.color;
+        color.a = alpha;
+        parentSprite.color = color;
     }
     private void OnDestroy()
     {
-        pc.playerInput.Default.DefenseAbility.performed -= OnInvincibleTriggered;
-        GameManager.instance.onReset -= ResetStates;
+        pc.speed = cachedSpeed;
+        pc.gameObject.layer = LayerMask.NameToLayer("Player");
+        particleEffect.Stop();
+        ChangeVisuality(1);
+        pc.GetComponent<PlayerStats>().SetInvincible(false);
     }
 }

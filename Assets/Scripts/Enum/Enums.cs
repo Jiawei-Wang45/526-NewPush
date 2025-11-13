@@ -2,9 +2,9 @@ using UnityEngine;
 
 public enum AbilityClass
 {
-    Pause,
-    Dash,
-    None
+    Pause,  //defense
+    Dash,   //defense
+    Attack  //attack
 }
 
 public enum WeaponClass

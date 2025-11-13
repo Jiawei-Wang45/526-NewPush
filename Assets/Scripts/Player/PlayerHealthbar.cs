@@ -3,7 +3,7 @@ using UnityEngine.UIElements;
 public class PlayerHealthbar : MonoBehaviour
 {
     
-    public PlayerStats playerStats;
+    private PlayerStats playerStats;
     public UnityEngine.UI.Image healthbarImage;
     private void Awake()
     {
@@ -11,17 +11,9 @@ public class PlayerHealthbar : MonoBehaviour
     }
     private void Start()
     {
-        playerStats = PlayerControllerTest.instance.stats;
+        playerStats = PlayerStats.Instance;
         playerStats.OnHealthChanged += HandleHealthChanged;
     }
-    //private void Update()
-    //{
-    //    if (gameManager.isPlayerAlive)
-    //    {
-    //        healthbarImage.fillAmount = playerStats.health / playerStats.maxHealth;
-    //    }
-        
-    //}
     public void HandleHealthChanged()
     {
         healthbarImage.fillAmount = playerStats.health / playerStats.maxHealth;

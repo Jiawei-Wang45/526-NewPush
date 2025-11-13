@@ -15,15 +15,19 @@ public class PauseAbility : BaseAbility
         base.Awake();
         abilityType = AbilityType.Defense;
     }
-    private void Start()
-    {
-        pc.playerInput.Default.DefenseAbility.performed += OnPauseTriggered;
-        GameManager.instance.onReset += ResetStates;
-    }
-    private void OnPauseTriggered(InputAction.CallbackContext context)
+    //private void Start()
+    //{
+    //    pc.playerInput.Default.DefenseAbility.performed += OnPauseTriggered;
+    //    //GameManager.instance.onReset += ResetStates;
+    //}
+    public override void ActivateAbility() 
     {
         ActivatePause(pauseDuration, pauseStrength, pauseCooldown);
     }
+    //private void OnPauseTriggered(InputAction.CallbackContext context)
+    //{
+    //    ActivatePause(pauseDuration, pauseStrength, pauseCooldown);
+    //}
     public void ActivatePause(float pauseDuration, float pauseStrength,float pauseCooldown)
     {
         //Debug.Log($"Pause Ability enabled {isEnabled}");
@@ -55,17 +59,17 @@ public class PauseAbility : BaseAbility
     //    AudioManager.instance.PlaySound("cooldownFinish");
     //    ResetStates();
     //}
-    protected override void ResetStates()
-    {
-        if (isCooldown)
-        {
-            base.ResetStates();
-        }
+    //protected override void ResetStates()
+    //{
+    //    if (isCooldown)
+    //    {
+    //        base.ResetStates();
+    //    }
         
-    }
-    private void OnDestroy()
-    {
-        pc.playerInput.Default.Pause.performed -= OnPauseTriggered;
-        GameManager.instance.onReset -= ResetStates;
-    }
+    //}
+    //private void OnDestroy()
+    //{
+    //    pc.playerInput.Default.Pause.performed -= OnPauseTriggered;
+    //    //GameManager.instance.onReset -= ResetStates;
+    //}
 }

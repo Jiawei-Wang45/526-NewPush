@@ -7,9 +7,9 @@ public class EnemySpawnIndicator : MonoBehaviour
     public EnemyController enemyToSpawn;
     public float animPlaySpeed;
 
-    private void Start()
+    private void Awake()
     {
-        spawnAnimation=GetComponent<Animator>();
+        spawnAnimation = GetComponent<Animator>();
         spawnAnimation.speed = animPlaySpeed;
     }
     public void spawnEnemy()

@@ -6,51 +6,49 @@ using UnityEngine;
 public class EnemyController : MonoBehaviour, IDamagable
 {
 
-    public PlayerControllerTest pcTest;
+    public PlayerController pc;
     public EnemyStats enemyStats;
     public int challengeLevel;
 
     public EnemyWeaponData weapon;
     public EnemyMovementPattern movementPattern;
-    public Rigidbody2D rb;
-    public GameManager gameManager;
-    public GameObject BoundHealthbar;
+    [NonSerialized] private Rigidbody2D rb;
+    [NonSerialized] protected GameManager gameManager;
+    [NonSerialized] protected Transform enemyAim;
     public float RotationSpeed = 15.0f;
     public float enemySpeed;
     public float comfortableDistance = 5.0f;
 
-
-    private Vector2 movement;
-    private float timeToFire = 0;
+    protected float timeToFire = 0;
     private bool currentlyFiring = false;
     private bool foundPlayer = false;
     private bool canSeePlayer = false;
-    private LayerMask terrainMask;
+    protected LayerMask terrainMask;
     private float checkInterval = 0.1f;
     private Vector3 randomTarget;
 
     //affected by pause ability
-    private float slowFactor = 1.0f;
+    protected float slowFactor = 1.0f;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         enemyStats = GetComponent<EnemyStats>();
-        gameManager = GameManager.instance;
-        gameManager.onReset += ResetStates;
+        enemyAim = transform.Find("EnemyAim");
+        //gameManager.onReset += ResetStates;
     }
-    private void Start()
+    protected  virtual void Start()
     {
-        pcTest = PlayerControllerTest.instance;
-        
+        pc = PlayerController.instance;
+        gameManager = GameManager.instance;
 
         terrainMask = LayerMask.GetMask("Wall", "Player");
         RefreshStats();
-        timeToFire = weapon.fireRate - 0.6f;
+        if (weapon)
+            timeToFire = weapon.fireRate - 0.6f;
         randomTarget = transform.position;
 
         //call back bindings
-        enemyStats.OnHealthChanged += BoundHealthbar.GetComponentInChildren<EnemyHealthbar>().HandleHealthChanged;
         PauseManager.instance.OnPauseStart += PauseStart;
         PauseManager.instance.OnPauseEnd += PauseEnd;
         
@@ -62,22 +60,17 @@ public class EnemyController : MonoBehaviour, IDamagable
         comfortableDistance = movementPattern.comfortableDistance;
         enemySpeed = movementPattern.MovementSpeed;
     }
-    private void Update()
+    protected virtual void Update()
     {
-        UpdateEnemyColor();
         if (gameManager.isPlayerAlive)
         {
-            RaycastHit2D hit = Physics2D.Linecast(transform.position, pcTest.transform.position, terrainMask);
+            RaycastHit2D hit = Physics2D.Linecast(transform.position, pc.transform.position, terrainMask);
             if (hit.collider != null)
             {
-                if (hit.collider.transform.position == pcTest.transform.position)
+                if (hit.collider.gameObject.layer== LayerMask.NameToLayer("Player"))
                 {
                     foundPlayer = true;
-                    canSeePlayer = true;
-                    Vector2 direction = pcTest.transform.position - transform.position;
-                    float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-                    Quaternion targetRotation = Quaternion.AngleAxis(angle, Vector3.forward);
-                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.deltaTime/slowFactor);
+                    canSeePlayer = true;     
                 }
                 else
                 {
@@ -88,24 +81,28 @@ public class EnemyController : MonoBehaviour, IDamagable
                     }
                 }
             }
-            else
-            {
-                foundPlayer = false;
-            }
+            //else
+            //{
+            //    foundPlayer = false;
+            //}
         }
     }
-    private void FixedUpdate()
+    protected virtual void FixedUpdate()
     {
         if (gameManager.isPlayerAlive)
         {
             if (foundPlayer)
             {
+                Vector2 direction = pc.transform.position - transform.position;
+                float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+                Quaternion targetRotation = Quaternion.AngleAxis(angle, Vector3.forward);
+                enemyAim.rotation = Quaternion.Slerp(enemyAim.rotation, targetRotation, RotationSpeed * Time.deltaTime / slowFactor);
                 float factor = 1.0f;
                 if (canSeePlayer)
                 {
-                    factor = (transform.position - pcTest.transform.position).magnitude > comfortableDistance ? 1.0f : -1.0f * movementPattern.BackoffSpeedFactor;
+                    factor = (transform.position - pc.transform.position).magnitude > comfortableDistance ? 1.0f : -1.0f * movementPattern.BackoffSpeedFactor;
                 }
-                rb.linearVelocity = factor * transform.right * enemySpeed / slowFactor;
+                rb.linearVelocity = factor * direction.normalized * enemySpeed / slowFactor;
             }
             else
             {
@@ -117,14 +114,13 @@ public class EnemyController : MonoBehaviour, IDamagable
                     case EnemyMovementPattern.idleBehaviors.RandomWalk:
                         if ((randomTarget - transform.position).magnitude < 0.1f)
                         {
-                            Vector2 offset = UnityEngine.Random.insideUnitCircle.normalized * 5.0f;
-                            randomTarget = transform.position + new Vector3(offset.x, offset.y, 0);
+                            randomTarget = transform.position + GetRandomVector3InXY() * 5.0f;
                         }
                         Vector2 direction = randomTarget - transform.position;
                         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
                         Quaternion targetRotation = Quaternion.AngleAxis(angle, Vector3.forward);
-                        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.fixedDeltaTime / slowFactor);
-                        rb.linearVelocity = transform.right * enemySpeed / slowFactor;
+                        enemyAim.rotation = Quaternion.Slerp(enemyAim.rotation, targetRotation, RotationSpeed * Time.fixedDeltaTime / slowFactor);
+                        rb.linearVelocity = direction.normalized * enemySpeed / slowFactor;
                         break;
                 }
             }
@@ -149,13 +145,12 @@ public class EnemyController : MonoBehaviour, IDamagable
         if (collision.gameObject.layer == LayerMask.NameToLayer("Wall"))
         {
             if(movementPattern.idleBehavior == EnemyMovementPattern.idleBehaviors.RandomWalk && !foundPlayer){
-                Vector2 offset = UnityEngine.Random.insideUnitCircle.normalized * 5.0f;
-                randomTarget = transform.position + new Vector3(offset.x, offset.y, 0);
+                randomTarget = transform.position + GetRandomVector3InXY() * 5.0f;
                 RaycastHit2D hit = Physics2D.Linecast(transform.position, randomTarget, terrainMask);
                 int tries = 0;
-                while(hit.collider != null){
-                    offset = UnityEngine.Random.insideUnitCircle.normalized * 5.0f;
-                    randomTarget = transform.position + new Vector3(offset.x, offset.y, 0);
+                while(hit.collider != null)
+                {
+                    randomTarget = transform.position + GetRandomVector3InXY() * 5.0f;
                     hit = Physics2D.Linecast(transform.position, randomTarget, terrainMask);
                     tries++;
                     if(tries > 10){
@@ -169,32 +164,42 @@ public class EnemyController : MonoBehaviour, IDamagable
         }
     }
 
-    IEnumerator LeashPlayer()
+    private IEnumerator LeashPlayer()
     {
-        if(movementPattern.LeashTime > 0)
+        float elapsedTime = 0;
+        while (true)
         {
-            float elapsedTime = 0;
-            while(true)
+            yield return new WaitForSeconds(checkInterval);
+            if (canSeePlayer) break;
+            elapsedTime += checkInterval;
+            if (elapsedTime> movementPattern.LeashTime)
             {
-                yield return new WaitForSeconds(checkInterval);
-                RaycastHit2D hit = Physics2D.Linecast(transform.position, pcTest.transform.position, terrainMask);
-                if(hit.collider != null && hit.collider.transform.position == pcTest.transform.position){
-                    foundPlayer = true;
-                    canSeePlayer = true;
-                    break;
-                } else {
-                    elapsedTime += checkInterval;
-                    if(elapsedTime >= movementPattern.LeashTime){
-                        foundPlayer = false;
-                        canSeePlayer = false;
-                        break;
-                    }
-                }
+                foundPlayer = false;
+                break;
             }
+
+
+            //RaycastHit2D hit = Physics2D.Linecast(transform.position, pcTest.transform.position, terrainMask);
+            //if (hit.collider != null && hit.collider.transform.position == pcTest.transform.position)
+            //{
+            //    foundPlayer = true;
+            //    canSeePlayer = true;
+            //    break;
+            //}
+            //else
+            //{
+            //    elapsedTime += checkInterval;
+            //    if (elapsedTime >= movementPattern.LeashTime)
+            //    {
+            //        foundPlayer = false;
+            //        canSeePlayer = false;
+            //        break;
+            //    }
+            //}
         }
     }
 
-    IEnumerator BeginFiringSequence()
+    private IEnumerator BeginFiringSequence()
     {
         currentlyFiring = true;
         for (int i = 0; i < weapon.bulletPattern.fireCount; i++)
@@ -211,7 +216,7 @@ public class EnemyController : MonoBehaviour, IDamagable
 
     private void FireOnce(int volleyIndex)
     {
-        float baseAngle = transform.eulerAngles.z + weapon.bulletPattern.rotateBetweenFiring * volleyIndex;
+        float baseAngle = enemyAim.eulerAngles.z + weapon.bulletPattern.rotateBetweenFiring * volleyIndex;
         if (weapon.bulletPattern.bulletCount == 1)
         {
             if (weapon.bulletPattern.bulletDistribution == BulletPattern.bulletDistributionTypes.Even)
@@ -282,7 +287,7 @@ public class EnemyController : MonoBehaviour, IDamagable
         Quaternion rotation = Quaternion.Euler(0, 0, angle);
         GameObject spawnedBullet = Instantiate(weapon.bulletType, spawnPosition, rotation);
         Bullet_Default bulletAttributes = spawnedBullet.GetComponent<Bullet_Default>();   
-        bulletAttributes.InitBullet(weapon.bulletSpeed, weapon.bulletDamage,enemyStats.enemyColor);
+        bulletAttributes.InitBullet(weapon.bulletSpeed, weapon.bulletDamage);
         if(PauseManager.instance.isPausing)
         {
             bulletAttributes.PauseStart(slowFactor);
@@ -292,35 +297,15 @@ public class EnemyController : MonoBehaviour, IDamagable
     public void isAlive(bool status)
     {
         gameObject.SetActive(status);
-        BoundHealthbar.SetActive(status);
     }
 
-    public void Erase()
-    {
-        Destroy(BoundHealthbar);
-        Destroy(gameObject);
-    }
-
-    public void ResetStates()
-    {
-        StopAllCoroutines();
-        enemyStats.Reset();
-        timeToFire = weapon.fireRate - 0.6f;
-        isAlive(false);
-    }
-
-    private void UpdateEnemyColor()
-    {
-
-        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
-        if (spriteRenderer != null)
-        {
-            spriteRenderer.color = enemyStats.enemyColor.ToRGB();
-        }
-        
-
-        //Debug.Log($"Enemy Color - H:{enemyStats.enemyColor.H:F1}, S:{enemyStats.enemyColor.S:F1}, L:{enemyStats.enemyColor.L:F1}");
-    }
+    //public void ResetStates()
+    //{
+    //    StopAllCoroutines();
+    //    enemyStats.Reset();
+    //    timeToFire = weapon.fireRate - 0.6f;
+    //    isAlive(false);
+    //}
     public void PauseStart(float pauseStrength)
     {
         slowFactor=pauseStrength;
@@ -332,14 +317,20 @@ public class EnemyController : MonoBehaviour, IDamagable
     }
 
 
-    public void TakeDamage(float damage, HSLColor bulletColor)
+    public void TakeDamage(float damage)
     {
         enemyStats.TakeDamage(damage);
     }
-    private void OnDestroy()
+    private Vector3 GetRandomVector3InXY()
+    {
+        float angle=UnityEngine.Random.Range(0, 2 * Mathf.PI);
+        return new Vector3(Mathf.Cos(angle), Mathf.Sin(angle),0);
+    }
+    protected virtual void OnDestroy()
     {
         PauseManager.instance.OnPauseStart -= PauseStart;
         PauseManager.instance.OnPauseEnd -= PauseEnd;
-        gameManager.onReset -= ResetStates;
+        //gameManager.onReset -= ResetStates;
     }
+
 }

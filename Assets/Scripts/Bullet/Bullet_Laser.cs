@@ -11,7 +11,7 @@ public class Bullet_Laser : Bullet_Default
         IDamagable damagable = collision.collider.gameObject.GetComponent<IDamagable>();
         if (damagable != null)
         {
-            damagable.TakeDamage(bulletDamage, bulletColor);
+            damagable.TakeDamage(bulletDamage);
         }
 
     }

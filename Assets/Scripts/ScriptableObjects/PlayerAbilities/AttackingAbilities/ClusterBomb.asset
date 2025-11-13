@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ffef3970b0db5a418fd6f86e3887ae2, type: 3}
   m_Name: ClusterBomb
   m_EditorClassIdentifier: 
+  abilityClass: 2
   abilityName: ClusterBomb
   menuIcon: {fileID: -5504308754007793267, guid: e5bbdb73bfdf7f2458a0e2bfb07bcae5, type: 3}
   cooldownIcon: {fileID: 7482667652216324306, guid: b64f79c2337ef4d2fb7e679aafd0c9b0, type: 3}

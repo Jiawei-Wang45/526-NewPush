@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 // TracesetAbility: a pause-type ability where during the pause the player is invincible and cannot fire
 public class TracesetAbility : MonoBehaviour
 {
-    private PlayerControllerTest pc;
+    private PlayerController pc;
     private PlayerStats stats;
     // pause parameters
     [Header("Traceset Pause Parameters")]
@@ -19,9 +19,9 @@ public class TracesetAbility : MonoBehaviour
     private void Awake()
     {
         // try to find player controller on same gameObject first
-        pc = GetComponent<PlayerControllerTest>();
+        pc = GetComponent<PlayerController>();
         if (pc == null)
-            pc = FindFirstObjectByType<PlayerControllerTest>();
+            pc = FindFirstObjectByType<PlayerController>();
         if (pc != null)
             stats = pc.GetComponent<PlayerStats>();
 
@@ -35,7 +35,7 @@ public class TracesetAbility : MonoBehaviour
             catch { }
             try
             {
-                GameManager.instance.onReset += ResetLocal;
+                //GameManager.instance.onReset += ResetLocal;
             }
             catch { }
         }
@@ -45,7 +45,7 @@ public class TracesetAbility : MonoBehaviour
     {
         // ensure we have references
         if (pc == null)
-            pc = FindFirstObjectByType<PlayerControllerTest>();
+            pc = FindFirstObjectByType<PlayerController>();
         if (pc == null) return;
 
         stats = pc.GetComponent<PlayerStats>();
@@ -62,7 +62,7 @@ public class TracesetAbility : MonoBehaviour
             var input = pc.playerInput;
             if (input != null)
             {
-                input.Default.Fire.Disable();
+                //input.Default.Fire.Disable();
                 // also disable any special fire actions if present
                 //if (input.Default.SpecialBullet != null) input.Default.SpecialBullet.Disable();
             }
@@ -73,7 +73,7 @@ public class TracesetAbility : MonoBehaviour
     private void HandlePauseEnd()
     {
         if (pc == null)
-            pc = FindFirstObjectByType<PlayerControllerTest>();
+            pc = FindFirstObjectByType<PlayerController>();
         if (pc == null) return;
 
         stats = pc.GetComponent<PlayerStats>();
@@ -89,7 +89,7 @@ public class TracesetAbility : MonoBehaviour
             var input = pc.playerInput;
             if (input != null)
             {
-                input.Default.Fire.Enable();
+                //input.Default.Fire.Enable();
                 //if (input.Default.SpecialBullet != null) input.Default.SpecialBullet.Enable();
             }
         }

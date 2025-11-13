@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8964f0e0e876faa4e8c99090168d1983, type: 3}
+  m_Name: MoveTutorialRoom_First
+  m_EditorClassIdentifier: 
+  dialogueNodes:
+  - id: Start
+    text: 'Hello, my dearset newbie. Welcome to the world of bullet hell. '
+    nextNodeIds:
+    - 1
+    choiceText: []
+    choiceEventKeys: []
+  - id: 1
+    text: 'Ready to explore and survive in the tough environment? Let me just teach
+      you some basic knowledge. '
+    nextNodeIds:
+    - 2
+    choiceText: []
+    choiceEventKeys: []
+  - id: 2
+    text: '...Be patient, otherwise you are gonna die veryyyyyy soon!! '
+    nextNodeIds:
+    - 3
+    choiceText: []
+    choiceEventKeys: []
+  - id: 3
+    text: 'use WASD to controll the movement of your body, get familar with it first.
+      Before you can fly, you must learn how to walk. '
+    nextNodeIds:
+    - 4
+    choiceText: []
+    choiceEventKeys: []
+  - id: 4
+    text: 'You can practice in this room, once you get trained enough, go back and
+      talk to me. '
+    nextNodeIds:
+    - 5
+    choiceText: []
+    choiceEventKeys: []
+  - id: 5
+    text: 'Remember, I''ll always be there, come close to me and press <sprite name=f>
+      to invoke me. '
+    nextNodeIds:
+    - null
+    choiceText: []
+    choiceEventKeys: []

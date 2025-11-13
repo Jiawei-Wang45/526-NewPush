@@ -15,7 +15,7 @@ public class PlayerGhost : MonoBehaviour
 
     public Transform ghostAim;
     public Transform firePoint;
-    public PlayerWeapon currentWeapon;
+    public RangedWeapon currentWeapon;
     protected virtual void Start()
     {
         sr = GetComponent<SpriteRenderer>();
@@ -73,8 +73,7 @@ public class PlayerGhost : MonoBehaviour
         {
             GameObject spawnedBullet=Instantiate(currentWeapon.bulletType, firePoint.position, firePoint.rotation*Quaternion.Euler(0,0, bulletTiltAngle + Random.Range(-currentWeapon.weaponBulletSpread, currentWeapon.weaponBulletSpread)));
             Bullet_Default bulletAttributes = spawnedBullet.GetComponent<Bullet_Default>();
-            HSLColor tempColor = new HSLColor(200f,100f,50f);
-            bulletAttributes.InitBullet(currentWeapon.weaponBulletSpeed, currentWeapon.weaponBulletDamage,tempColor);
+            bulletAttributes.InitBullet(currentWeapon.weaponBulletSpeed, currentWeapon.weaponBulletDamage);
             // Make the bullet semi-transparent like the ghost
             bulletAttributes.ChangeBulletAlpha(0.5f);
             bulletTiltAngle += currentWeapon.weaponFiringAngle;

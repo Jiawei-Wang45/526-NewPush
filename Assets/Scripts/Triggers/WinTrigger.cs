@@ -15,7 +15,7 @@ public class WinTrigger : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        var player = other.GetComponentInParent<PlayerControllerTest>();
+        var player = other.GetComponentInParent<PlayerController>();
         if (player != null)
         {
             Debug.Log($"[WinTrigger] Player reached win trigger on '{gameObject.name}'");

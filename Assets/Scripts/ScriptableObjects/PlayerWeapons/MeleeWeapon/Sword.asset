@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 332fe6025d4f37b4b81095eeb4b60771, type: 3}
+  m_Name: Sword
+  m_EditorClassIdentifier: 
+  weaponName: Sword
+  weaponClass: 3
+  weaponIcon: {fileID: 7482667652216324306, guid: 4694bd6e8479b4b64be07dab8051e668, type: 3}
+  weaponTexture: {fileID: 7482667652216324306, guid: 4694bd6e8479b4b64be07dab8051e668, type: 3}
+  damage: 30
+  slashCD: 0.7
+  reflectCD: 1.2
+  slashEffectPrefab: {fileID: 6627703635825691995, guid: 94457d7c284500d49a8b2ca8f2c036fb, type: 3}
+  reflectEffectPrefab: {fileID: 8526945798473130149, guid: 72f457b19aa795d4fb1779af75d529b2, type: 3}
+  animatorController: {fileID: 9100000, guid: 2cee558ce840fa84981c147b87cd2149, type: 2}

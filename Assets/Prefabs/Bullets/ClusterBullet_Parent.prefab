@@ -254,10 +254,14 @@ MonoBehaviour:
   isParentBullet: 1
   parentBulletDamage: 40
   parentBulletSpeed: 45
+  blastRadius: 5
   explosionEffect: {fileID: 8097343779803676001, guid: 33b18ee29e38b2640af24231bdc36dcf, type: 3}
   initialSpeedForChild: 60
   childToSpawn: {fileID: 4142566710825111876, guid: 742eec3ae593a784c80d739e83e9b921, type: 3}
   childNums: 40
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 128
   dampingFactor: 0
   minBulletSpeed: 0
 --- !u!198 &230097077408790697
