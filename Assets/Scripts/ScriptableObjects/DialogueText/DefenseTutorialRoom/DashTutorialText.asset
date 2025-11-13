@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8964f0e0e876faa4e8c99090168d1983, type: 3}
+  m_Name: DashTutorialText
+  m_EditorClassIdentifier: 
+  dialogueNodes:
+  - id: Start
+    text: 'Have you ever noticed your <sprite name=mr> is also valid? If not, don''t
+      worry. '
+    nextNodeIds:
+    - 1
+    choiceText: []
+    choiceEventKeys: []
+  - id: 1
+    text: 'I will teach you how to use the defense ability. Remember the defense
+      ability is bound to the weapon type. '
+    nextNodeIds:
+    - 2
+    choiceText: []
+    choiceEventKeys: []
+  - id: 2
+    text: 'In this dungeon, guns are much lighter than melee weapons.  '
+    nextNodeIds:
+    - 3
+    choiceText: []
+    choiceEventKeys: []
+  - id: 3
+    text: 'As a result, when you equip a gun and in the state of moving, press <sprite
+      name=mr> can let you dash on the original direction. '
+    nextNodeIds:
+    - 4
+    choiceText: []
+    choiceEventKeys: []
+  - id: 4
+    text: 'It''s noticable you will turn gray and enter invincible state for a little
+      while. '
+    nextNodeIds:
+    - 5
+    choiceText: []
+    choiceEventKeys: []
+  - id: 5
+    text: 'That will be quite useful if you are enclosed by bullet hell. '
+    nextNodeIds:
+    - 6
+    choiceText: []
+    choiceEventKeys: []
+  - id: 6
+    text: 'Next, I will equip you with a pistol.  You can try several times in place. '
+    nextNodeIds:
+    - 7
+    choiceText: []
+    choiceEventKeys: []
+  - id: 7
+    text: 'Once you are ready, come close to me and I have a task for you. '
+    nextNodeIds:
+    - null
+    choiceText: []
+    choiceEventKeys: []

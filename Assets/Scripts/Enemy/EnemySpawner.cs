@@ -13,7 +13,6 @@ public class EnemySpawner : MonoBehaviour
     private List<int> difficultyCosts = new List<int>();
 
     public GameObject enemySpawnIndicator;
-    public GameObject enemyHealthBar;
     public GameManager gameManager;
     public GameObject spawnBox;
     public int spawnBudget = 20;
@@ -136,7 +135,7 @@ public class EnemySpawner : MonoBehaviour
         spawnPositions.Clear();
         foreach (EnemyController e in enemiesInWave)
         {
-            e.Erase();
+            Destroy(e.gameObject);
         }
         enemiesInWave.Clear();
         // mark state
@@ -187,12 +186,9 @@ public class EnemySpawner : MonoBehaviour
     private EnemyController InstantiateNewEnemy(GameObject enemy)
     {
         GameObject spawnedEnemy=Instantiate(enemy,transform.position,transform.rotation);
-        GameObject createdHealthbar = Instantiate(enemyHealthBar, transform.position, transform.rotation);
         EnemyController enemyController = spawnedEnemy.GetComponent<EnemyController>();
-        spawnedEnemy.GetComponent<EnemyController>().BoundHealthbar = createdHealthbar;
-        createdHealthbar.GetComponentInChildren<EnemyHealthbar>().enemy = spawnedEnemy;
         // Ensure the spawned enemy knows which spawner created it so callbacks go to the correct spawner
-        var stats = enemyController.GetComponent<EnemyStats>();
+        var stats = spawnedEnemy.GetComponent<EnemyStats>();
         if (stats != null)
         {
             stats.spawner = this;

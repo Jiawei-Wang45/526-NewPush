@@ -151,7 +151,7 @@ public class RoomManager : MonoBehaviour
         if (roomTrigger != null && other == null) return;
 
         // Only respond to player entering. Avoid starting the room for other colliders.
-        var player = other.GetComponentInParent<PlayerControllerTest>();
+        var player = other.GetComponentInParent<PlayerController>();
         if (player != null && !hasPlayerEntered)
         {
             // Prefer to verify the player's collider is fully inside the room trigger
@@ -179,7 +179,7 @@ public class RoomManager : MonoBehaviour
     private void OnTriggerStay2D(Collider2D other)
     {
         if (roomTrigger != null && other == null) return;
-        var player = other.GetComponentInParent<PlayerControllerTest>();
+        var player = other.GetComponentInParent<PlayerController>();
         if (player != null && !hasPlayerEntered)
         {
             bool fullyInside = false;

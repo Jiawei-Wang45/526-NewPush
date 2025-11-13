@@ -4,38 +4,15 @@ using System.Collections.Generic;
 
 public class Sword : MonoBehaviour
 {
-    public PlayerControllerTest pc;
+    public PlayerController pc;
     public float swordDamage;
-    public HSLColor swordColor;
     private bool isSwinging = false;
     private bool isReflecting = false;
     public GameObject reflectedBullet;
 
-    public virtual void InitSword(float swordDamage, HSLColor color)
+    public virtual void InitSword(float swordDamage)
     {
         this.swordDamage = swordDamage;
-        this.swordColor = color;
-    }
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        UpdateSwordColor();
-    }
-
-    private void UpdateSwordColor()
-    {
-        // 获取子弹的SpriteRenderer组件并应用HSL颜色
-        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
-        if (spriteRenderer != null)
-        {
-            spriteRenderer.color = swordColor.ToRGB();
-        }
     }
     public void ChangeSwordAlpha(float alpha)
     {
@@ -51,7 +28,7 @@ public class Sword : MonoBehaviour
         IDamagable damagable = collision.collider.gameObject.GetComponent<IDamagable>();
         if (damagable != null)
         {
-            damagable.TakeDamage(swordDamage, swordColor);
+            damagable.TakeDamage(swordDamage);
         }
 
 
@@ -69,7 +46,7 @@ public class Sword : MonoBehaviour
                 rotation *= Quaternion.Euler(0, 0, 180.0f);
                 GameObject spawnedBullet = Instantiate(reflectedBullet, position, rotation);
                 Bullet_Default bulletAttributes = spawnedBullet.GetComponent<Bullet_Default>();
-                bulletAttributes.InitBullet(speed, damage, swordColor, 0);
+                bulletAttributes.InitBullet(speed, damage, 0);
             }
         }
     }

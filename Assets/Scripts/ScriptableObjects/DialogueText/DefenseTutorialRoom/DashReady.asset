@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8964f0e0e876faa4e8c99090168d1983, type: 3}
+  m_Name: DashReady
+  m_EditorClassIdentifier: 
+  dialogueNodes:
+  - id: Start
+    text: Are you ready?
+    nextNodeIds:
+    - 1
+    - 3
+    choiceText:
+    - Sure
+    - Wait
+    choiceEventKeys:
+    - OnDashStart
+    - null
+  - id: 1
+    text: 'Nice, I will remove the green plate behind and trigger the bullet spawners.  '
+    nextNodeIds:
+    - 2
+    choiceText: []
+    choiceEventKeys: []
+  - id: 2
+    text: You need to use <sprite name=mr> to come across the bullet screen and reach
+      another side. Good luck!
+    nextNodeIds:
+    - null
+    choiceText: []
+    choiceEventKeys: []
+  - id: 3
+    text: 'Ok, practice more. '
+    nextNodeIds:
+    - null
+    choiceText: []
+    choiceEventKeys: []

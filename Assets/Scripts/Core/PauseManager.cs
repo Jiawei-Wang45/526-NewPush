@@ -44,7 +44,7 @@ public class PauseManager : MonoBehaviour
         isPausing = true;
         activePauseStrength = pauseStrength;
         OnPauseStart?.Invoke(pauseStrength);
-        if(PlayerControllerTest.instance.combinationIndex == 3)
+        if(PlayerController.instance.combinationIndex == 3)
         {
             playerStats.SetInvincible(true);
             playerStats.preventDamage = true;
@@ -57,7 +57,7 @@ public class PauseManager : MonoBehaviour
             extendDuration -= extendTime;
         }
         OnPauseEnd?.Invoke();
-        if(PlayerControllerTest.instance.combinationIndex == 3)
+        if(PlayerController.instance.combinationIndex == 3)
         {
             playerStats.SetInvincible(false);
             playerStats.preventDamage = false;

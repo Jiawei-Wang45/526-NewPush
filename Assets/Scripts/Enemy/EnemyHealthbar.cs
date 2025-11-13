@@ -1,17 +1,19 @@
+using System;
 using UnityEngine;
-
+using UnityEngine.UI;
 public class EnemyHealthbar : MonoBehaviour
 {
-    public UnityEngine.UI.Image healthbarImage;
-    public GameObject enemy;
-    public EnemyStats enemyStats;
-    public float offsetX;
-    public float offsetY;
+    [NonSerialized] private EnemyStats enemyStats;
+    [NonSerialized] private Vector3 cachedscale;
+    private void Awake()
+    {
+        cachedscale=transform.localScale;
+        enemyStats = GetComponentInParent<EnemyStats>();
+
+    }
     private void Start()
     {
-        healthbarImage=GetComponent<UnityEngine.UI.Image>();
-        enemyStats = enemy.GetComponent<EnemyStats>();
-        offsetY = -enemy.GetComponent<SpriteRenderer>().bounds.extents.y-0.2f;
+        enemyStats.OnHealthChanged += HandleHealthChanged;                  
     }
     //private void Update()
     //{
@@ -19,10 +21,6 @@ public class EnemyHealthbar : MonoBehaviour
     //}
     public void HandleHealthChanged()
     {
-        healthbarImage.fillAmount = enemyStats.health / enemyStats.maxHealth;
-    }
-    private void LateUpdate()
-    {
-        transform.position = enemy.transform.position + new Vector3(0, offsetY, 0);
+        transform.localScale = new Vector3(enemyStats.health / enemyStats.maxHealth * cachedscale.x, cachedscale.y, cachedscale.z);
     }
 }

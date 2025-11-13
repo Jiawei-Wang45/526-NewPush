@@ -16,15 +16,6 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Fire",
-                    "type": "Button",
-                    "id": "f57229fa-2851-409e-b8c3-aae935f3d1ea",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Escape",
                     "type": "Button",
                     "id": "e4dc6da8-3b20-484c-bf85-ad7be429bb57",
@@ -79,9 +70,18 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Attack",
+                    "name": "LeftMouse",
                     "type": "Button",
-                    "id": "71af7ecd-13b5-4d8f-8cfc-9e2c5f03d63f",
+                    "id": "7353eae2-3c93-4399-b314-a5570021a711",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "RightMouse",
+                    "type": "Button",
+                    "id": "4c29a88c-6e68-4188-b77b-794924acfe94",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -146,17 +146,6 @@
                 },
                 {
                     "name": "",
-                    "id": "97940af7-3198-4725-9b81-1e4844afb517",
-                    "path": "<Mouse>/leftButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Fire",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "f8843d06-370c-497f-812e-14f6bbab9bea",
                     "path": "<Keyboard>/escape",
                     "interactions": "",
@@ -191,7 +180,7 @@
                 {
                     "name": "",
                     "id": "a4c3cb14-7616-4ccc-ab74-f4b51fe75387",
-                    "path": "<Keyboard>/1",
+                    "path": "<Keyboard>/q",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -202,7 +191,7 @@
                 {
                     "name": "",
                     "id": "b2bcd8ef-21fe-43d5-96c9-b77659af3ade",
-                    "path": "<Keyboard>/2",
+                    "path": "<Keyboard>/e",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -213,7 +202,7 @@
                 {
                     "name": "",
                     "id": "c75b0839-f74f-4a3a-bb91-91da2702b616",
-                    "path": "<Keyboard>/e",
+                    "path": "<Keyboard>/f",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -223,12 +212,23 @@
                 },
                 {
                     "name": "",
-                    "id": "00da9f5e-65bc-4de1-80d3-15ee6a1332ad",
+                    "id": "ba1876da-feae-40f5-93f3-0d706a417b82",
                     "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Attack",
+                    "action": "LeftMouse",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9a0dc9d2-1761-40d6-897a-519788e0034f",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RightMouse",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

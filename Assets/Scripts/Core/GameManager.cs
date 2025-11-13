@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
     //components and external reference
-    [NonSerialized] private PlayerControllerTest pc;
+    [NonSerialized] private PlayerController pc;
 
     [Header("UI paramaters")]
     public bool isPlayerAlive = true;
@@ -124,7 +124,7 @@ public class GameManager : MonoBehaviour
     }
     private void Start()
     {
-        pc= FindFirstObjectByType<PlayerControllerTest>();
+        pc= FindFirstObjectByType<PlayerController>();
         
         InGamePauseMenu.SetActive(false);
         InGameEndingMenu.SetActive(false);

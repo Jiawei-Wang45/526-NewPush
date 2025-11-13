@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8964f0e0e876faa4e8c99090168d1983, type: 3}
+  m_Name: ClusterBombTutorial
+  m_EditorClassIdentifier: 
+  dialogueNodes:
+  - id: Start
+    text: 'Isn''t it boring to just use the weapon? Now I will introduce you some
+      special abilities. '
+    nextNodeIds:
+    - 1
+    choiceText: []
+    choiceEventKeys: []
+  - id: 1
+    text: 'Just like the dropped weapon, come close to it and press <sprite name=f>
+      to pick it up. '
+    nextNodeIds:
+    - 2
+    choiceText: []
+    choiceEventKeys: []
+  - id: 2
+    text: 'In the real dungeon, ability is droped by enemies like an item. '
+    nextNodeIds:
+    - 3
+    choiceText: []
+    choiceEventKeys: []
+  - id: 3
+    text: 'Ability is divided into two categories: attacking and defense. And each
+      ability has its own cool down time. '
+    nextNodeIds:
+    - 4
+    choiceText: []
+    choiceEventKeys: []
+  - id: 4
+    text: 'Let''s just try one attacking ability first. I''ll spawn a cluster bomb
+      ability. press <sprite name=f> to pick it up  '
+    nextNodeIds:
+    - null
+    choiceText: []
+    choiceEventKeys: []

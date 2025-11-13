@@ -1,11 +1,13 @@
+using System;
 using UnityEngine;
 
 public class CharacterConfigHolder : MonoBehaviour
 {
     static public CharacterConfigHolder instance;
-    public PlayerWeapon weapon;
+    public PlayerBaseWeapon weapon;
     public PlayerAbility attackingAbility;
     public PlayerAbility defenseAbility;
+    [NonSerialized] private bool isConfigured = false;
     private void Awake()
     {
         if (instance != null )
@@ -18,5 +20,13 @@ public class CharacterConfigHolder : MonoBehaviour
             instance = this;
             DontDestroyOnLoad(gameObject);
         }
+    }
+    public void SetConfigured(bool inConfigured)
+    {
+        isConfigured = inConfigured;
+    }
+    public bool GetConfigured()
+    {
+        return isConfigured;
     }
 }

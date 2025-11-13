@@ -46,7 +46,7 @@ public class AbilityIcon : MonoBehaviour
     {
         cooldownText.gameObject.SetActive(false);
     }
-    private void ResetAbilityUI()
+    public void ResetAbilityUI()
     {
         filledImage.fillAmount = 1;
         cooldownText.gameObject.SetActive(false);

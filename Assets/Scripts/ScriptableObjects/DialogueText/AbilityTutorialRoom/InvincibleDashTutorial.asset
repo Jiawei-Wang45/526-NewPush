@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8964f0e0e876faa4e8c99090168d1983, type: 3}
+  m_Name: InvincibleDashTutorial
+  m_EditorClassIdentifier: 
+  dialogueNodes:
+  - id: Start
+    text: 'Nice job! Cluster bomb is quite useful if enemies are gathing together. '
+    nextNodeIds:
+    - 1
+    choiceText: []
+    choiceEventKeys: []
+  - id: 1
+    text: ' And next I will spawn a defense type of ability for you. press <sprite
+      name=f> to pick it up. '
+    nextNodeIds:
+    - null
+    choiceText: []
+    choiceEventKeys: []

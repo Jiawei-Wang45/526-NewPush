@@ -9,6 +9,8 @@ TagManager:
   - Pausable
   - Shield
   - Pausible
+  - TutorialBullet
+  - player
   layers:
   - Default
   - TransparentFX
@@ -24,8 +26,8 @@ TagManager:
   - Invincible
   - Sword
   - Reflecting
-  - 
-  - 
+  - Item
+  - OnewayWall
   - 
   - 
   - 

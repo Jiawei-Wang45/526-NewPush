@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -5,8 +6,10 @@ using UnityEngine.UI;
 
 public class BaseAbility : MonoBehaviour
 {
+    public enum AbilityType { Attacking, Defense }
+
     //components
-    protected PlayerControllerTest pc;
+    protected PlayerController pc;
     protected PlayerStats stats;
 
     //cooldown UI parameters
@@ -20,9 +23,9 @@ public class BaseAbility : MonoBehaviour
     protected bool isCooldown = false;
 
     // Ability type for analytics
-    public enum AbilityType { Attacking, Defense }
+    
     [Header("Analytics")]
-    public AbilityType abilityType = AbilityType.Attacking;
+    [NonSerialized] protected AbilityType abilityType;
 
     //ability Icon 
     public AbilityIcon boundIcon;
@@ -57,7 +60,7 @@ public class BaseAbility : MonoBehaviour
     //}
     protected virtual void Awake()
     {
-        pc = GetComponentInParent<PlayerControllerTest>();
+        pc = GetComponentInParent<PlayerController>();
         stats = GetComponentInParent<PlayerStats>();
     }
     //protected virtual void ResetStates()
@@ -66,6 +69,8 @@ public class BaseAbility : MonoBehaviour
     //    //ResetAbilityUI();
     //    isCooldown = false;
     //}
+
+    public virtual void ActivateAbility() { }
     protected IEnumerator AbilityCooldownCoroutine(float cooldownTime)
     {
         Debug.Log($"Cooldown length: {cooldownTime}");
@@ -86,7 +91,7 @@ public class BaseAbility : MonoBehaviour
         isCooldown = false;
     }
 
-    //protected void ResetAbilityUI()
+    //public void ResetAbilityUI()
     //{
     //    filledImage.fillAmount = 1;
     //    cooldownText.gameObject.SetActive(false);
@@ -97,7 +102,7 @@ public class BaseAbility : MonoBehaviour
     //    if (disableRoutine != null) StopCoroutine(disableRoutine);
     //    disableRoutine = StartCoroutine(DisableCoroutine(duration));
     //}
-    
+
     //protected IEnumerator DisableCoroutine(float cooldownTime)
     //{
     //    isEnabled = false;

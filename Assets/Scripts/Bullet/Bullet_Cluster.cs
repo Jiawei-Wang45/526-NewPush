@@ -41,7 +41,7 @@ public class Bullet_Cluster : Bullet_Default
                 IDamagable damagable = enemy.gameObject.GetComponent<IDamagable>();
                 if (damagable != null)
                 {
-                    damagable.TakeDamage(parentBulletDamage, bulletColor);
+                    damagable.TakeDamage(parentBulletDamage);
                 }
             }
 
@@ -52,7 +52,7 @@ public class Bullet_Cluster : Bullet_Default
             {
                 float angle = Random.Range(0, 2 * Mathf.PI)*Mathf.Rad2Deg;
                 Bullet_Cluster child=Instantiate(childToSpawn, transform.position, Quaternion.Euler(0, 0, angle));
-                child.InitBullet(initialSpeedForChild, bulletDamage / 10, bulletColor);
+                child.InitBullet(initialSpeedForChild, bulletDamage / 10);
 
             }
             Destroy(gameObject);

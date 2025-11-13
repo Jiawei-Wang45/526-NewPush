@@ -20,7 +20,7 @@ public class GameManagerForMenu : MonoBehaviour
 
     // CharacterConfig Management
     [Header("CharacterConfig Management")]
-    public PlayerWeapon[] weapons;
+    public PlayerBaseWeapon[] weapons;
     public PlayerAbility[] attackingAbilities;
     public PlayerAbility[] defenseAbilities;
     private int weaponIndex=0;
@@ -36,6 +36,10 @@ public class GameManagerForMenu : MonoBehaviour
         FirstMenu.SetActive(true);
         CharacterConfig.SetActive(false);
         InitializeConfig();
+    }
+    public void Tutorial()
+    {
+        SceneManager.LoadScene("TutorialLevel");
     }
     public void NewGame()
     {
@@ -120,6 +124,7 @@ public class GameManagerForMenu : MonoBehaviour
         CharacterConfigHolder.instance.weapon = weapons[weaponIndex];
         CharacterConfigHolder.instance.attackingAbility = attackingAbilities[attackingAbilityIndex];
         CharacterConfigHolder.instance.defenseAbility= defenseAbilities[defenseAbilityIndex];
+        CharacterConfigHolder.instance.SetConfigured(true);
     }
     #endregion
 

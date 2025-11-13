@@ -7,6 +7,6 @@ public class DroppableItems : ScriptableObject
     
     public List<GameObject> consumableList;
     public float consumableDropProbability;
-    public List<PlayerWeapon> weaponList;
+    public List<RangedWeapon> weaponList;
     public float weaponDropProbability;
 }

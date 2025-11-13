@@ -4,7 +4,7 @@ public class Shield : MonoBehaviour, IDamagable
 {
     public float shieldHealth = 30.0f;
 
-    public void TakeDamage(float damage, HSLColor bulletColor)
+    public void TakeDamage(float damage)
     {
         shieldHealth -= damage;
         Debug.Log("Shield health: " + shieldHealth);
