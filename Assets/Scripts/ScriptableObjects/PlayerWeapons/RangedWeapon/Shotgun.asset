@@ -15,7 +15,7 @@ MonoBehaviour:
   weaponName: Shotgun
   weaponClass: 2
   weaponIcon: {fileID: 82707731993968007, guid: 320b531c59b3b2a47aa9c134ec92f255, type: 3}
-  weaponTexture: {fileID: 82707731993968007, guid: 320b531c59b3b2a47aa9c134ec92f255, type: 3}
+  weaponTexture: {fileID: -2505125261248690692, guid: 9dc380348e531164d8d16b6f24ed7d49, type: 3}
   weaponBulletLifeTime: 2
   weaponBulletDamage: 4
   weaponBulletSpeed: 20
