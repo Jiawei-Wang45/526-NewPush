@@ -10,6 +10,9 @@ public class EnemySpawner : MonoBehaviour
     public float spawnAmount;
 
     public GameObject[] enemySpawnList;
+    public int[] canSpawnAfterRoomNumber;
+    //Optional parameter that can let the user set enemies to spawn only after a certain number of rooms
+    private List<GameObject> roomSpawnList = new List<GameObject>();
     private List<int> difficultyCosts = new List<int>();
 
     public GameObject enemySpawnIndicator;
@@ -48,6 +51,18 @@ public class EnemySpawner : MonoBehaviour
 
     public void InitializeNewWave()
     {
+        roomSpawnList.Clear();
+        difficultyCosts.Clear();
+        Debug.Log($"Room index: {gameManager.currentRoomIndex}");
+        for (int i = 0; i < enemySpawnList.Length; i++)
+        {
+            if(enemySpawnList.Length != canSpawnAfterRoomNumber.Length || canSpawnAfterRoomNumber[i] <= gameManager.currentRoomIndex)
+            {
+                EnemyController ec = enemySpawnList[i].GetComponent<EnemyController>();
+                roomSpawnList.Add(enemySpawnList[i]);
+                difficultyCosts.Add(ec.challengeLevel);
+            }
+        }
         int pointsToSpend = spawnBudget;
         // If fixed wave budgets are provided, use the budget for the current wave index
         if (waveBudgets != null && waveBudgets.Length > 0)
@@ -55,30 +70,12 @@ public class EnemySpawner : MonoBehaviour
             int idx = Mathf.Clamp(currentWaveIndex, 0, waveBudgets.Length - 1);
             pointsToSpend = waveBudgets[idx];
         }
-        //List<(int cost, int index)> costIndexList = new List<(int, int)>();
-        //for (int i = 0; i < difficultyCosts.Count; i++)
-        //{
-        //    costIndexList.Add((difficultyCosts[i], i));
-        //}
-        //costIndexList = costIndexList.OrderByDescending(t => t.Item1).ToList();
+        Debug.Log($"{roomSpawnList.Count} vs {difficultyCosts.Count}");
         while (pointsToSpend > 0)
         {
-            //(int, int) chosenIndex = costIndexList[Random.Range(0, costIndexList.Count)];
-            //pointsToSpend -= chosenIndex.Item1;
-            //enemiesInWave.Add(InstantiateNewEnemy(enemySpawnList[chosenIndex.Item2]));
-            //spawnPositions.Add(GetRandomSpawnPoint());
-            //while (pointsToSpend < costIndexList[0].Item1 && costIndexList.Count > 0 && pointsToSpend > 0)
-            //{
-            //    costIndexList.RemoveAt(0);
-            //}
-            //if (costIndexList.Count == 0)
-            //{
-            //    break;
-            //}
-
-            int index = UnityEngine.Random.Range(0, enemySpawnList.Length);
+            int index = UnityEngine.Random.Range(0, roomSpawnList.Count);
             pointsToSpend -= difficultyCosts[index];
-            enemiesInWave.Add(InstantiateNewEnemy(enemySpawnList[index]));
+            enemiesInWave.Add(InstantiateNewEnemy(roomSpawnList[index]));
             spawnPositions.Add(GetRandomSpawnPoint());
         }
     }

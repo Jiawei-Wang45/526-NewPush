@@ -10,11 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8f049e53cb6dc4a2285268441f6201fb, type: 3}
-  m_Name: Blunderbuss
+  m_Name: Minigun
   m_EditorClassIdentifier: 
   bulletLifeTime: 10
   bulletDamage: 2
-  bulletSpeed: 6.6
+  bulletSpeed: 8
   bulletType: {fileID: 8604903965720594084, guid: 04d380db99e814f64a851e76366f14f9, type: 3}
-  fireRate: 4
+  fireRate: 5
   bulletPattern: {fileID: 11400000, guid: 99c11bfcffc954a96b25902023424f23, type: 2}
+  isComplex: 0
+  compositePatterns: []
