@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponName: Sword
   weaponClass: 3
-  weaponIcon: {fileID: 7482667652216324306, guid: 4694bd6e8479b4b64be07dab8051e668, type: 3}
-  weaponTexture: {fileID: 7482667652216324306, guid: 4694bd6e8479b4b64be07dab8051e668, type: 3}
+  weaponIcon: {fileID: -9136572144232859775, guid: 320b531c59b3b2a47aa9c134ec92f255, type: 3}
+  weaponTexture: {fileID: -9136572144232859775, guid: 320b531c59b3b2a47aa9c134ec92f255, type: 3}
   damage: 30
   slashCD: 0.7
   reflectCD: 1.2
