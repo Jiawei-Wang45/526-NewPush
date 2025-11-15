@@ -122,6 +122,7 @@ public static class RoomDoors
             block.transform.localPosition = door.transform.localPosition;
             block.transform.localRotation = door.transform.localRotation;
         }
+        // for safety purpose 
         else
         {
             var bc = rm.gameObject.GetComponent<BoxCollider2D>();

@@ -14,8 +14,8 @@ public class EnemySpawnIndicator : MonoBehaviour
     }
     public void spawnEnemy()
     {
-        enemyToSpawn.isAlive(true);
         enemyToSpawn.transform.position = transform.position;
+        enemyToSpawn.isAlive(true);  
         Destroy(gameObject);
     }
 }

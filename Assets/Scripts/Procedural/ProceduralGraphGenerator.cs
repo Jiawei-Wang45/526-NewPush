@@ -66,7 +66,7 @@ public static class ProceduralGraphGenerator
                 var nb = c + d;
                 if (map.TryGetValue(nb, out int j))
                 {
-                    // only handle each unordered pair once (when j > i) to keep decisions symmetric
+                    // only handle each unordered pair once (when j > i) to keep decisions symmetric, since the graph is connected in two ways, use j<=i to avoid redundancy
                     if (j <= i) continue;
                     // allow probabilistic omission of adjacent connections
                     if (rng.NextDouble() < Mathf.Clamp01(adjacencyProbability))

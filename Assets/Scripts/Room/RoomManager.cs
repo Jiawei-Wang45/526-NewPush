@@ -97,7 +97,7 @@ public class RoomManager : MonoBehaviour
         // Build geometry (if configured) then ensure/position doors and open them
         BuildGeometryIfNeeded();
         // Delegate door discovery/opening to static RoomDoors helper
-        RoomDoors.EnsureDoorsExist(this);
+        //RoomDoors.EnsureDoorsExist(this);
         RoomDoors.OpenDoors(this);
         isRoomActive = false;
         hasPlayerEntered = false;

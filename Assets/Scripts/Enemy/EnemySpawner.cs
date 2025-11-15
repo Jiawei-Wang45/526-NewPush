@@ -6,9 +6,6 @@ using System.Security.Cryptography;
 
 public class EnemySpawner : MonoBehaviour
 {
-    public float spawnInterval;
-    public float spawnAmount;
-
     public GameObject[] enemySpawnList;
     private List<int> difficultyCosts = new List<int>();
 
