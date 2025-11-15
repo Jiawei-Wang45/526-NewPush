@@ -7,7 +7,7 @@ public class MeleeAbility: MonoBehaviour,IWeapon
 {
     [NonSerialized] private int ENEMY_LAYER;
     [NonSerialized] private int ENEMYBULLET_LAYER;
-    [NonSerialized] Transform meleePoint;
+    [NonSerialized] Transform attackPoint;
     public MeleeWeapon currentWeapon;
 
     [NonSerialized] private PlayerController pc;
@@ -18,8 +18,8 @@ public class MeleeAbility: MonoBehaviour,IWeapon
     private void Awake()
     {
         pc = GetComponentInParent<PlayerController>();
-        meleePoint= transform.Find("PlayerAim/MeleePoint");
-        animator = meleePoint.GetComponent<Animator>();
+        attackPoint= transform.Find("PlayerAim/AttackPoint");
+        animator = attackPoint.GetComponent<Animator>();
         ENEMY_LAYER = LayerMask.NameToLayer("Enemy");
         ENEMYBULLET_LAYER = LayerMask.NameToLayer("EnemyBullet");
     }
@@ -31,7 +31,7 @@ public class MeleeAbility: MonoBehaviour,IWeapon
     private IEnumerator SlashCoroutine()
     {
         animator.SetTrigger("Slash");
-        WieldEffect slashEffect =Instantiate(currentWeapon.slashEffectPrefab, meleePoint.position, meleePoint.rotation, transform);
+        WieldEffect slashEffect =Instantiate(currentWeapon.slashEffectPrefab, attackPoint.position, attackPoint.rotation, transform);
         slashEffect.Init(WieldEffect.EffectType.Slash, currentWeapon.damage);
         yield return new WaitForSeconds(currentWeapon.slashCD);
         isSlashing = false;
@@ -40,7 +40,7 @@ public class MeleeAbility: MonoBehaviour,IWeapon
     {
         //gameObject.layer = LayerMask.NameToLayer("Reflecting");
         animator.SetTrigger("Reflect");
-        WieldEffect reflectEffect =Instantiate(currentWeapon.reflectEffectPrefab, meleePoint.position, meleePoint.rotation, transform);
+        WieldEffect reflectEffect =Instantiate(currentWeapon.reflectEffectPrefab, attackPoint.position, attackPoint.rotation, transform);
         reflectEffect.Init(WieldEffect.EffectType.Reflect, 0);
         yield return new WaitForSeconds(currentWeapon.reflectCD);
         isReflecting = false;

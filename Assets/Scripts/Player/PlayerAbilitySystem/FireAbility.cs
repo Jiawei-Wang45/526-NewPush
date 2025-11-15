@@ -11,7 +11,7 @@ public class FireAbility: MonoBehaviour,IWeapon
     [NonSerialized] DashAbility dashAbility;
     // firing variables
     [Header("Basic Firing parameters")]
-    [NonSerialized] private Transform firePoint;
+    [NonSerialized] private Transform attackPoint;
     public RangedWeapon currentWeapon;
     private bool isFiring = false;
     private bool isCoroutineRunning = false;
@@ -35,7 +35,7 @@ public class FireAbility: MonoBehaviour,IWeapon
         pc= GetComponent<PlayerController>();
         stats=GetComponent<PlayerStats>();
         dashAbility= GetComponent<DashAbility>();
-        firePoint= transform.Find("PlayerAim/FirePoint");
+        attackPoint= transform.Find("PlayerAim/AttackPoint");
         targetOffsetX = backgroundBar.transform.localScale.x;
     }
     private void Start()
@@ -49,7 +49,7 @@ public class FireAbility: MonoBehaviour,IWeapon
     {
         if(currentWeapon != null && currentWeapon.weaponClass == WeaponClass.Melee && sword != null && !swordAttributes.Swinging())
         {
-            sword.transform.rotation = firePoint.rotation;
+            sword.transform.rotation = attackPoint.rotation;
         }
     }
     #endregion
@@ -84,7 +84,7 @@ public class FireAbility: MonoBehaviour,IWeapon
                 if (pc.combinationIndex == 7)
                 {
                     // Dash forward with invincible effect
-                    Vector2 knockbackDirection = (firePoint.rotation * Vector2.right);
+                    Vector2 knockbackDirection = (attackPoint.rotation * Vector2.right);
                     pc.AddForcePlayer(knockbackDirection * 10.0f);
                 }
                 Swing(currentWeapon.weaponFireInterval / 2.0f);
@@ -125,9 +125,9 @@ public class FireAbility: MonoBehaviour,IWeapon
             {
                 if(pc.combinationIndex == 1)
                 {
-                    Quaternion laserRotation = firePoint.rotation * Quaternion.Euler(0, 0, 90.0f+ bulletTiltAngle + UnityEngine.Random.Range(-currentWeapon.weaponBulletSpread, currentWeapon.weaponBulletSpread));
+                    Quaternion laserRotation = attackPoint.rotation * Quaternion.Euler(0, 0, 90.0f+ bulletTiltAngle + UnityEngine.Random.Range(-currentWeapon.weaponBulletSpread, currentWeapon.weaponBulletSpread));
                     
-                    GameObject spawnedLaser = Instantiate(laser, firePoint.position - laserRotation * Vector2.up * 50.0f, laserRotation);
+                    GameObject spawnedLaser = Instantiate(laser, attackPoint.position - laserRotation * Vector2.up * 50.0f, laserRotation);
                     Bullet_Laser laserAttributes = spawnedLaser.GetComponent<Bullet_Laser>();
                     laserAttributes.InitBullet(0.0f, bulletDamage*5.0f);
                     continue;
@@ -142,7 +142,7 @@ public class FireAbility: MonoBehaviour,IWeapon
                     bounceCount = 7;
                 }
             }
-            GameObject spawnedBullet = Instantiate(currentWeapon.bulletType, firePoint.position, firePoint.rotation * Quaternion.Euler(0, 0, bulletTiltAngle + UnityEngine.Random.Range(-currentWeapon.weaponBulletSpread, currentWeapon.weaponBulletSpread)));
+            GameObject spawnedBullet = Instantiate(currentWeapon.bulletType, attackPoint.position, attackPoint.rotation * Quaternion.Euler(0, 0, bulletTiltAngle + UnityEngine.Random.Range(-currentWeapon.weaponBulletSpread, currentWeapon.weaponBulletSpread)));
             Bullet_Default bulletAttributes = spawnedBullet.GetComponent<Bullet_Default>();     
             bulletAttributes.InitBullet(bulletSpeed, bulletDamage, bounceCount);
             if(PauseManager.instance.isPausing)
@@ -157,7 +157,7 @@ public class FireAbility: MonoBehaviour,IWeapon
         if(pc.combinationIndex == 6)
         {
             // Apply knockback in the opposite direction of firing
-            Vector2 knockbackDirection = -(firePoint.rotation * Vector2.right);
+            Vector2 knockbackDirection = -(attackPoint.rotation * Vector2.right);
             pc.AddForcePlayer(knockbackDirection * 20.0f);
         }
         if(pc.combinationIndex == 2)

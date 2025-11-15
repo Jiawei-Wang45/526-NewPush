@@ -6,8 +6,7 @@ public class WeaponController : MonoBehaviour
 {
     // two point might be misleading, since the scale of these two points are not the same cause we don't have the correct assets, the only way to adjust the shape of the square is to change the sale. In later, 
     // if we have the texture which has proper size, we can set the scale all to 1 and just keep one "attack point" instead
-    [SerializeField] private GameObject firePoint;
-    [SerializeField] private GameObject meleePoint;
+    [SerializeField] private GameObject attackPoint;
     [NonSerialized] private PlayerController pc;
     [NonSerialized] private MeleeAbility meleeAbility;
     [NonSerialized] private FireAbility fireAbility;
@@ -49,19 +48,14 @@ public class WeaponController : MonoBehaviour
     {
         if (newWeapon.weaponClass!=WeaponClass.Melee)
         {
-            //firePoint.SetActive(true);
-            //meleePoint.SetActive(false);
-            firePoint.GetComponent<SpriteRenderer>().sprite = newWeapon.weaponTexture;
-            meleePoint.GetComponent<SpriteRenderer>().sprite = null;
+            attackPoint.GetComponent<SpriteRenderer>().sprite = newWeapon.weaponTexture;
             IcurrentWeapon = fireAbility;
             fireAbility.ChangeWeapon((RangedWeapon)newWeapon);
         }
         else
         {
-            //firePoint.SetActive(false);
-            //meleePoint.SetActive(true);
-            meleePoint.GetComponent<SpriteRenderer>().sprite = newWeapon.weaponTexture;
-            firePoint.GetComponent<SpriteRenderer>().sprite = null;
+
+            attackPoint.GetComponent<SpriteRenderer>().sprite = newWeapon.weaponTexture;
             IcurrentWeapon = meleeAbility;
             meleeAbility.ChangeWeapon((MeleeWeapon)newWeapon);
         }
