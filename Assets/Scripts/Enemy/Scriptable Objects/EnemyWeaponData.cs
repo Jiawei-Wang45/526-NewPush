@@ -12,5 +12,6 @@ public class EnemyWeaponData : ScriptableObject
     public float fireRate;
     public BulletPattern bulletPattern;
 
-
+    public bool isComplex = false;
+    public BulletPattern[] compositePatterns;
 }

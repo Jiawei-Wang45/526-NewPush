@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   abilityClass: 2
   abilityName: ClusterBomb
-  menuIcon: {fileID: -5504308754007793267, guid: e5bbdb73bfdf7f2458a0e2bfb07bcae5, type: 3}
+  menuIcon: {fileID: 8160775752198118580, guid: 320b531c59b3b2a47aa9c134ec92f255, type: 3}
   cooldownIcon: {fileID: 7482667652216324306, guid: b64f79c2337ef4d2fb7e679aafd0c9b0, type: 3}
   abilityPrefab: {fileID: 2471838914875381066, guid: 4cef1b7dcf3067e459682e93b8e20187, type: 3}

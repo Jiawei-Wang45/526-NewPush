@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f049e53cb6dc4a2285268441f6201fb, type: 3}
+  m_Name: MultiShotgun
+  m_EditorClassIdentifier: 
+  bulletLifeTime: 15
+  bulletDamage: 2
+  bulletSpeed: 5
+  bulletType: {fileID: 8604903965720594084, guid: 04d380db99e814f64a851e76366f14f9, type: 3}
+  fireRate: 4.5
+  bulletPattern: {fileID: 0}
+  isComplex: 1
+  compositePatterns:
+  - {fileID: 11400000, guid: 31ca1dffa137c4da4b6455a0c57b5e2c, type: 2}
+  - {fileID: 11400000, guid: c2a2909eb805c47a79332cd08daa8af5, type: 2}
+  - {fileID: 11400000, guid: 16990b19fd6f94afab05d8a42771fa47, type: 2}

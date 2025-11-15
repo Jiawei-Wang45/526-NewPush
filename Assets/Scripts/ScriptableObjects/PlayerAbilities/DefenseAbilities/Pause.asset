@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ffef3970b0db5a418fd6f86e3887ae2, type: 3}
   m_Name: Pause
   m_EditorClassIdentifier: 
+  abilityClass: 0
   abilityName: Pause
-  menuIcon: {fileID: 2581912503230910102, guid: c41a3619e9ffa974d8e0aaf31bf56a4c, type: 3}
+  menuIcon: {fileID: 7448113381798972013, guid: 320b531c59b3b2a47aa9c134ec92f255, type: 3}
   cooldownIcon: {fileID: 7482667652216324306, guid: b64f79c2337ef4d2fb7e679aafd0c9b0, type: 3}
   abilityPrefab: {fileID: 3957815333772846262, guid: 2e0e4f77aabc65546b16095a6e12d38c, type: 3}

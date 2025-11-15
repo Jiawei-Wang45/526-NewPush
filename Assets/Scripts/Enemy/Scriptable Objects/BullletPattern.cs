@@ -13,10 +13,15 @@ public class BulletPattern : ScriptableObject
 
     public int bulletCount = 1;
     public float firingAngle = 0;
+    public float baseAngleOffset = 0;
     public bulletDistributionTypes bulletDistribution;
 
     public int fireCount = 1;
 
     public float rotateBetweenFiring = 0;
     public float timeBetweenFiring = 0;
+
+    [Header("For composite patterns")]
+    public bool waitUntilDone = true;
+    public float delayAfterPattern = 0;
 }

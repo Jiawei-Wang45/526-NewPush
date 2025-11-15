@@ -27,7 +27,7 @@ public class GameManager : MonoBehaviour
     [Header("Dungeon Rooms")]
     // Rooms in dungeon order. Assign in the inspector or dynamically at runtime.
     public RoomManager[] rooms;
-    private int currentRoomIndex = -1;  
+    public int currentRoomIndex = 0;  
     public float levelStartTime;
     private float roomStartTime;
     

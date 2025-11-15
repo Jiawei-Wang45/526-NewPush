@@ -202,48 +202,64 @@ public class EnemyController : MonoBehaviour, IDamagable
     private IEnumerator BeginFiringSequence()
     {
         currentlyFiring = true;
-        for (int i = 0; i < weapon.bulletPattern.fireCount; i++)
+        if (!weapon.isComplex)
         {
-            FireOnce(i);
-            if (i < weapon.bulletPattern.fireCount - 1)
+            yield return FireBulletPattern(weapon.bulletPattern);
+        } else
+        {
+            foreach(BulletPattern pattern in weapon.compositePatterns)
             {
-                yield return new WaitForSeconds(weapon.bulletPattern.timeBetweenFiring * slowFactor);
+                StartCoroutine(FireBulletPattern(pattern));
+                yield return new WaitForSeconds(pattern.waitUntilDone ? (pattern.timeBetweenFiring * pattern.fireCount) + pattern.delayAfterPattern : pattern.delayAfterPattern);
             }
         }
         currentlyFiring = false;
 
     }
 
-    private void FireOnce(int volleyIndex)
+    private IEnumerator FireBulletPattern(BulletPattern pattern)
     {
-        float baseAngle = enemyAim.eulerAngles.z + weapon.bulletPattern.rotateBetweenFiring * volleyIndex;
-        if (weapon.bulletPattern.bulletCount == 1)
+
+        for (int i = 0; i < pattern.fireCount; i++)
         {
-            if (weapon.bulletPattern.bulletDistribution == BulletPattern.bulletDistributionTypes.Even)
+            FireOnce(i, pattern);
+            if (i < pattern.fireCount - 1)
+            {
+                yield return new WaitForSeconds(pattern.timeBetweenFiring * slowFactor);
+            }
+        }
+    }
+
+    private void FireOnce(int volleyIndex, BulletPattern pattern)
+    {
+        float baseAngle = enemyAim.eulerAngles.z + (pattern.rotateBetweenFiring * volleyIndex) + pattern.baseAngleOffset;
+        if (pattern.bulletCount == 1)
+        {
+            if (pattern.bulletDistribution == BulletPattern.bulletDistributionTypes.Even)
             {
                 CreateBullet(baseAngle);
             }
             else
             {
-                CreateBullet(baseAngle + UnityEngine.Random.Range(-weapon.bulletPattern.firingAngle / 2, weapon.bulletPattern.firingAngle / 2));
+                CreateBullet(baseAngle + UnityEngine.Random.Range(-pattern.firingAngle / 2, pattern.firingAngle / 2));
             }
         }
         else
         {
             List<float> angleChanges = new List<float>();
-            float angleChange = -weapon.bulletPattern.firingAngle / 2;
-            float changeStep = weapon.bulletPattern.firingAngle / (weapon.bulletPattern.bulletCount - 1);
-            switch (weapon.bulletPattern.bulletDistribution)
+            float angleChange = -pattern.firingAngle / 2;
+            float changeStep = pattern.firingAngle / (pattern.bulletCount - 1);
+            switch (pattern.bulletDistribution)
             {
                 case BulletPattern.bulletDistributionTypes.Even:
-                    for (int i = 0; i < weapon.bulletPattern.bulletCount; i++)
+                    for (int i = 0; i < pattern.bulletCount; i++)
                     {
                         angleChanges.Add(angleChange);
                         angleChange += changeStep;
                     }
                     break;
                 case BulletPattern.bulletDistributionTypes.SemiRandom:
-                    for (int i = 0; i < weapon.bulletPattern.bulletCount; i++)
+                    for (int i = 0; i < pattern.bulletCount; i++)
                     {
                         float randomAdjustment = UnityEngine.Random.Range(-changeStep / 3, changeStep / 3);
                         angleChanges.Add(angleChange + randomAdjustment);
@@ -251,29 +267,29 @@ public class EnemyController : MonoBehaviour, IDamagable
                     }
                     break;
                 case BulletPattern.bulletDistributionTypes.Random:
-                    for (int i = 0; i < weapon.bulletPattern.bulletCount; i++)
+                    for (int i = 0; i < pattern.bulletCount; i++)
                     {
-                        angleChange = UnityEngine.Random.Range(-weapon.bulletPattern.firingAngle / 2, weapon.bulletPattern.firingAngle / 2);
+                        angleChange = UnityEngine.Random.Range(-pattern.firingAngle / 2, pattern.firingAngle / 2);
                         angleChanges.Add(angleChange);
                     }
                     break;
                 case BulletPattern.bulletDistributionTypes.Radial:
-                    for (int i = 0; i < weapon.bulletPattern.bulletCount; i++)
+                    for (int i = 0; i < pattern.bulletCount; i++)
                     {
-                        angleChange = 0 + (weapon.bulletPattern.firingAngle/weapon.bulletPattern.bulletCount * i);
+                        angleChange = 0 + (pattern.firingAngle/pattern.bulletCount * i);
                         angleChanges.Add(angleChange);
                     }
                     break;
             }
             foreach (float change in angleChanges)
             {
-                if (weapon.bulletPattern.bulletDistribution == BulletPattern.bulletDistributionTypes.Radial)
+                if (pattern.bulletDistribution == BulletPattern.bulletDistributionTypes.Radial)
                 {
-                    CreateBullet(change + (volleyIndex * weapon.bulletPattern.rotateBetweenFiring));
+                    CreateBullet(change + (volleyIndex * pattern.rotateBetweenFiring));
                 }
                 else
                 {
-                    CreateBullet(baseAngle + change + (volleyIndex * weapon.bulletPattern.rotateBetweenFiring));   
+                    CreateBullet(baseAngle + change + (volleyIndex * pattern.rotateBetweenFiring));   
                 }
             }   
         }

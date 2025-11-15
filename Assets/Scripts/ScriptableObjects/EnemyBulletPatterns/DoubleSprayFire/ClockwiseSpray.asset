@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9fd78b07c1d854bed858b02a0fde1ad2, type: 3}
-  m_Name: BurstFire
+  m_Name: ClockwiseSpray
   m_EditorClassIdentifier: 
   bulletCount: 1
-  firingAngle: 10
-  baseAngleOffset: 0
-  bulletDistribution: 2
-  fireCount: 4
-  rotateBetweenFiring: 0
-  timeBetweenFiring: 0.2
+  firingAngle: 0
+  baseAngleOffset: -60
+  bulletDistribution: 0
+  fireCount: 8
+  rotateBetweenFiring: 15
+  timeBetweenFiring: 0.08
   waitUntilDone: 1
-  delayAfterPattern: 0
+  delayAfterPattern: 0.2
