@@ -39,8 +39,9 @@ public class EnemyStats : MonoBehaviour
     }
     public virtual void TakeDamage(float damage)
     {
+        if (isDead) return;
         SetHealth(health-damage);
-        if (health <= 0 && !isDead)
+        if (health <= 0)
         {
             RandomDropItems();
 
@@ -72,12 +73,11 @@ public class EnemyStats : MonoBehaviour
     protected void RandomDropItems()
     {
         if (!droppableItems) return;
-        if (UnityEngine.Random.value< droppableItems.consumableDropProbability)
+        GameObject droppedItem = droppableItems.DropItem();
+        if (droppedItem != null)
         {
-            int index = UnityEngine.Random.Range(0, droppableItems.consumableList.Count);
-            Instantiate(droppableItems.consumableList[index], transform.position, new Quaternion());
+            Instantiate(droppedItem, transform.position, new Quaternion());
         }
-        //TODO:drop weapons
     }
     protected IEnumerator FlashCoroutine()
     {

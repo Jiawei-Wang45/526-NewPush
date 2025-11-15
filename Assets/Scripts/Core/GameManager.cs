@@ -139,7 +139,7 @@ public class GameManager : MonoBehaviour
         {
             TutorialText.SetActive(false);
         }
-        //Time.timeScale = 0.0f;
+        InitializePauseStat();
     }
     //private void Update()
     //{
@@ -287,7 +287,6 @@ public class GameManager : MonoBehaviour
     public void Restart()
     { 
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        //InitializePauseStat();
     }
 
     public void BackToMainMenu()
@@ -316,13 +315,15 @@ public class GameManager : MonoBehaviour
         if (isPlayerAlive)
             ChangePauseStat();
     }
+
+    private void InitializePauseStat()
+    {
+        isPaused = false;
+        Time.timeScale = 1;
+    }
     #endregion AlphaProgressCheck button callback
 
-    //private void InitializePauseStat()
-    //{
-    //    //isPaused = false;
-    //    Time.timeScale = 1;
-    //}
+
 
     //public void Reset()
     //{

@@ -29,8 +29,8 @@ public class AttackTutorialRoom : BaseRoom
 
     [Header("SpawnedItem")]
     [SerializeField] private Transform WeaponPos;
-    [SerializeField] private PickupWeapon_Tutorial Pistol;
-    [SerializeField] private PickupWeapon_Tutorial Sword;
+    [SerializeField] private WeaponItem_Tutorial Pistol;
+    [SerializeField] private WeaponItem_Tutorial Sword;
     [SerializeField] private Transform EnemyPos;
     [SerializeField] private EnemySpawnIndicator_Tutorial firstSpawnIndicator;
     [SerializeField] private EnemySpawnIndicator_Tutorial secondSpawnIndicator;

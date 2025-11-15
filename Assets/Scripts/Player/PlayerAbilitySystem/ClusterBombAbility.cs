@@ -5,12 +5,12 @@ public class ClusterBombAbility : BaseAbility
 {
     public Bullet_Cluster clusterBullet;
     public float shootingCooldown=5.0f;
-    private Transform firePoint;
+    private Transform attackPoint;
     protected override void Awake()
     {
         base.Awake();
         abilityType = AbilityType.Attacking;
-        firePoint = pc.transform.Find("PlayerAim/FirePoint");
+        attackPoint = pc.transform.Find("PlayerAim/AttackPoint");
     }
     //private void Start()
     //{
@@ -25,7 +25,7 @@ public class ClusterBombAbility : BaseAbility
     {
         if (isCooldown) return;
         StartCoroutine(AbilityCooldownCoroutine(shootingCooldown));
-        Bullet_Cluster spawnedBullet = Instantiate(clusterBullet, firePoint.position, firePoint.rotation);
+        Bullet_Cluster spawnedBullet = Instantiate(clusterBullet, attackPoint.position, attackPoint.rotation);
         spawnedBullet.InitBullet(spawnedBullet.parentBulletSpeed, spawnedBullet.parentBulletDamage);
         SendAnalytics("ClusterBomb");
     }

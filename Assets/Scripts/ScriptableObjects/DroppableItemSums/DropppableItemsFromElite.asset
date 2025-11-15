@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f49d034f847844a40bfdd3e511581df2, type: 3}
+  m_Name: DropppableItemsFromElite
+  m_EditorClassIdentifier: 
+  catrgoryWeightList:
+  - category: 0
+    weight: 5
+  - category: 1
+    weight: 2
+  - category: 2
+    weight: 2
+  consumableList:
+  - itemPrefab: {fileID: 8306602147922798534, guid: ac4f09f0e0559394d9fb016337b05c31, type: 3}
+    weight: 1
+  weaponList:
+  - itemPrefab: {fileID: 6968304297242606790, guid: 12231a9bd36050f4087bec71b0063ea5, type: 3}
+    weight: 2
+  - itemPrefab: {fileID: 4273814100052605486, guid: 9fb185223696bc9408a1208cc7e9c75a, type: 3}
+    weight: 1
+  - itemPrefab: {fileID: 1456225590148872544, guid: ac82836a8ec6b654c8f1d46ed44268db, type: 3}
+    weight: 1
+  - itemPrefab: {fileID: 4951308344593786654, guid: 272916ad149f7694bb8e1fa45a65f3a7, type: 3}
+    weight: 1
+  - itemPrefab: {fileID: 3990663980242752412, guid: c95b80fae679a5a4f902449b6f9537d8, type: 3}
+    weight: 1
+  abilityList:
+  - itemPrefab: {fileID: 2358930338957612911, guid: b97842bcec563614a98f59bc35399413, type: 3}
+    weight: 2
+  - itemPrefab: {fileID: 5627634465881751116, guid: 92cb741efd1ed184b93b9ea332063fc9, type: 3}
+    weight: 1
+  - itemPrefab: {fileID: 3056794070899022147, guid: 0e922a1b2b14d8641990e84665c345f3, type: 3}
+    weight: 1

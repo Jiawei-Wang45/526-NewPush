@@ -12,7 +12,7 @@ public class FireAbility: MonoBehaviour,IWeapon
     // firing variables
     [Header("Basic Firing parameters")]
     [NonSerialized] private Transform attackPoint;
-    public RangedWeapon currentWeapon;
+    public BaseWeapon currentWeapon;
     private bool isFiring = false;
     private bool isCoroutineRunning = false;
     public GameObject laser;
@@ -231,7 +231,7 @@ public class FireAbility: MonoBehaviour,IWeapon
     #endregion Reload
 
     #region callback
-    public void InitializeWeapon(RangedWeapon weapon)
+    public void InitializeWeapon(BaseWeapon weapon)
     {
         currentWeapon = weapon;
         Debug.Log("currentWeapon: " + currentWeapon);
@@ -243,7 +243,7 @@ public class FireAbility: MonoBehaviour,IWeapon
             swordAttributes.InitSword(currentWeapon.weaponBulletDamage);
         }
     }
-    public void ChangeWeapon(RangedWeapon newWeapon)
+    public void ChangeWeapon(BaseWeapon newWeapon)
     {
         currentWeapon= newWeapon;
         SetAmmoToMax();

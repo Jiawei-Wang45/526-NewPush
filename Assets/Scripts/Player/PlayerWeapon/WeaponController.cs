@@ -50,7 +50,7 @@ public class WeaponController : MonoBehaviour
         {
             attackPoint.GetComponent<SpriteRenderer>().sprite = newWeapon.weaponTexture;
             IcurrentWeapon = fireAbility;
-            fireAbility.ChangeWeapon((RangedWeapon)newWeapon);
+            fireAbility.ChangeWeapon((BaseWeapon)newWeapon);
         }
         else
         {

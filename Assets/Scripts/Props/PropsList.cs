@@ -2,5 +2,5 @@ using UnityEngine;
 
 public class PropsList : MonoBehaviour
 {
-    public RangedWeapon playerWeapon;
+    public BaseWeapon playerWeapon;
 }
