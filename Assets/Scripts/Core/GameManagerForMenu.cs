@@ -9,6 +9,7 @@ public class GameManagerForMenu : MonoBehaviour
     // UI Components
     [Header("UI Componenets")]
     public GameObject FirstMenu;
+    public GameObject LevelSelection;
     public GameObject CharacterConfig;
 
     public TextMeshProUGUI weaponText;
@@ -18,6 +19,12 @@ public class GameManagerForMenu : MonoBehaviour
     public TextMeshProUGUI defenseAbilityText;
     public Image defenseAbilityIcon;
 
+    // Level Selection Management
+    [Header("Level Selection")]
+    public string[] levelScenes = { "Level_1", "Level_2" };
+    public string[] levelNames = { "Level 1", "Level 2" };
+    private int selectedLevelIndex = 0;
+    
     // CharacterConfig Management
     [Header("CharacterConfig Management")]
     public PlayerBaseWeapon[] weapons;
@@ -34,6 +41,7 @@ public class GameManagerForMenu : MonoBehaviour
     private void Awake()
     {
         FirstMenu.SetActive(true);
+        LevelSelection.SetActive(false);
         CharacterConfig.SetActive(false);
         InitializeConfig();
     }
@@ -44,6 +52,7 @@ public class GameManagerForMenu : MonoBehaviour
     public void NewGame()
     {
         FirstMenu.SetActive(false);
+        LevelSelection.SetActive(false);
         CharacterConfig.SetActive(true);
     }
     public void Exit()
@@ -56,13 +65,78 @@ public class GameManagerForMenu : MonoBehaviour
     }
     public void Back()
     {
+        if (LevelSelection.activeSelf)
+        {
+            // Back from level selection to character config
+            LevelSelection.SetActive(false);
+            CharacterConfig.SetActive(true);
+        }
+        else if (CharacterConfig.activeSelf)
+        {
+            // Back from character config to main menu
+            CharacterConfig.SetActive(false);
+            FirstMenu.SetActive(true);
+        }
+    }
+    
+    // Continue from character config to level selection
+    public void ContinueToLevelSelection()
+    {
         CharacterConfig.SetActive(false);
-        FirstMenu.SetActive(true);
+        LevelSelection.SetActive(true);
     }
     public void StartGame()
     {
         SaveCharacterConfig();
-        SceneManager.LoadScene("AlphaProgressCheck");
+        if (selectedLevelIndex >= 0 && selectedLevelIndex < levelScenes.Length)
+        {
+            SceneManager.LoadScene(levelScenes[selectedLevelIndex]);
+        }
+        else
+        {
+            // Fallback to Level_1 if index is invalid
+            SceneManager.LoadScene("Level_1");
+        }
+    }
+    
+    // Level Selection Methods
+    public void SelectLevel(int levelIndex)
+    {
+        if (levelIndex >= 0 && levelIndex < levelScenes.Length)
+        {
+            selectedLevelIndex = levelIndex;
+            // Save config and start game after selecting level
+            SaveCharacterConfig();
+            StartGame();
+        }
+    }
+    
+    public void NextLevel()
+    {
+        selectedLevelIndex = NextIndexHelper(selectedLevelIndex, levelScenes.Length);
+    }
+    
+    public void PreviousLevel()
+    {
+        selectedLevelIndex = PreviousIndexHelper(selectedLevelIndex, levelScenes.Length);
+    }
+    
+    public string GetSelectedLevelName()
+    {
+        if (selectedLevelIndex >= 0 && selectedLevelIndex < levelNames.Length)
+        {
+            return levelNames[selectedLevelIndex];
+        }
+        return "Unknown Level";
+    }
+    
+    public string GetSelectedLevelScene()
+    {
+        if (selectedLevelIndex >= 0 && selectedLevelIndex < levelScenes.Length)
+        {
+            return levelScenes[selectedLevelIndex];
+        }
+        return "Level_1";
     }
     public void InitializeConfig()
     {
