@@ -1,4 +1,3 @@
-using UnityEditor.Animations;
 using UnityEngine;
 [CreateAssetMenu(fileName = "New Weapon", menuName = "MeleeWeapon")]
 public class MeleeWeapon : PlayerBaseWeapon

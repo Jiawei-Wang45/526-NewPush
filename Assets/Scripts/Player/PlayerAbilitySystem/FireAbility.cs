@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using UnityEditor.Rendering.LookDev;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -80,6 +79,7 @@ public class FireAbility: MonoBehaviour,IWeapon
                 }
                 break;
             case WeaponClass.Melee:
+                //deprecated, not active
                 isCoroutineRunning = true;
                 if (pc.combinationIndex == 7)
                 {

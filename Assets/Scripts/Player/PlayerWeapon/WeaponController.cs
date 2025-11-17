@@ -59,5 +59,17 @@ public class WeaponController : MonoBehaviour
             IcurrentWeapon = meleeAbility;
             meleeAbility.ChangeWeapon((MeleeWeapon)newWeapon);
         }
+
+        pc.weaponIndex = (int)newWeapon.weaponClass;
+        if(pc.weaponIndex >= 0 && pc.abilityIndex >= 0)
+            pc.combinationIndex = pc.weaponIndex + pc.abilityIndex * 4;
+        Debug.Log("ChangeWeapon: New combination index: " + pc.combinationIndex);
+        // Current Ability/weapon Matrix: 
+        //       Pause  Dash
+        // FullAuto 0     4
+        // SemiAuto 1     5
+        // Shotgun  2     6
+        // Melee    3     7
+        //
     }
 }

@@ -12145,7 +12145,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1b063910e29d0f4c90745f48a9ce1a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  combinationIndex: 0
+  combinationIndex: -1
   speed: 10
   movement: {x: 0, y: 0}
   knockback: {x: 0, y: 0}

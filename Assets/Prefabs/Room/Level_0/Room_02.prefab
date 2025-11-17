@@ -98,7 +98,7 @@ GameObject:
   - component: {fileID: 400943026135164425}
   - component: {fileID: 2699253750690431233}
   - component: {fileID: 3378182963913410810}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Square (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1217,6 +1217,7 @@ MonoBehaviour:
   clearExistingChildren: 0
   enemySpawner: {fileID: 3945821863562805851}
   isRoomActive: 0
+  winTrigger: {fileID: 0}
 --- !u!1 &5457964426430620320
 GameObject:
   m_ObjectHideFlags: 0
@@ -1362,7 +1363,7 @@ GameObject:
   - component: {fileID: 8432831303252892656}
   - component: {fileID: 3907235651212171591}
   - component: {fileID: 1336579009545716763}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Square
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2032,7 +2033,7 @@ GameObject:
   - component: {fileID: 8391512818772548775}
   - component: {fileID: 7274145907100884484}
   - component: {fileID: 4907357758542030305}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Square (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

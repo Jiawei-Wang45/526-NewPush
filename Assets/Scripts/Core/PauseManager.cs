@@ -44,8 +44,12 @@ public class PauseManager : MonoBehaviour
         isPausing = true;
         activePauseStrength = pauseStrength;
         OnPauseStart?.Invoke(pauseStrength);
+        SpriteRenderer parentSprite = PlayerController.instance.GetComponentInParent<SpriteRenderer>();
         if(PlayerController.instance.combinationIndex == 3)
         {
+            Color color = parentSprite.color;
+            color.a = 0.5f;
+            parentSprite.color = color;
             playerStats.SetInvincible(true);
             playerStats.preventDamage = true;
         }
@@ -59,6 +63,9 @@ public class PauseManager : MonoBehaviour
         OnPauseEnd?.Invoke();
         if(PlayerController.instance.combinationIndex == 3)
         {
+            Color color = parentSprite.color;
+            color.a = 1.0f;
+            parentSprite.color = color;
             playerStats.SetInvincible(false);
             playerStats.preventDamage = false;
         }

@@ -11,7 +11,9 @@ public class PlayerController : MonoBehaviour, IDamagable
     [NonSerialized] private PlayerStats stats;
     [NonSerialized] private WeaponController weaponController;
     public PlayerInput playerInput;
-    public int combinationIndex = 0;
+    public int weaponIndex = -1;
+    public int abilityIndex = -1;
+    public int combinationIndex = -1; 
     // movement parameter
     public float speed=10.0f;
     public Vector2 movement;
@@ -57,6 +59,10 @@ public class PlayerController : MonoBehaviour, IDamagable
     {
         knockback += force;
         stats.SetInvincible(true);
+        SpriteRenderer parentSprite = GetComponentInParent<SpriteRenderer>();
+        Color color = parentSprite.color;
+        color.a = 0.5f;
+        parentSprite.color = color;
         stats.preventDamage = true;
     }
 
@@ -64,10 +70,15 @@ public class PlayerController : MonoBehaviour, IDamagable
     {
         rb.linearVelocity = movement * speed + knockback;
         knockback -= knockback * 0.05f;
-        if((combinationIndex == 6 || combinationIndex == 7) && knockback.magnitude < 1.0f)
+        if((combinationIndex == 6 || combinationIndex == 7) && knockback.magnitude < 3.0f)
         {
             stats.SetInvincible(false);
+            SpriteRenderer parentSprite = GetComponentInParent<SpriteRenderer>();
+            Color color = parentSprite.color;
+            color.a = 1.0f;
+            parentSprite.color = color;
             stats.preventDamage = false;
+            knockback *= 0.0f;
         }
     }
 

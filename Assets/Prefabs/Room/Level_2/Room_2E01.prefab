@@ -105,7 +105,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &180387995401674746
 Transform:
   m_ObjectHideFlags: 0
@@ -250,7 +250,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &4004033439206009150
 Transform:
   m_ObjectHideFlags: 0
@@ -280,16 +280,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemySpawnList:
-  - {fileID: 4452876839863001193, guid: fdc536f03084b3144a2bd46a7cf6c144, type: 3}
-  - {fileID: 1317004247855509735, guid: 5de3afd38b242b040b15b5d00bc02d02, type: 3}
-  - {fileID: 7980401159501858626, guid: 428bd7f4de9af0842875fa72c2a41981, type: 3}
-  - {fileID: 1723346802044135853, guid: 2dee37c5a8506d84ba8c61de5c038d88, type: 3}
-  - {fileID: 5671456794463892987, guid: 7661a1ae7881d664ab8fd9b781fe38f2, type: 3}
+  - {fileID: 7980401159501858626, guid: cb298d38fe50fe8469fa224474718118, type: 3}
   canSpawnAfterRoomNumber: 
   enemySpawnIndicator: {fileID: 62652219401394802, guid: cc44a7ca5f6c670479244ae20d6b696c, type: 3}
   gameManager: {fileID: 0}
   spawnBox: {fileID: 177841893781875243}
-  spawnBudget: 20
+  spawnBudget: 30
   waveBudgets: 
   loopWaves: 1
   totalWaves: 1
@@ -354,7 +350,8 @@ MonoBehaviour:
   doorPrefab: {fileID: 1718955756871633245, guid: 8b70c947d03b0b744ba271beb4ff3cab, type: 3}
   wallThickness: 2
   doorOutsideOffset: 1
-  defaultSize: 30
+  defaultSize: 45
   clearExistingChildren: 0
-  enemySpawner: {fileID: 0}
+  enemySpawner: {fileID: 3945821863562805851}
   isRoomActive: 0
+  winTrigger: {fileID: 1179398412238194903}
