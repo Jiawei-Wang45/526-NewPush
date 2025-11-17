@@ -50,10 +50,10 @@ public class EnemySpawner : MonoBehaviour
     {
         roomSpawnList.Clear();
         difficultyCosts.Clear();
-        Debug.Log($"Room index: {gameManager.currentRoomIndex}");
+        Debug.Log($"Cleared room count: {gameManager.clearedRoomCount}");
         for (int i = 0; i < enemySpawnList.Length; i++)
         {
-            if(enemySpawnList.Length != canSpawnAfterRoomNumber.Length || canSpawnAfterRoomNumber[i] <= gameManager.currentRoomIndex)
+            if(enemySpawnList.Length != canSpawnAfterRoomNumber.Length || canSpawnAfterRoomNumber[i] <= gameManager.clearedRoomCount)
             {
                 EnemyController ec = enemySpawnList[i].GetComponent<EnemyController>();
                 roomSpawnList.Add(enemySpawnList[i]);

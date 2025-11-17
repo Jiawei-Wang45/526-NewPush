@@ -20,6 +20,7 @@ public class GameManager : MonoBehaviour
     public GameObject InGameWinMenu;
     public DungeonRoomInfo InGameDungeonRoomInfo;
     public SurvivalTime InGameSurvivalTime;
+    public DungeonMinimap InGameDungeonMinimap;
     public GameObject TutorialText;
     public bool isInLevel; //in contrast with tutorial level
 
@@ -27,9 +28,23 @@ public class GameManager : MonoBehaviour
     [Header("Dungeon Rooms")]
     // Rooms in dungeon order. Assign in the inspector or dynamically at runtime.
     public RoomManager[] rooms;
-    public int currentRoomIndex = 0;  
+    // Number of rooms that have been cleared (not necessarily in order)
+    public int clearedRoomCount = 0;
+    // Array tracking which rooms have been cleared (indexed by room array index)
+    private bool[] roomClearedStatus;
     public float levelStartTime;
     private float roomStartTime;
+    
+    // Graph structure from dungeon generator (for minimap and navigation)
+    // Maps room index to list of connected room indices
+    public Dictionary<int, List<int>> roomAdjacencyGraph = new Dictionary<int, List<int>>();
+    // Grid cell positions for each room (indexed by room array index)
+    public List<Vector2Int> roomGridPositions = new List<Vector2Int>();
+    // Cell size used for grid layout (for converting between grid and world positions)
+    public Vector2 dungeonCellSize = Vector2.zero;
+    // Start and end room indices from dungeon generator
+    public int startRoomIndex = -1;
+    public int endRoomIndex = -1;
     
     
     //Google analytics
@@ -88,7 +103,7 @@ public class GameManager : MonoBehaviour
         InGameSurvivalTime.UpdateSurvivalTime(totalSurvivalTime);
 
         // Send data only for rooms 1 and above (skip room0)
-        int roomNumber = currentRoomIndex;
+        int roomNumber = clearedRoomCount;
         if (roomNumber >= 1)
         {
             // Send timer data for the current room (death) only if not already sent
@@ -134,12 +149,30 @@ public class GameManager : MonoBehaviour
             levelStartTime = Time.time;
             pc.playerInput.Default.Escape.performed += OnEscapeTriggered;
             sendToGoogle = FindFirstObjectByType<SendToGoogle>();
+            // Start coroutine to update minimap when player enters rooms
+            StartCoroutine(UpdateMinimapOnRoomEnter());
         }
         else
         {
             TutorialText.SetActive(false);
         }
-        InitializePauseStat();
+        //Time.timeScale = 0.0f;
+    }
+    
+    // Coroutine to periodically check if player entered a new room and update minimap
+    private IEnumerator UpdateMinimapOnRoomEnter()
+    {
+        int lastRoomIndex = -1;
+        while (isPlayerAlive)
+        {
+            int currentRoomIndex = GetCurrentRoomIndex();
+            if (currentRoomIndex != lastRoomIndex)
+            {
+                lastRoomIndex = currentRoomIndex;
+                UpdateMinimap();
+            }
+            yield return new WaitForSeconds(0.5f); // Check every 0.5 seconds
+        }
     }
     //private void Update()
     //{
@@ -174,7 +207,13 @@ public class GameManager : MonoBehaviour
             // should manage enemy spawning per-room. Simply return.
             return;
         }
-        currentRoomIndex = 0;
+        clearedRoomCount = 0;
+        // Initialize room cleared status array
+        roomClearedStatus = new bool[rooms.Length];
+        for (int i = 0; i < roomClearedStatus.Length; i++)
+        {
+            roomClearedStatus[i] = false;
+        }
         roomStartTime = Time.time;
         // Refresh the room progress UI
         UpdateRoomProgressUI();
@@ -182,30 +221,165 @@ public class GameManager : MonoBehaviour
         // Send ability data at the start of the game
         SendAbilityData();
     }
+    
+    /// <summary>
+    /// Set the dungeon graph structure (called by ProceduralDungeonGenerator after generation)
+    /// </summary>
+    public void SetDungeonGraph(Dictionary<int, List<int>> adjacencyGraph, List<Vector2Int> gridPositions, Vector2 cellSize, int startIndex = -1, int endIndex = -1)
+    {
+        roomAdjacencyGraph = adjacencyGraph ?? new Dictionary<int, List<int>>();
+        roomGridPositions = gridPositions ?? new List<Vector2Int>();
+        dungeonCellSize = cellSize;
+        startRoomIndex = startIndex;
+        endRoomIndex = endIndex;
+    }
+    
+    /// <summary>
+    /// Get connected room indices for a given room index
+    /// </summary>
+    public List<int> GetConnectedRooms(int roomIndex)
+    {
+        if (roomAdjacencyGraph != null && roomAdjacencyGraph.TryGetValue(roomIndex, out var connected))
+        {
+            return connected;
+        }
+        return new List<int>();
+    }
     #endregion initialization
 
     #region dungeon update
     // Called by RoomManager when a room is cleared
     public void RoomCleared(RoomManager room)
     {
-        // Only advance if the cleared room matches the current room (defensive)
-        if (currentRoomIndex >= 0 && currentRoomIndex < rooms.Length)
+        // Ensure roomClearedStatus array is initialized
+        if (roomClearedStatus == null || rooms == null || rooms.Length == 0)
         {
-            int roomNumber = currentRoomIndex;
-            float roomTime = Time.time - roomStartTime;
-
-            // Send timer data only for rooms 1 and above (skip room0)
-            if (sendToGoogle != null && roomNumber >= 1 && lastSentTimerRoom != roomNumber)
+            Debug.LogWarning("GameManager: Room cleared status array not initialized. Initializing now...");
+            if (rooms != null && rooms.Length > 0)
             {
-                sendToGoogle.SendTimerData(roomTime, true, roomNumber);
-                lastSentTimerRoom = roomNumber;
+                roomClearedStatus = new bool[rooms.Length];
+                for (int i = 0; i < roomClearedStatus.Length; i++)
+                {
+                    roomClearedStatus[i] = false;
+                }
+                clearedRoomCount = 0;
             }
-
-            Debug.Log($"GameManager: Room '{room.name}' cleared. Advancing to room {currentRoomIndex + 1}");
-            currentRoomIndex++;
-            roomStartTime = Time.time; // Reset for next room
-            UpdateRoomProgressUI();
+            else
+            {
+                Debug.LogError("GameManager: Cannot initialize room cleared status - rooms array is null or empty!");
+                return;
+            }
         }
+        
+        // Find the index of the cleared room
+        int roomIndex = GetRoomIndex(room);
+        if (roomIndex < 0 || roomIndex >= rooms.Length)
+        {
+            Debug.LogWarning($"GameManager: Room '{room.name}' not found in rooms array!");
+            return;
+        }
+
+        // Check if this room was already cleared (prevent duplicate clearing)
+        if (roomClearedStatus[roomIndex])
+        {
+            Debug.Log($"GameManager: Room '{room.name}' was already cleared, ignoring duplicate clear.");
+            return;
+        }
+
+        // Mark room as cleared
+        roomClearedStatus[roomIndex] = true;
+        clearedRoomCount++;
+        
+        float roomTime = Time.time - roomStartTime;
+
+        // Send timer data only for rooms 1 and above (skip room0)
+        if (sendToGoogle != null && clearedRoomCount >= 1 && lastSentTimerRoom != clearedRoomCount)
+        {
+            sendToGoogle.SendTimerData(roomTime, true, clearedRoomCount);
+            lastSentTimerRoom = clearedRoomCount;
+        }
+
+        Debug.Log($"GameManager: Room '{room.name}' (index {roomIndex}) cleared. Total cleared: {clearedRoomCount}/{rooms.Length}");
+        roomStartTime = Time.time; // Reset for next room
+        UpdateRoomProgressUI();
+        UpdateMinimap();
+    }
+    
+    /// <summary>
+    /// Get the index of a room in the rooms array
+    /// </summary>
+    private int GetRoomIndex(RoomManager room)
+    {
+        if (rooms == null || room == null) return -1;
+        
+        for (int i = 0; i < rooms.Length; i++)
+        {
+            if (rooms[i] == room)
+            {
+                return i;
+            }
+        }
+        return -1;
+    }
+    
+    /// <summary>
+    /// Check if a room has been cleared
+    /// </summary>
+    public bool IsRoomCleared(int roomIndex)
+    {
+        // If array is not initialized, initialize it
+        if (roomClearedStatus == null)
+        {
+            if (rooms != null && rooms.Length > 0)
+            {
+                roomClearedStatus = new bool[rooms.Length];
+                for (int i = 0; i < roomClearedStatus.Length; i++)
+                {
+                    roomClearedStatus[i] = false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+        
+        if (roomIndex < 0 || roomIndex >= roomClearedStatus.Length)
+        {
+            return false;
+        }
+        return roomClearedStatus[roomIndex];
+    }
+    
+    /// <summary>
+    /// Check if a room has been cleared by RoomManager reference
+    /// </summary>
+    public bool IsRoomCleared(RoomManager room)
+    {
+        int index = GetRoomIndex(room);
+        return IsRoomCleared(index);
+    }
+    
+    /// <summary>
+    /// Get the room index where the player is currently located (if any)
+    /// Returns -1 if player is not in any room
+    /// </summary>
+    public int GetCurrentRoomIndex()
+    {
+        if (pc == null || rooms == null) return -1;
+        
+        Vector3 playerPos = pc.transform.position;
+        for (int i = 0; i < rooms.Length; i++)
+        {
+            if (rooms[i] != null && rooms[i].roomTrigger != null)
+            {
+                if (rooms[i].roomTrigger.bounds.Contains(playerPos))
+                {
+                    return i;
+                }
+            }
+        }
+        return -1;
     }
     #endregion dungeon update
 
@@ -215,8 +389,17 @@ public class GameManager : MonoBehaviour
     // <color=red>Room_2</color>: 1/5
     private void UpdateRoomProgressUI()
     {
-        int clearedCount = Mathf.Clamp(currentRoomIndex, 0, rooms.Length);
+        int clearedCount = Mathf.Clamp(clearedRoomCount, 0, rooms.Length);
         InGameDungeonRoomInfo.UpdateRoomInfo(clearedCount, rooms.Length);
+    }
+    
+    // Update the dungeon minimap UI
+    private void UpdateMinimap()
+    {
+        if (InGameDungeonMinimap != null)
+        {
+            InGameDungeonMinimap.RefreshMinimap();
+        }
     }
 
     // Called by a WinTrigger when the player reaches the goal
@@ -246,7 +429,7 @@ public class GameManager : MonoBehaviour
         }
 
         // Send data only for rooms 1 and above (skip room0)
-        int roomNumber = currentRoomIndex;
+        int roomNumber = clearedRoomCount;
         if (roomNumber >= 1)
         {
             // Send ability usage data on win only once
@@ -287,6 +470,7 @@ public class GameManager : MonoBehaviour
     public void Restart()
     { 
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        //InitializePauseStat();
     }
 
     public void BackToMainMenu()
@@ -315,15 +499,13 @@ public class GameManager : MonoBehaviour
         if (isPlayerAlive)
             ChangePauseStat();
     }
-
-    private void InitializePauseStat()
-    {
-        isPaused = false;
-        Time.timeScale = 1;
-    }
     #endregion AlphaProgressCheck button callback
 
-
+    //private void InitializePauseStat()
+    //{
+    //    //isPaused = false;
+    //    Time.timeScale = 1;
+    //}
 
     //public void Reset()
     //{

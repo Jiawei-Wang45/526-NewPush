@@ -95,6 +95,8 @@ public class ProceduralDungeonGenerator : MonoBehaviour
 			var rms = new RoomManager[instantiatedRooms.Count];
 			for (int i = 0; i < instantiatedRooms.Count; i++) rms[i] = instantiatedRooms[i].GetComponent<RoomManager>();
 			GameManager.instance.rooms = rms;
+			// Pass graph structure to GameManager for minimap and navigation
+			GameManager.instance.SetDungeonGraph(adjacencyGraph, occupiedCells, cellSize, result.startIndex, result.endIndex);
 		}
 	}
 

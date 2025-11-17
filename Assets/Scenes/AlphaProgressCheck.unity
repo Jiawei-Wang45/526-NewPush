@@ -1430,6 +1430,64 @@ MonoBehaviour:
   backgroundImage: {fileID: 1451791099}
   filledImage: {fileID: 594417072}
   cooldownText: {fileID: 1838791516}
+--- !u!1 &407922273
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 407922274}
+  - component: {fileID: 407922275}
+  m_Layer: 5
+  m_Name: Minimap
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &407922274
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 407922273}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1611026787}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 274.85, y: 112.805435}
+  m_SizeDelta: {x: 249.7, y: 141.8431}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &407922275
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 407922273}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd0e41fb61ae7ee4db937b55d1b663a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  roomContainer: {fileID: 0}
+  roomIconPrefab: {fileID: 3811405899705987145, guid: 291ef4b9a7d012045bb9c88ccb9d61f4, type: 3}
+  adjacentUnvisitedRoomIconPrefab: {fileID: 3811405899705987145, guid: af6f3615673bf9948a77aa5b88e4afc2, type: 3}
+  startRoomIconPrefab: {fileID: 3811405899705987145, guid: 357721d32fb66e4489c423f5491e0b22, type: 3}
+  endRoomIconPrefab: {fileID: 3811405899705987145, guid: 9deace9ca81a9c548aff63dc871397e5, type: 3}
+  minimapScale: 0.3
+  roomIconSize: 10
+  showConnections: 1
+  connectionLineWidth: 4
+  connectionColor: {r: 1, g: 1, b: 1, a: 0.8}
 --- !u!1 &430634860
 GameObject:
   m_ObjectHideFlags: 0
@@ -3541,11 +3599,16 @@ MonoBehaviour:
   InGameWinMenu: {fileID: 363682969}
   InGameDungeonRoomInfo: {fileID: 1373076546}
   InGameSurvivalTime: {fileID: 31600353}
+  InGameDungeonMinimap: {fileID: 407922275}
   TutorialText: {fileID: 1688118147}
   isInLevel: 1
   rooms: []
-  currentRoomIndex: 0
+  clearedRoomCount: 0
   levelStartTime: 0
+  roomGridPositions: []
+  dungeonCellSize: {x: 0, y: 0}
+  startRoomIndex: -1
+  endRoomIndex: -1
 --- !u!4 &850232883
 Transform:
   m_ObjectHideFlags: 0
@@ -5965,6 +6028,7 @@ RectTransform:
   - {fileID: 1422169547}
   - {fileID: 1688118148}
   - {fileID: 819342180}
+  - {fileID: 407922274}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -6857,7 +6921,7 @@ MonoBehaviour:
   cellSize: {x: 75, y: 75}
   roomScale: 1
   doorOutsideOffset: 1
-  adjacencyProbability: 1
+  adjacencyProbability: 0.5
 --- !u!1 &1966936145
 GameObject:
   m_ObjectHideFlags: 0
