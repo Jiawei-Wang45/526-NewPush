@@ -23,6 +23,7 @@ public class WeaponController : MonoBehaviour
         pc.playerInput.Default.LeftMouse.started += OnLeftMouseTriggered;
         pc.playerInput.Default.LeftMouse.canceled += OnLeftMouseReleased;
         pc.playerInput.Default.RightMouse.started += OnRightMouseTriggered;
+        pc.playerInput.Default.RightMouse.canceled += OnRightMouseReleased;
         pc.playerInput.Default.Reload.started += OnReloadTriggered;
     }
     #region callback
@@ -37,6 +38,10 @@ public class WeaponController : MonoBehaviour
     private void OnRightMouseTriggered(InputAction.CallbackContext context)
     {
         IcurrentWeapon?.RightMouseTriggered();
+    }
+    private void OnRightMouseReleased(InputAction.CallbackContext context)
+    {
+        IcurrentWeapon?.RightMouseReleased();
     }
     private void OnReloadTriggered(InputAction.CallbackContext context)
     {

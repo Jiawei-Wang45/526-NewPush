@@ -275,6 +275,10 @@ public class FireAbility: MonoBehaviour,IWeapon
     {
         dashAbility.ActivateDash();
     }
+    public void RightMouseReleased()
+    {
+
+    }
     public void ReloadTriggered()
     {
         ActivateReload();
