@@ -20,12 +20,14 @@ public class EnemyController : MonoBehaviour, IDamagable
     public float comfortableDistance = 5.0f;
 
     protected float timeToFire = 0;
-    private bool currentlyFiring = false;
+    protected bool currentlyFiring = false;
     private bool foundPlayer = false;
     private bool canSeePlayer = false;
     protected LayerMask terrainMask;
     private float checkInterval = 0.1f;
     private Vector3 randomTarget;
+
+    private bool isBoss = false;
 
     //affected by pause ability
     protected float slowFactor = 1.0f;
@@ -37,7 +39,7 @@ public class EnemyController : MonoBehaviour, IDamagable
         enemyAim = transform.Find("EnemyAim");
         //gameManager.onReset += ResetStates;
     }
-    protected  virtual void Start()
+    protected virtual void Start()
     {
         pc = PlayerController.instance;
         gameManager = GameManager.instance;
@@ -295,11 +297,16 @@ public class EnemyController : MonoBehaviour, IDamagable
         }
     }
 
-    private void CreateBullet(float angle)
+    private void CreateBullet(float angle, float offsetDistance = 0.0f, Vector3? centerPosition = null)
     {
+        if(centerPosition == null) centerPosition = Vector3.zero;
         Vector2 spawnVector = new Vector2(Mathf.Cos(angle * Mathf.Deg2Rad), Mathf.Sin(angle * Mathf.Deg2Rad));
-        float offsetDistance = GetComponent<Collider2D>().bounds.extents.magnitude * 0.9f;
-        Vector3 spawnPosition = transform.position + (Vector3)(spawnVector * offsetDistance);
+        Vector3 spawnPosition = Vector3.zero;
+        if(!isBoss)
+        {
+            offsetDistance = GetComponent<Collider2D>().bounds.extents.magnitude * 0.9f;
+            spawnPosition = transform.position + (Vector3)(spawnVector * offsetDistance);
+        }
         Quaternion rotation = Quaternion.Euler(0, 0, angle);
         GameObject spawnedBullet = Instantiate(weapon.bulletType, spawnPosition, rotation);
         Bullet_Default bulletAttributes = spawnedBullet.GetComponent<Bullet_Default>();   

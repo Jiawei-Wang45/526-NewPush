@@ -52,6 +52,12 @@ public class MeleeAbility: MonoBehaviour,IWeapon
     {
         if (isSlashing || isReflecting) return;
         isSlashing = true;
+        if (pc.combinationIndex == 7)
+        {
+            // Dash forward with invincible effect
+            Vector2 knockbackDirection = (attackPoint.rotation * Vector2.right);
+            pc.AddForcePlayer(knockbackDirection * 20.0f);
+        }
         StartCoroutine(SlashCoroutine());
     }
     public void LeftMouseReleased() { }

@@ -161,7 +161,5 @@ public class WeaponController : MonoBehaviour
             weaponInstance = null;
             cachedSlotIndex = maxWeaponCount - 1;
         }
-
-        
     }
 }

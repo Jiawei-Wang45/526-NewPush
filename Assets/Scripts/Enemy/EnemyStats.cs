@@ -7,6 +7,7 @@ public class EnemyStats : MonoBehaviour
 {
     public float maxHealth;
     public float health;
+    public int life = 0;
     public float enemyMovementSpeed;   
     public EnemySpawner spawner;
 
@@ -43,16 +44,25 @@ public class EnemyStats : MonoBehaviour
         SetHealth(health-damage);
         if (health <= 0)
         {
-            RandomDropItems();
-
-            GameObject particle=Instantiate(dyingEffect, transform.position, Quaternion.identity);
-
-            GetComponent<EnemyController>().isAlive(false);
-            isDead = true;
-            if (spawner)
+            if(life > 0)
             {
-                spawner.EnemyDestroyed();
-            }   
+                life--;
+                SetHealth(maxHealth);
+                StartCoroutine(FlashCoroutine());
+            }
+            else
+            {
+                RandomDropItems();
+
+                GameObject particle=Instantiate(dyingEffect, transform.position, Quaternion.identity);
+
+                GetComponent<EnemyController>().isAlive(false);
+                isDead = true;
+                if (spawner)
+                {
+                    spawner.EnemyDestroyed();
+                }   
+            }
         }
         else
         {

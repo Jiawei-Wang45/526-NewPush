@@ -15,6 +15,12 @@ EditorBuildSettings:
     path: Assets/Scenes/WeaponTesting.unity
     guid: 3ca096311f0e248fd9575228037c432c
   - enabled: 1
+    path: Assets/Scenes/Level_1.unity
+    guid: 67658b2482cc0f749801cd51b214ad1b
+  - enabled: 1
+    path: Assets/Scenes/Level_2.unity
+    guid: 7b3c05e70a6c6f54db9475863676b25e
+  - enabled: 1
     path: Assets/Scenes/AlphaProgressCheck.unity
     guid: 03d535e78de2342b2b0e17331bb0e1f1
   - enabled: 0

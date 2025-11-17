@@ -75,6 +75,8 @@ public class RoomManager : MonoBehaviour
     // Set to true while the room is active (player in room and enemies spawning/ alive)
     public bool isRoomActive = false;
 
+    public GameObject winTrigger;
+
     // Delegate invoked when the room has been cleared
     public delegate void OnRoomClearedDelegate();
     public OnRoomClearedDelegate onRoomCleared;
@@ -247,6 +249,8 @@ public class RoomManager : MonoBehaviour
         if (enemySpawner != null) enemySpawner.OnSpawnerFinished -= OnSpawnerFinished;
 
         isRoomActive = false;
+        if(winTrigger != null)
+            winTrigger.SetActive(true);
         OpenDoors();
         onRoomCleared?.Invoke();
         // Notify game manager that this room is cleared

@@ -1,5 +1,4 @@
 using System;
-using UnityEditor.Playables;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -63,6 +62,17 @@ public class AbilityController : MonoBehaviour
             Destroy(defenseAbility);
         }
         defenseAbility = Instantiate(newAbility.abilityPrefab, transform);
+        pc.abilityIndex = (int)newAbility.abilityClass;
+        if(pc.weaponIndex >= 0 && pc.abilityIndex >= 0)
+            pc.combinationIndex = pc.weaponIndex + pc.abilityIndex * 4;
+        Debug.Log("ChangeDefenseAbility: New combination index: " + pc.combinationIndex);
+        // Current Ability/weapon Matrix: 
+        //       Pause  Dash
+        // FullAuto 0     4
+        // SemiAuto 1     5
+        // Shotgun  2     6
+        // Melee    3     7
+        //
         defenseAbilityIcon.BindToAbility(defenseAbility.GetComponent<BaseAbility>(), newAbility.cooldownIcon);
         defenseAbilityIcon.ResetAbilityUI();
         cachedDefenseAbility = newAbility;
