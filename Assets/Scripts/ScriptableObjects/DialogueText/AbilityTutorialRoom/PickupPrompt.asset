@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialogueNodes:
   - id: Start
-    text: 'come close to the ability and press <sprite name=f> to pick the ability
+    text: 'come close to the ability and press <sprite name="f"> to pick the ability
       up. '
     nextNodeIds:
     - null

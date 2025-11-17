@@ -7,9 +7,11 @@ public class AbilityController : MonoBehaviour
 {
     [SerializeField] private AbilityIcon attackingAbilityIcon;
     [SerializeField] private AbilityIcon defenseAbilityIcon;
-
-    [NonSerialized] private GameObject attackingAbility;
+    [SerializeField] private AbilityItem droppedAbilityPrefab;
+    [NonSerialized] private GameObject attackingAbility; 
     [NonSerialized] private GameObject defenseAbility;
+    [NonSerialized] private PlayerAbility cachedAttackingAbility;
+    [NonSerialized] private PlayerAbility cachedDefenseAbility;
     [NonSerialized] private PlayerController pc;
 
     private void Awake()
@@ -43,20 +45,31 @@ public class AbilityController : MonoBehaviour
     {
         if (attackingAbility!=null)
         {
+            AbilityItem droppedAbility = Instantiate(droppedAbilityPrefab, GetRandomPosAroundPlayer(), Quaternion.identity);
+            droppedAbility.InitAbility(cachedAttackingAbility);
             Destroy(attackingAbility);
         }
         attackingAbility = Instantiate(newAbility.abilityPrefab, transform);
         attackingAbilityIcon.BindToAbility(attackingAbility.GetComponent<BaseAbility>(), newAbility.cooldownIcon);
         attackingAbilityIcon.ResetAbilityUI();
+        cachedAttackingAbility = newAbility;
     }
     public void ChangeDefenseAbility(PlayerAbility newAbility)
     {
         if (defenseAbility!=null)
         {
+            AbilityItem droppedAbility = Instantiate(droppedAbilityPrefab, GetRandomPosAroundPlayer(), Quaternion.identity);
+            droppedAbility.InitAbility(cachedDefenseAbility);
             Destroy(defenseAbility);
         }
         defenseAbility = Instantiate(newAbility.abilityPrefab, transform);
         defenseAbilityIcon.BindToAbility(defenseAbility.GetComponent<BaseAbility>(), newAbility.cooldownIcon);
         defenseAbilityIcon.ResetAbilityUI();
+        cachedDefenseAbility = newAbility;
+    }
+    private Vector3 GetRandomPosAroundPlayer()
+    {
+        float angle = UnityEngine.Random.Range(0, 2 * Mathf.PI);
+        return transform.position+new Vector3(Mathf.Cos(angle), Mathf.Sin(angle), 0);
     }
 }

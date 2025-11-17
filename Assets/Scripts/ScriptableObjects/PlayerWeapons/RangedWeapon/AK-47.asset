@@ -9,13 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 804fed86bcfa30b4e809aedfac496426, type: 3}
+  m_Script: {fileID: 11500000, guid: 4b56f14fd2f199e41a5efbbf36549748, type: 3}
   m_Name: AK-47
   m_EditorClassIdentifier: 
   weaponName: AK-47
-  weaponIcon: {fileID: -5504308754007793267, guid: e5bbdb73bfdf7f2458a0e2bfb07bcae5, type: 3}
-  weaponTexture: {fileID: -5504308754007793267, guid: e5bbdb73bfdf7f2458a0e2bfb07bcae5, type: 3}
   weaponClass: 0
+  weaponIcon: {fileID: 7482667652216324306, guid: b64f79c2337ef4d2fb7e679aafd0c9b0, type: 3}
+  weaponPrefab: {fileID: 4025238268633047290, guid: 00a91289ce2b35c4aae21bc830ede7ff, type: 3}
   weaponBulletLifeTime: 2
   weaponBulletDamage: 2.5
   weaponBulletSpeed: 35

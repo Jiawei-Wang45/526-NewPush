@@ -9,13 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 804fed86bcfa30b4e809aedfac496426, type: 3}
+  m_Script: {fileID: 11500000, guid: 4b56f14fd2f199e41a5efbbf36549748, type: 3}
   m_Name: Uzi
   m_EditorClassIdentifier: 
   weaponName: Uzi
   weaponClass: 0
   weaponIcon: {fileID: 1080825480604336155, guid: 320b531c59b3b2a47aa9c134ec92f255, type: 3}
-  weaponTexture: {fileID: -1022324140503699289, guid: 9dc380348e531164d8d16b6f24ed7d49, type: 3}
+  weaponPrefab: {fileID: 8279915349353262451, guid: 718e4c51661fe5c4abffba89e0e2e58a, type: 3}
   weaponBulletLifeTime: 2
   weaponBulletDamage: 2
   weaponBulletSpeed: 35

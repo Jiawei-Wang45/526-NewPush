@@ -114,7 +114,7 @@ public class DefenseTutorialRoom : BaseRoom
         dialogSystem.gameObject.SetActive(true);
         dialogSystem.SetDialogueText(EndDialogue);
         dialogSystem.StartDialogue("Start");
-        FindFirstObjectByType<WeaponController>().ChangeWeapon(Pistol);  //equip pistol to let player can't kill multiple enemies during appointed time in the ability tutorial level 
+        //FindFirstObjectByType<WeaponController>().EquipNewWeapon(Pistol);  //equip pistol to let player can't kill multiple enemies during appointed time in the ability tutorial level 
 
     }
     public void RegisterBulletSpawner(BulletSpawner spawner)
@@ -126,11 +126,11 @@ public class DefenseTutorialRoom : BaseRoom
         switch (state)
         {
             case DialogueState.DashTutorialText:
-                FindFirstObjectByType<WeaponController>().ChangeWeapon(Pistol);
+                //FindFirstObjectByType<WeaponController>().EquipNewWeapon(Pistol);
                 currentDialogueText = DashReady;
                 break;
             case DialogueState.BounceTutorialText:
-                FindFirstObjectByType<WeaponController>().ChangeWeapon(Sword_NoDamage);
+                //FindFirstObjectByType<WeaponController>().EquipNewWeapon(Sword_NoDamage);
                 currentDialogueText = BounceReady;
                 break;
             case DialogueState.EndDialogue:

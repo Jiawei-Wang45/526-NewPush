@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialogueNodes:
   - id: Start
-    text: 'Use <sprite name=mr> with movement  at correct time to dodge the bullet
-      screen! '
+    text: Use <sprite name="1"> to change to pistol and press <sprite name="mr">with
+      movement  at correct time to dodge the bullet screen!
     nextNodeIds:
     - null
     choiceText: []

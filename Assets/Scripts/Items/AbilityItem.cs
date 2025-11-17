@@ -4,11 +4,10 @@ using UnityEngine;
 public class AbilityItem : BaseItem, IInteractable
 {
     [SerializeField] private PlayerAbility ability;
-    [SerializeField] private bool destroyAfterPick = true;
-    protected override void Awake()
+    public void InitAbility(PlayerAbility inAbility)
     {
-        base.Awake();
-        spriteRenderer.sprite = ability.menuIcon;
+        ability = inAbility;
+        spriteRenderer.sprite = ability.cooldownIcon;
     }
     public override void OnTriggerEnter2D(Collider2D collision)
     {
@@ -37,13 +36,10 @@ public class AbilityItem : BaseItem, IInteractable
                 FindFirstObjectByType<AbilityController>().ChangeAttackingAbility(ability);
                 break;
         }
-        if (destroyAfterPick)
-        {
-            if (pc.GetInteractObject() == (IInteractable)this)
-                pc.SetInteractObject(null);
-            Destroy(gameObject);
-        }
-        
+        if (pc.GetInteractObject() == (IInteractable)this)
+            pc.SetInteractObject(null);
+        Destroy(gameObject);
+
 
     }
 }

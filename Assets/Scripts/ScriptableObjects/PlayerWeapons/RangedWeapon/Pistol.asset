@@ -9,13 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 804fed86bcfa30b4e809aedfac496426, type: 3}
+  m_Script: {fileID: 11500000, guid: 4b56f14fd2f199e41a5efbbf36549748, type: 3}
   m_Name: Pistol
   m_EditorClassIdentifier: 
   weaponName: Pistol
   weaponClass: 1
   weaponIcon: {fileID: 8586885197115800619, guid: 320b531c59b3b2a47aa9c134ec92f255, type: 3}
-  weaponTexture: {fileID: -4924065256469680006, guid: 9dc380348e531164d8d16b6f24ed7d49, type: 3}
+  weaponPrefab: {fileID: 7919604197676167780, guid: d220da5ddb879724cada5185fff06a44, type: 3}
   weaponBulletLifeTime: 2
   weaponBulletDamage: 5
   weaponBulletSpeed: 20

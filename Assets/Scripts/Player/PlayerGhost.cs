@@ -15,7 +15,7 @@ public class PlayerGhost : MonoBehaviour
 
     public Transform ghostAim;
     public Transform firePoint;
-    public BaseWeapon currentWeapon;
+    public RangedWeapon currentWeapon;
     protected virtual void Start()
     {
         sr = GetComponent<SpriteRenderer>();

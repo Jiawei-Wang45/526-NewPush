@@ -6,5 +6,5 @@ public abstract class PlayerBaseWeapon : ScriptableObject
     public string weaponName;
     public WeaponClass weaponClass;
     public Sprite weaponIcon;
-    public Sprite weaponTexture;
+    public GameObject weaponPrefab;
 }

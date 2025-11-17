@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 5519824548886591554}
   - component: {fileID: 5410999687131202907}
-  - component: {fileID: 7595870220653779327}
   - component: {fileID: 6968304297242606790}
+  - component: {fileID: 6715687798865305910}
   m_Layer: 0
   m_Name: Pickup_Rifle
   m_TagString: Untagged
@@ -78,19 +78,32 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 3625043607559282579, guid: 19fb86013d8c24d6cb8410c0aadf30fa, type: 3}
+  m_Sprite: {fileID: -4029819251187114856, guid: 9dc380348e531164d8d16b6f24ed7d49, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 0.5}
+  m_Size: {x: 6.4, y: 6.4}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!58 &7595870220653779327
-CircleCollider2D:
+--- !u!114 &6968304297242606790
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4720619106038671498}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f46ac6e01d03edf44b9dff20501eead6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weapon: {fileID: 11400000, guid: aff8adcbab76eb9499dc3c427d3803d7, type: 2}
+--- !u!70 &6715687798865305910
+CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -123,19 +136,6 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_Radius: 1
---- !u!114 &6968304297242606790
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4720619106038671498}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f46ac6e01d03edf44b9dff20501eead6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  weapon: {fileID: 11400000, guid: aff8adcbab76eb9499dc3c427d3803d7, type: 2}
-  destroyAfterPick: 1
+  m_Offset: {x: 1.4726565, y: -0.031878293}
+  m_Size: {x: 3.5312483, y: 1.1852463}
+  m_Direction: 1

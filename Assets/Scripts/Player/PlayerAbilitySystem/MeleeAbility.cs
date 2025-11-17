@@ -14,23 +14,23 @@ public class MeleeAbility: MonoBehaviour,IWeapon
     [NonSerialized] private Animator animator;
     private bool isSlashing = false;
     private bool isReflecting = false;
-
+    readonly int SLASH_HASH = Animator.StringToHash("Slash");
+    readonly int REFLECT_HASH = Animator.StringToHash("Reflect");
     private void Awake()
     {
-        pc = GetComponentInParent<PlayerController>();
-        attackPoint= transform.Find("PlayerAim/AttackPoint");
-        animator = attackPoint.GetComponent<Animator>();
+        pc = GetComponentInParent<PlayerController>();       
         ENEMY_LAYER = LayerMask.NameToLayer("Enemy");
         ENEMYBULLET_LAYER = LayerMask.NameToLayer("EnemyBullet");
     }
-    public void ChangeWeapon(MeleeWeapon newWeapon)
+    public void ChangeWeapon(MeleeWeapon newWeapon, Transform inAttackPoint, Animator inAnimator)
     {
-        currentWeapon = newWeapon;       
-        animator.runtimeAnimatorController = newWeapon.animatorController;
+        currentWeapon = newWeapon;
+        attackPoint=inAttackPoint;
+        animator=inAnimator;
     }
     private IEnumerator SlashCoroutine()
     {
-        animator.SetTrigger("Slash");
+        animator.SetTrigger(SLASH_HASH);
         WieldEffect slashEffect =Instantiate(currentWeapon.slashEffectPrefab, attackPoint.position, attackPoint.rotation, transform);
         slashEffect.Init(WieldEffect.EffectType.Slash, currentWeapon.damage);
         yield return new WaitForSeconds(currentWeapon.slashCD);
@@ -39,12 +39,14 @@ public class MeleeAbility: MonoBehaviour,IWeapon
     private IEnumerator ReflectCoroutine()
     {
         //gameObject.layer = LayerMask.NameToLayer("Reflecting");
-        animator.SetTrigger("Reflect");
+        animator.SetTrigger(REFLECT_HASH);
         WieldEffect reflectEffect =Instantiate(currentWeapon.reflectEffectPrefab, attackPoint.position, attackPoint.rotation, transform);
         reflectEffect.Init(WieldEffect.EffectType.Reflect, 0);
         yield return new WaitForSeconds(currentWeapon.reflectCD);
         isReflecting = false;
     }
+
+
     #region IWeapon interface
     public void LeftMouseTriggered()
     {

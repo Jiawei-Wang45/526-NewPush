@@ -12,7 +12,8 @@ public class FireAbility: MonoBehaviour,IWeapon
     // firing variables
     [Header("Basic Firing parameters")]
     [NonSerialized] private Transform attackPoint;
-    public BaseWeapon currentWeapon;
+    [NonSerialized] private Animator animator;
+    public RangedWeapon currentWeapon;
     private bool isFiring = false;
     private bool isCoroutineRunning = false;
     public GameObject laser;
@@ -29,13 +30,14 @@ public class FireAbility: MonoBehaviour,IWeapon
     public GameObject handle;
     private float targetOffsetX;
 
+
+    readonly int FIRE_HASH = Animator.StringToHash("Fire");
     #region initialization
     private void Awake()
     {
         pc= GetComponent<PlayerController>();
         stats=GetComponent<PlayerStats>();
         dashAbility= GetComponent<DashAbility>();
-        attackPoint= transform.Find("PlayerAim/AttackPoint");
         targetOffsetX = backgroundBar.transform.localScale.x;
     }
     private void Start()
@@ -45,13 +47,13 @@ public class FireAbility: MonoBehaviour,IWeapon
     #endregion
 
     #region Update
-    private void Update()
-    {
-        if(currentWeapon != null && currentWeapon.weaponClass == WeaponClass.Melee && sword != null && !swordAttributes.Swinging())
-        {
-            sword.transform.rotation = attackPoint.rotation;
-        }
-    }
+    //private void Update()
+    //{
+    //    if(currentWeapon != null && currentWeapon.weaponClass == WeaponClass.Melee && sword != null && !swordAttributes.Swinging())
+    //    {
+    //        sword.transform.rotation = attackPoint.rotation;
+    //    }
+    //}
     #endregion
 
     #region Fire
@@ -108,7 +110,7 @@ public class FireAbility: MonoBehaviour,IWeapon
         }
         //OnFire?.Invoke();
         ConsumeAmmo(1);
-
+        animator.SetTrigger(FIRE_HASH);
         // Increment weapon use count for analytics
         if (GameManager.instance != null)
         {
@@ -231,7 +233,7 @@ public class FireAbility: MonoBehaviour,IWeapon
     #endregion Reload
 
     #region callback
-    public void InitializeWeapon(BaseWeapon weapon)
+    public void InitializeWeapon(RangedWeapon weapon)
     {
         currentWeapon = weapon;
         Debug.Log("currentWeapon: " + currentWeapon);
@@ -243,12 +245,13 @@ public class FireAbility: MonoBehaviour,IWeapon
             swordAttributes.InitSword(currentWeapon.weaponBulletDamage);
         }
     }
-    public void ChangeWeapon(BaseWeapon newWeapon)
+    public void ChangeWeapon(RangedWeapon newWeapon, Transform inAttackPoint, Animator inAnimator)
     {
         currentWeapon= newWeapon;
+        attackPoint = inAttackPoint;
+        animator = inAnimator;
         SetAmmoToMax();
     }
-
     //private void ResetStates()
     //{
     //    StopAllCoroutines();

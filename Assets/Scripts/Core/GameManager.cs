@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
 
     [Header("UI paramaters")]
     public bool isPlayerAlive = true;
-    public bool isPaused = false;
+    public bool IsPaused {  get; set; }
     public GameObject InGamePauseMenu;
     public GameObject InGameEndingMenu;
     public GameObject InGameWinMenu;
@@ -296,8 +296,8 @@ public class GameManager : MonoBehaviour
     //helper functions
     private void ChangePauseStat()
     {
-        isPaused = !isPaused;
-        if (isPaused)
+        IsPaused = !IsPaused;
+        if (IsPaused)
         {
             Time.timeScale = 0;
             InGamePauseMenu.SetActive(true);
@@ -318,7 +318,7 @@ public class GameManager : MonoBehaviour
 
     private void InitializePauseStat()
     {
-        isPaused = false;
+        IsPaused = false;
         Time.timeScale = 1;
     }
     #endregion AlphaProgressCheck button callback

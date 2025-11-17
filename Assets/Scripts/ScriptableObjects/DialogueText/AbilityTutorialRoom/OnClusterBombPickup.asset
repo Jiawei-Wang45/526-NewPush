@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialogueNodes:
   - id: Start
-    text: Use <sprite name=q> to trigger cluster bomb and try killing multiple enemies
-      in one shot.
+    text: Use <sprite name="q"> to trigger cluster bomb and try killing multiple
+      enemies in one shot.
     nextNodeIds:
     - null
     choiceText: []

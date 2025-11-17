@@ -25,7 +25,8 @@ MonoBehaviour:
     - OnBounceStart
     - null
   - id: 1
-    text: Ok, practice more
+    text: 'Ok, don''t forget to use <sprite name="2"> to equip sword again and press
+      <sprite name="mr"> to bounce the bullets back to where they came from. '
     nextNodeIds:
     - null
     choiceText: []

@@ -2,6 +2,7 @@ using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,7 +14,7 @@ public class DialogueSystem : MonoBehaviour
 
     //[NonSerialized] GameObject dialogFrame;
     [SerializeField] private DialogueText dialogueText;
-    [SerializeField] private float displayInterval = 0.1f;
+    [SerializeField] private float displayInterval = 0.02f;
     [SerializeField] private TextMeshProUGUI displayText;
     //[NonSerialized] int index;
     [NonSerialized] private bool isDisplaying = false;
@@ -26,14 +27,19 @@ public class DialogueSystem : MonoBehaviour
     public event DialogueEndDelegate OnDialogueEnd;
 
 
-
+    private void Awake()
+    {
+        idToIndex=new Dictionary<string, int>();
+    }
     private void OnEnable()
     {
-        Time.timeScale = 0.0f;
+        Time.timeScale = 0;
+        GameManager.instance.IsPaused = true;
     }
     private void OnDisable()
     {
-        Time.timeScale = 1.0f;
+        Time.timeScale = 1;
+        GameManager.instance.IsPaused = false;
     }
     public void SetDialogueText(DialogueText InDialogueText)
     {
@@ -46,7 +52,7 @@ public class DialogueSystem : MonoBehaviour
     public void Initialize()
     {
 
-        idToIndex = new Dictionary<string, int>();
+        idToIndex.Clear();
         for (int i = 0; i < dialogueText.dialogueNodes.Count; i++)
         {
             DialogueNode node = dialogueText.dialogueNodes[i];
@@ -136,9 +142,26 @@ public class DialogueSystem : MonoBehaviour
     private IEnumerator DisplayTextCoroutine()
     {
         displayText.text = "";
+        StringBuilder sb = new StringBuilder();
         for (int i=0;i< currentNode.text.Length;i++)
         {
-            displayText.text += currentNode.text[i];
+            if (currentNode.text[i]=='<')
+            {
+                for (int j=i;j< currentNode.text.Length;j++)
+                {
+                    sb.Append(currentNode.text[j]);
+                    if (currentNode.text[j] == '>')
+                    {
+                        i = j;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                sb.Append(currentNode.text[i]);
+            }
+            displayText.SetText(sb);
             yield return new WaitForSecondsRealtime(displayInterval);
         }
         PostProcess();

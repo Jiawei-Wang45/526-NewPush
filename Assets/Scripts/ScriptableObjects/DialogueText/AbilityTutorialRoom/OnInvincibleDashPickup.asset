@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialogueNodes:
   - id: Start
-    text: 'Use <sprite name=e> to trigger invincible dash. Just like the name described,
+    text: 'Use <sprite name="e"> to trigger invincible dash. Just like the name described,
       you will be invinvible during the dash. '
     nextNodeIds:
     - 1
@@ -22,7 +22,7 @@ MonoBehaviour:
     choiceEventKeys: []
   - id: 1
     text: 'Practice several times. Once you are ready, come close to me and press
-      <sprite name=f>. I have a final task for you! '
+      <sprite name="f">. I have a final task for you! '
     nextNodeIds:
     - null
     choiceText: []

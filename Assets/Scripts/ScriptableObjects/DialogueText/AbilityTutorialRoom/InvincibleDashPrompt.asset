@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialogueNodes:
   - id: Start
-    text: Use <sprite name=e> to trigger invincible dash and come across the bullet
+    text: Use <sprite name="e"> to trigger invincible dash and come across the bullet
       screen.
     nextNodeIds:
     - null

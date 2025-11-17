@@ -3260,8 +3260,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 634902adc8d773d40bab1ff3c1f8f854, type: 2}
   - {fileID: 11400000, guid: 22bb25fcb36b0544caee30c13b273571, type: 2}
   - {fileID: 11400000, guid: aff8adcbab76eb9499dc3c427d3803d7, type: 2}
+  - {fileID: 11400000, guid: 58b4754d650ed1f49aa71188b8074f7e, type: 2}
   - {fileID: 11400000, guid: a749b41c533d51340886455ac56086f0, type: 2}
-  - {fileID: 11400000, guid: 84959b05055523a47974f458eaa43b2d, type: 2}
   attackingAbilities:
   - {fileID: 11400000, guid: cc9741d2ac067fd4aa962cdfd91a8c6a, type: 2}
   defenseAbilities:

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialogueNodes:
   - id: Start
-    text: Nice! Can't wait to have a try? Use <sprite name=ml> to trigger firing.
+    text: Nice! Can't wait to have a try? Use <sprite name="ml"> to trigger firing.
     nextNodeIds:
     - 1
     choiceText: []

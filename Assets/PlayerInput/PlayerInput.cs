@@ -172,6 +172,24 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ChangeWeapon"",
+                    ""type"": ""Value"",
+                    ""id"": ""da97a82f-befb-4a50-89a7-21859de7f4d0"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""DropWeapon"",
+                    ""type"": ""Button"",
+                    ""id"": ""6372d79b-2183-4cb4-a3b8-e5081de2f0ca"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": ""Hold(duration=1)"",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -317,6 +335,83 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""action"": ""RightMouse"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""25168543-cea6-494b-b1f6-ff47bad0f7b8"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": ""Scale(factor=0)"",
+                    ""groups"": """",
+                    ""action"": ""ChangeWeapon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""51616846-08fa-4965-b154-b09a5ee7d867"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": ""Scale"",
+                    ""groups"": """",
+                    ""action"": ""ChangeWeapon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0aadcee3-78db-4957-bfac-2b1912bfb256"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": ""Scale(factor=2)"",
+                    ""groups"": """",
+                    ""action"": ""ChangeWeapon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3a4e644f-00bb-4561-bdb3-81b93ebb49fc"",
+                    ""path"": ""<Keyboard>/4"",
+                    ""interactions"": """",
+                    ""processors"": ""Scale(factor=3)"",
+                    ""groups"": """",
+                    ""action"": ""ChangeWeapon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a059239a-5407-46d0-830d-99aa15975205"",
+                    ""path"": ""<Keyboard>/5"",
+                    ""interactions"": """",
+                    ""processors"": ""Scale(factor=4)"",
+                    ""groups"": """",
+                    ""action"": ""ChangeWeapon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2c1bc99d-af20-441c-a88b-edb1b9b59aeb"",
+                    ""path"": ""<Keyboard>/6"",
+                    ""interactions"": """",
+                    ""processors"": ""Scale(factor=5)"",
+                    ""groups"": """",
+                    ""action"": ""ChangeWeapon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d5440cf5-1075-4465-92bf-73777eb6824d"",
+                    ""path"": ""<Keyboard>/g"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DropWeapon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -334,6 +429,8 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         m_Default_Interact = m_Default.FindAction("Interact", throwIfNotFound: true);
         m_Default_LeftMouse = m_Default.FindAction("LeftMouse", throwIfNotFound: true);
         m_Default_RightMouse = m_Default.FindAction("RightMouse", throwIfNotFound: true);
+        m_Default_ChangeWeapon = m_Default.FindAction("ChangeWeapon", throwIfNotFound: true);
+        m_Default_DropWeapon = m_Default.FindAction("DropWeapon", throwIfNotFound: true);
     }
 
     ~@PlayerInput()
@@ -423,6 +520,8 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Default_Interact;
     private readonly InputAction m_Default_LeftMouse;
     private readonly InputAction m_Default_RightMouse;
+    private readonly InputAction m_Default_ChangeWeapon;
+    private readonly InputAction m_Default_DropWeapon;
     /// <summary>
     /// Provides access to input actions defined in input action map "Default".
     /// </summary>
@@ -470,6 +569,14 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Default/RightMouse".
         /// </summary>
         public InputAction @RightMouse => m_Wrapper.m_Default_RightMouse;
+        /// <summary>
+        /// Provides access to the underlying input action "Default/ChangeWeapon".
+        /// </summary>
+        public InputAction @ChangeWeapon => m_Wrapper.m_Default_ChangeWeapon;
+        /// <summary>
+        /// Provides access to the underlying input action "Default/DropWeapon".
+        /// </summary>
+        public InputAction @DropWeapon => m_Wrapper.m_Default_DropWeapon;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -523,6 +630,12 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @RightMouse.started += instance.OnRightMouse;
             @RightMouse.performed += instance.OnRightMouse;
             @RightMouse.canceled += instance.OnRightMouse;
+            @ChangeWeapon.started += instance.OnChangeWeapon;
+            @ChangeWeapon.performed += instance.OnChangeWeapon;
+            @ChangeWeapon.canceled += instance.OnChangeWeapon;
+            @DropWeapon.started += instance.OnDropWeapon;
+            @DropWeapon.performed += instance.OnDropWeapon;
+            @DropWeapon.canceled += instance.OnDropWeapon;
         }
 
         /// <summary>
@@ -561,6 +674,12 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @RightMouse.started -= instance.OnRightMouse;
             @RightMouse.performed -= instance.OnRightMouse;
             @RightMouse.canceled -= instance.OnRightMouse;
+            @ChangeWeapon.started -= instance.OnChangeWeapon;
+            @ChangeWeapon.performed -= instance.OnChangeWeapon;
+            @ChangeWeapon.canceled -= instance.OnChangeWeapon;
+            @DropWeapon.started -= instance.OnDropWeapon;
+            @DropWeapon.performed -= instance.OnDropWeapon;
+            @DropWeapon.canceled -= instance.OnDropWeapon;
         }
 
         /// <summary>
@@ -664,5 +783,19 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnRightMouse(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "ChangeWeapon" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnChangeWeapon(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "DropWeapon" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnDropWeapon(InputAction.CallbackContext context);
     }
 }

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialogueNodes:
   - id: Start
-    text: Come close to the weapon and press <sprite name=f> to equip it.
+    text: Come close to the weapon and press <sprite name="f"> to equip it.
     nextNodeIds:
     - null
     choiceText: []

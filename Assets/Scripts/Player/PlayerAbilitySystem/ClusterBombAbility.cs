@@ -10,7 +10,7 @@ public class ClusterBombAbility : BaseAbility
     {
         base.Awake();
         abilityType = AbilityType.Attacking;
-        attackPoint = pc.transform.Find("PlayerAim/AttackPoint");
+        attackPoint = pc.transform.Find("PlayerAim/WeaponHolder");
     }
     //private void Start()
     //{

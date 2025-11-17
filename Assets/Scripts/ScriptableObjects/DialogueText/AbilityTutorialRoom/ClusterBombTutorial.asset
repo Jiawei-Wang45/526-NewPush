@@ -21,7 +21,7 @@ MonoBehaviour:
     choiceText: []
     choiceEventKeys: []
   - id: 1
-    text: 'Just like the dropped weapon, come close to it and press <sprite name=f>
+    text: 'Just like the dropped weapon, come close to it and press <sprite name="f">
       to pick it up. '
     nextNodeIds:
     - 2
@@ -42,7 +42,7 @@ MonoBehaviour:
     choiceEventKeys: []
   - id: 4
     text: 'Let''s just try one attacking ability first. I''ll spawn a cluster bomb
-      ability. press <sprite name=f> to pick it up  '
+      ability. press <sprite name="f"> to pick it up  '
     nextNodeIds:
     - null
     choiceText: []

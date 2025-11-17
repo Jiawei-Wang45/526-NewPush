@@ -9,6 +9,5 @@ public class MeleeWeapon : PlayerBaseWeapon
     public float reflectCD;
     public WieldEffect slashEffectPrefab;
     public WieldEffect reflectEffectPrefab;
-    public RuntimeAnimatorController animatorController;
 
 }

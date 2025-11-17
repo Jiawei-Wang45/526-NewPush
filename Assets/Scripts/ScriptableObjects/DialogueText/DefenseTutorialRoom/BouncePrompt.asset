@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialogueNodes:
   - id: Start
-    text: Use <sprite name=mr> at correct time to bounce the bullet screen!
+    text: 'Use <sprite name="2"> to change to the sword and press <sprite name="mr">
+      at correct time to bounce the bullet back! '
     nextNodeIds:
     - null
     choiceText: []

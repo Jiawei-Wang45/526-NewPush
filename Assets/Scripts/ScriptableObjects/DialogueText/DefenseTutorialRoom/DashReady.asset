@@ -31,14 +31,15 @@ MonoBehaviour:
     choiceText: []
     choiceEventKeys: []
   - id: 2
-    text: You need to use <sprite name=mr> to come across the bullet screen and reach
-      another side. Good luck!
+    text: You need to use <sprite name="mr"> to come across the bullet screen and
+      reach another side. Good luck!
     nextNodeIds:
     - null
     choiceText: []
     choiceEventKeys: []
   - id: 3
-    text: 'Ok, practice more. '
+    text: 'Ok, don''t forget to use <sprite name="1"> to change to pistol and press
+      <sprite name="mr"> while you are moving to dash. '
     nextNodeIds:
     - null
     choiceText: []

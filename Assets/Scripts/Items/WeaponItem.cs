@@ -4,12 +4,12 @@ using UnityEngine;
 public class WeaponItem : BaseItem, IInteractable
 {
     [SerializeField] PlayerBaseWeapon weapon;
-    [SerializeField] private bool destroyAfterPick = true;
 
-    protected override void Awake()
+    public void InitWeapon(PlayerBaseWeapon inWeapon,Sprite inSprite)
     {
-        base.Awake();
-        spriteRenderer.sprite = weapon.weaponTexture;
+        weapon= inWeapon;
+        spriteRenderer.sprite= inSprite;
+
     }
     public override void OnTriggerEnter2D(Collider2D collision)
     {
@@ -28,13 +28,11 @@ public class WeaponItem : BaseItem, IInteractable
     }
     public virtual void Interact()
     {
-        FindFirstObjectByType<WeaponController>().ChangeWeapon(weapon);
-        if (destroyAfterPick )
+        if (FindFirstObjectByType<WeaponController>().EquipNewWeapon(weapon))
         {
             if (pc.GetInteractObject() == (IInteractable)this)
                 pc.SetInteractObject(null);
             Destroy(gameObject);
-        }
-        
+        }      
     }
 }

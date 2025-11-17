@@ -27,14 +27,15 @@ MonoBehaviour:
     choiceText: []
     choiceEventKeys: []
   - id: 2
-    text: 'But instead, press <sprite name=mr> can let you bounce the bullets back
+    text: 'But instead, press <sprite name="mr"> can let you bounce the bullets back
       to where it came. '
     nextNodeIds:
     - 3
     choiceText: []
     choiceEventKeys: []
   - id: 3
-    text: 'Next, I will equip you with a sword. You can try several times in place. '
+    text: Next, use <sprite name="2"> to change back to the sword. You can try several
+      times in place.
     nextNodeIds:
     - 4
     choiceText: []
@@ -47,8 +48,8 @@ MonoBehaviour:
     choiceText: []
     choiceEventKeys: []
   - id: 5
-    text: 'Try using <sprite name=mr> to bounce bullets back instead of killing it
-      directly. '
+    text: 'Try using <sprite name="mr"> to bounce bullets back instead of killing
+      it directly. '
     nextNodeIds:
     - null
     choiceText: []

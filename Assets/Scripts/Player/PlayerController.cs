@@ -85,10 +85,6 @@ public class PlayerController : MonoBehaviour, IDamagable
         stats.ChangeHealth(stats.maxHealth);
         initialPosition = transform.position;
     }
-    public void OnWeaponChanged(PlayerBaseWeapon newWeapon)
-    {
-        weaponController.ChangeWeapon(newWeapon);
-    }
     public void SetInteractObject(IInteractable InObject)
     {
         InteractObject = InObject;

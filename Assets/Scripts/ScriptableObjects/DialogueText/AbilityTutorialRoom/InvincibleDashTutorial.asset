@@ -21,7 +21,7 @@ MonoBehaviour:
     choiceEventKeys: []
   - id: 1
     text: ' And next I will spawn a defense type of ability for you. press <sprite
-      name=f> to pick it up. '
+      name="f"> to pick it up. '
     nextNodeIds:
     - null
     choiceText: []

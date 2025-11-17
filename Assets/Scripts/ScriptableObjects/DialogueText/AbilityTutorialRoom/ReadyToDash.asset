@@ -32,7 +32,7 @@ MonoBehaviour:
     choiceEventKeys: []
   - id: 2
     text: 'This time your dash ability is not qualified to do that since the bullets
-      are quite dense. Use <sprite name=e> instead. '
+      are quite dense. Use <sprite name="e"> instead. '
     nextNodeIds:
     - null
     choiceText: []

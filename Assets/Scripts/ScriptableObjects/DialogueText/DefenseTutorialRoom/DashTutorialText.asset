@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialogueNodes:
   - id: Start
-    text: 'Have you ever noticed your <sprite name=mr> is also valid? If not, don''t
+    text: 'Have you ever noticed your <sprite name="mr"> is also valid? If not, don''t
       worry. '
     nextNodeIds:
     - 1
@@ -54,7 +54,8 @@ MonoBehaviour:
     choiceText: []
     choiceEventKeys: []
   - id: 6
-    text: 'Next, I will equip you with a pistol.  You can try several times in place. '
+    text: 'Next, Press <sprite name="1"> to requip pistol and try several times in
+      place.  '
     nextNodeIds:
     - 7
     choiceText: []

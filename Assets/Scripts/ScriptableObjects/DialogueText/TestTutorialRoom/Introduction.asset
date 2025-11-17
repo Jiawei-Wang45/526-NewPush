@@ -21,7 +21,21 @@ MonoBehaviour:
     choiceText: []
     choiceEventKeys: []
   - id: 1
-    text: Of course, three dummies are listed above. Feel free to rip them!
+    text: 'In case you don''t know, you can long press <sprite name="g"> to drop
+      the weapons you don''t like. '
+    nextNodeIds:
+    - 2
+    choiceText: []
+    choiceEventKeys: []
+  - id: 2
+    text: 'You can equip at most 6 weapons at the same time, you need to make a trade
+      off. '
+    nextNodeIds:
+    - 3
+    choiceText: []
+    choiceEventKeys: []
+  - id: 3
+    text: 'Of course, three dummies are listed above. Feel free to rip them! '
     nextNodeIds:
     - null
     choiceText: []

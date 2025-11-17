@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 7748701384781170087}
   - component: {fileID: 6449820744539475403}
-  - component: {fileID: 5425260630138984895}
   - component: {fileID: 5404284758929336859}
+  - component: {fileID: 4249544010095952522}
   m_Layer: 0
   m_Name: Pickup_Sword_Tutorial
   m_TagString: Untagged
@@ -78,7 +78,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -5504308754007793267, guid: e5bbdb73bfdf7f2458a0e2bfb07bcae5, type: 3}
+  m_Sprite: {fileID: 946132551445127754, guid: 9dc380348e531164d8d16b6f24ed7d49, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -89,8 +89,22 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!58 &5425260630138984895
-CircleCollider2D:
+--- !u!114 &5404284758929336859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6065641361644402687}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91503ce9443c20745aac1f5eccabfb96, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weapon: {fileID: 11400000, guid: 634902adc8d773d40bab1ff3c1f8f854, type: 2}
+  isFirstWeapon: 0
+--- !u!70 &4249544010095952522
+CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -123,19 +137,6 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_Radius: 1
---- !u!114 &5404284758929336859
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6065641361644402687}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91503ce9443c20745aac1f5eccabfb96, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  weapon: {fileID: 11400000, guid: 634902adc8d773d40bab1ff3c1f8f854, type: 2}
-  isFirstWeapon: 0
+  m_Offset: {x: 1.7, y: -0.01566371}
+  m_Size: {x: 3.400001, y: 1.6433678}
+  m_Direction: 1

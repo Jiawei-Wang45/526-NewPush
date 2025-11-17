@@ -28,7 +28,7 @@ MonoBehaviour:
     choiceText: []
     choiceEventKeys: []
   - id: 2
-    text: 'I will spawn a sword for you. Come close to it and press <sprite name=f>
+    text: 'I will spawn a sword for you. Come close to it and press <sprite name="f">
       to equip it. '
     nextNodeIds:
     - null

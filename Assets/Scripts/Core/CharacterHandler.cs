@@ -25,7 +25,7 @@ public class CharacterHandler: MonoBehaviour
             WeaponController weaponController = FindFirstObjectByType<WeaponController>();
             if (weaponController)
             {
-                weaponController.ChangeWeapon(CharacterConfigHolder.instance.weapon);
+                weaponController.EquipNewWeapon(CharacterConfigHolder.instance.weapon);
             }
             AbilityController abilityController = FindFirstObjectByType<AbilityController>();
             if (abilityController)
