@@ -34,6 +34,7 @@ public class GameManager : MonoBehaviour
     private bool[] roomClearedStatus;
     public float levelStartTime;
     private float roomStartTime;
+    public int selectedLevel = 1; // Selected level for analytics
     
     // Graph structure from dungeon generator (for minimap and navigation)
     // Maps room index to list of connected room indices
@@ -88,7 +89,7 @@ public class GameManager : MonoBehaviour
             string attackingAbilities = CharacterConfigHolder.instance != null && CharacterConfigHolder.instance.attackingAbility != null ? CharacterConfigHolder.instance.attackingAbility.abilityName : "Unknown";
             string defenseAbilities = CharacterConfigHolder.instance != null && CharacterConfigHolder.instance.defenseAbility != null ? CharacterConfigHolder.instance.defenseAbility.abilityName : "Unknown";
 
-            sendToGoogle.SendAbilityData(weaponType, attackingAbilities, defenseAbilities);
+            sendToGoogle.SendAbilityData(weaponType, attackingAbilities, defenseAbilities, selectedLevel);
             hasSentAbilityData = true;
         }
     }
@@ -110,14 +111,14 @@ public class GameManager : MonoBehaviour
             if (sendToGoogle != null && lastSentTimerRoom != roomNumber)
             {
                 float roomTime = Time.time - roomStartTime;
-                sendToGoogle.SendTimerData(roomTime, false, roomNumber);
+                sendToGoogle.SendTimerData(roomTime, false, roomNumber, selectedLevel);
                 lastSentTimerRoom = roomNumber;
             }
 
             // Send ability usage data on game over (death) only once
             if (sendToGoogle != null && !hasSentAbilityUsage)
             {
-                sendToGoogle.SendAbilityUsageData(weaponUseCount, attackingAbilitiesUseCount, defenseAbilitiesUseCount, totalSurvivalTime, false, roomNumber);
+                sendToGoogle.SendAbilityUsageData(weaponUseCount, attackingAbilitiesUseCount, defenseAbilitiesUseCount, totalSurvivalTime, false, roomNumber, selectedLevel);
                 hasSentAbilityUsage = true;
             }
         }
@@ -149,8 +150,12 @@ public class GameManager : MonoBehaviour
             levelStartTime = Time.time;
             pc.playerInput.Default.Escape.performed += OnEscapeTriggered;
             sendToGoogle = FindFirstObjectByType<SendToGoogle>();
+            // Set selected level from config
+            selectedLevel = CharacterConfigHolder.instance.selectedLevelIndex + 1;
             // Start coroutine to update minimap when player enters rooms
             StartCoroutine(UpdateMinimapOnRoomEnter());
+            // Send ability data at the start of the level
+            SendAbilityData();
         }
         else
         {
@@ -295,7 +300,7 @@ public class GameManager : MonoBehaviour
         // Send timer data only for rooms 1 and above (skip room0)
         if (sendToGoogle != null && clearedRoomCount >= 1 && lastSentTimerRoom != clearedRoomCount)
         {
-            sendToGoogle.SendTimerData(roomTime, true, clearedRoomCount);
+            sendToGoogle.SendTimerData(roomTime, true, clearedRoomCount, selectedLevel);
             lastSentTimerRoom = clearedRoomCount;
         }
 
@@ -435,7 +440,7 @@ public class GameManager : MonoBehaviour
             // Send ability usage data on win only once
             if (sendToGoogle != null && !hasSentAbilityUsage)
             {
-                sendToGoogle.SendAbilityUsageData(weaponUseCount, attackingAbilitiesUseCount, defenseAbilitiesUseCount, completionTime, true, roomNumber);
+                sendToGoogle.SendAbilityUsageData(weaponUseCount, attackingAbilitiesUseCount, defenseAbilitiesUseCount, completionTime, true, roomNumber, selectedLevel);
                 hasSentAbilityUsage = true;
             }
         }

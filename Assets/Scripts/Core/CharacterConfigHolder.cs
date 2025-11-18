@@ -7,6 +7,7 @@ public class CharacterConfigHolder : MonoBehaviour
     public PlayerBaseWeapon weapon;
     public PlayerAbility attackingAbility;
     public PlayerAbility defenseAbility;
+    public int selectedLevelIndex = 0;
     [NonSerialized] private bool isConfigured = false;
     private void Awake()
     {

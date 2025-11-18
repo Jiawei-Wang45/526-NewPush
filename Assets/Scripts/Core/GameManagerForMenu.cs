@@ -198,6 +198,7 @@ public class GameManagerForMenu : MonoBehaviour
         CharacterConfigHolder.instance.weapon = weapons[weaponIndex];
         CharacterConfigHolder.instance.attackingAbility = attackingAbilities[attackingAbilityIndex];
         CharacterConfigHolder.instance.defenseAbility= defenseAbilities[defenseAbilityIndex];
+        CharacterConfigHolder.instance.selectedLevelIndex = selectedLevelIndex;
         CharacterConfigHolder.instance.SetConfigured(true);
     }
     #endregion

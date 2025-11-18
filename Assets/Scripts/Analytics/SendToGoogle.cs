@@ -14,14 +14,17 @@ public class SendToGoogle : MonoBehaviour
     private const string FIELD_TIME = "entry.1373821541"; // Time
     private const string FIELD_PASSED = "entry.1713529862"; // Passed (boolean)
     private const string FIELD_ROOM_NUMBER = "entry.686191148"; // Room number
+    private const string FIELD_LEVEL_TIMER = "entry.402577003"; // Level for timer
     private const string FIELD_WEAPON_COUNT = "entry.652169316"; // Weapon count
     private const string FIELD_ATTACKING_ABILITIES_COUNT = "entry.108973933"; // Attacking abilities count
     private const string FIELD_DEFENSE_ABILITIES_COUNT = "entry.676975950"; // Defense abilities count
     private const string FIELD_SURVIVE_TIME = "entry.1373821541"; // Survive time
     private const string FIELD_WIN = "entry.1713529862"; // Win (boolean)
+    private const string FIELD_LEVEL_ABILITY_USAGE = "entry.471743869"; // Level for ability usage
     private const string FIELD_WEAPON_TYPE = "entry.652169316"; // Weapon type
     private const string FIELD_ATTACKING_ABILITIES = "entry.108973933"; // Attacking abilities
     private const string FIELD_DEFENSE_ABILITIES = "entry.676975950"; // Defense abilities
+    private const string FIELD_LEVEL_ABILITY = "entry.503900301"; // Level for ability
 
     private float _startTime;
     [Header("Networking")]
@@ -52,20 +55,21 @@ public class SendToGoogle : MonoBehaviour
     }
 
     // Send timer data
-    public void SendTimerData(float roomTime, bool passed, int roomNumber)
+    public void SendTimerData(float roomTime, bool passed, int roomNumber, int level)
     {
         string session = _sessionID;
         string sessionStr = session;
         string timeStr = roomTime.ToString("F3");
         string passedStr = passed.ToString().ToLower();
         string roomStr = roomNumber.ToString();
+        string levelStr = level.ToString();
 
-        Debug.Log($"[SendToGoogle] SendTimerData -> session:{sessionStr} time:{timeStr} passed:{passedStr} room:{roomStr}");
-        StartCoroutine(PostTimer(sessionStr, timeStr, passedStr, roomStr));
+        Debug.Log($"[SendToGoogle] SendTimerData -> session:{sessionStr} time:{timeStr} passed:{passedStr} room:{roomStr} level:{levelStr}");
+        StartCoroutine(PostTimer(sessionStr, timeStr, passedStr, roomStr, levelStr));
     }
 
     // Send ability usage data
-    public void SendAbilityUsageData(int weaponCount, int attackingAbilitiesCount, int defenseAbilitiesCount, float surviveTime, bool win, int roomNumber)
+    public void SendAbilityUsageData(int weaponCount, int attackingAbilitiesCount, int defenseAbilitiesCount, float surviveTime, bool win, int roomNumber, int level)
     {
         string session = _sessionID;
         string sessionStr = session;
@@ -75,22 +79,24 @@ public class SendToGoogle : MonoBehaviour
         string surviveTimeStr = surviveTime.ToString("F3");
         string winStr = win.ToString().ToLower();
         string roomStr = roomNumber.ToString();
+        string levelStr = level.ToString();
 
-        Debug.Log($"[SendToGoogle] SendAbilityUsageData -> session:{sessionStr} weaponCount:{weaponCountStr} attacking:{attackingCountStr} defense:{defenseCountStr} surviveTime:{surviveTimeStr} win:{winStr} room:{roomStr}");
-        StartCoroutine(PostAbilityUsage(sessionStr, weaponCountStr, attackingCountStr, defenseCountStr, surviveTimeStr, winStr, roomStr));
+        Debug.Log($"[SendToGoogle] SendAbilityUsageData -> session:{sessionStr} weaponCount:{weaponCountStr} attacking:{attackingCountStr} defense:{defenseCountStr} surviveTime:{surviveTimeStr} win:{winStr} room:{roomStr} level:{levelStr}");
+        StartCoroutine(PostAbilityUsage(sessionStr, weaponCountStr, attackingCountStr, defenseCountStr, surviveTimeStr, winStr, roomStr, levelStr));
     }
 
     // Send ability data
-    public void SendAbilityData(string weaponType, string attackingAbilities, string defenseAbilities)
+    public void SendAbilityData(string weaponType, string attackingAbilities, string defenseAbilities, int level)
     {
         string session = _sessionID;
         string sessionStr = session;
+        string levelStr = level.ToString();
 
-        Debug.Log($"[SendToGoogle] SendAbilityData -> session:{sessionStr} weaponType:{weaponType} attacking:{attackingAbilities} defense:{defenseAbilities}");
-        StartCoroutine(PostAbility(sessionStr, weaponType, attackingAbilities, defenseAbilities));
+        Debug.Log($"[SendToGoogle] SendAbilityData -> session:{sessionStr} weaponType:{weaponType} attacking:{attackingAbilities} defense:{defenseAbilities} level:{levelStr}");
+        StartCoroutine(PostAbility(sessionStr, weaponType, attackingAbilities, defenseAbilities, levelStr));
     }
 
-    private IEnumerator PostTimer(string sessionID, string time, string passed, string roomNumber)
+    private IEnumerator PostTimer(string sessionID, string time, string passed, string roomNumber, string level)
     {
         WWWForm form = new WWWForm();
 
@@ -98,9 +104,10 @@ public class SendToGoogle : MonoBehaviour
         form.AddField(FIELD_TIME, time);
         form.AddField(FIELD_PASSED, passed);
         form.AddField(FIELD_ROOM_NUMBER, roomNumber);
+        form.AddField(FIELD_LEVEL_TIMER, level);
 
         // Log form contents
-        Debug.Log($"[SendToGoogle] Posting timer to {TimerURL} with fields: {FIELD_SESSION}={sessionID}, {FIELD_TIME}={time}, {FIELD_PASSED}={passed}, {FIELD_ROOM_NUMBER}={roomNumber}");
+        Debug.Log($"[SendToGoogle] Posting timer to {TimerURL} with fields: {FIELD_SESSION}={sessionID}, {FIELD_TIME}={time}, {FIELD_PASSED}={passed}, {FIELD_ROOM_NUMBER}={roomNumber}, {FIELD_LEVEL_TIMER}={level}");
 
         using (UnityWebRequest www = UnityWebRequest.Post(TimerURL, form))
         {
@@ -126,7 +133,7 @@ public class SendToGoogle : MonoBehaviour
         }
     }
 
-    private IEnumerator PostAbilityUsage(string sessionID, string weaponCount, string attackingCount, string defenseCount, string surviveTime, string win, string roomNumber)
+    private IEnumerator PostAbilityUsage(string sessionID, string weaponCount, string attackingCount, string defenseCount, string surviveTime, string win, string roomNumber, string level)
     {
         WWWForm form = new WWWForm();
 
@@ -137,9 +144,10 @@ public class SendToGoogle : MonoBehaviour
         form.AddField(FIELD_SURVIVE_TIME, surviveTime);
         form.AddField(FIELD_WIN, win);
         form.AddField(FIELD_ROOM_NUMBER, roomNumber);
+        form.AddField(FIELD_LEVEL_ABILITY_USAGE, level);
 
         // Log form contents
-        Debug.Log($"[SendToGoogle] Posting ability usage to {AbilityUsageURL} with fields: {FIELD_SESSION}={sessionID}, {FIELD_WEAPON_COUNT}={weaponCount}, {FIELD_ATTACKING_ABILITIES_COUNT}={attackingCount}, {FIELD_DEFENSE_ABILITIES_COUNT}={defenseCount}, {FIELD_SURVIVE_TIME}={surviveTime}, {FIELD_WIN}={win}, {FIELD_ROOM_NUMBER}={roomNumber}");
+        Debug.Log($"[SendToGoogle] Posting ability usage to {AbilityUsageURL} with fields: {FIELD_SESSION}={sessionID}, {FIELD_WEAPON_COUNT}={weaponCount}, {FIELD_ATTACKING_ABILITIES_COUNT}={attackingCount}, {FIELD_DEFENSE_ABILITIES_COUNT}={defenseCount}, {FIELD_SURVIVE_TIME}={surviveTime}, {FIELD_WIN}={win}, {FIELD_ROOM_NUMBER}={roomNumber}, {FIELD_LEVEL_ABILITY_USAGE}={level}");
 
         using (UnityWebRequest www = UnityWebRequest.Post(AbilityUsageURL, form))
         {
@@ -165,7 +173,7 @@ public class SendToGoogle : MonoBehaviour
         }
     }
 
-    private IEnumerator PostAbility(string sessionID, string weaponType, string attackingAbilities, string defenseAbilities)
+    private IEnumerator PostAbility(string sessionID, string weaponType, string attackingAbilities, string defenseAbilities, string level)
     {
         WWWForm form = new WWWForm();
 
@@ -173,9 +181,10 @@ public class SendToGoogle : MonoBehaviour
         form.AddField(FIELD_WEAPON_TYPE, weaponType);
         form.AddField(FIELD_ATTACKING_ABILITIES, attackingAbilities);
         form.AddField(FIELD_DEFENSE_ABILITIES, defenseAbilities);
+        form.AddField(FIELD_LEVEL_ABILITY, level);
 
         // Log form contents
-        Debug.Log($"[SendToGoogle] Posting ability to {AbilityURL} with fields: {FIELD_SESSION}={sessionID}, {FIELD_WEAPON_TYPE}={weaponType}, {FIELD_ATTACKING_ABILITIES}={attackingAbilities}, {FIELD_DEFENSE_ABILITIES}={defenseAbilities}");
+        Debug.Log($"[SendToGoogle] Posting ability to {AbilityURL} with fields: {FIELD_SESSION}={sessionID}, {FIELD_WEAPON_TYPE}={weaponType}, {FIELD_ATTACKING_ABILITIES}={attackingAbilities}, {FIELD_DEFENSE_ABILITIES}={defenseAbilities}, {FIELD_LEVEL_ABILITY}={level}");
 
         using (UnityWebRequest www = UnityWebRequest.Post(AbilityURL, form))
         {
