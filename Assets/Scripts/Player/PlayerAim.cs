@@ -5,6 +5,7 @@ public class PlayerAim : MonoBehaviour
     //public float RotationSpeed = 15.0f;
     private void Update()
     {
+        if (GameManager.instance.IsPaused) return;
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Vector3 playerToMouse= mousePosition-transform.position;
         float angle = Mathf.Atan2(playerToMouse.y, Mathf.Abs(playerToMouse.x)) * Mathf.Rad2Deg;

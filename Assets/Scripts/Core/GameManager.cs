@@ -501,7 +501,7 @@ public class GameManager : MonoBehaviour
 
     private void InitializePauseStat()
     {
-        isPaused = false;
+        IsPaused = false;
         Time.timeScale = 1;
     }
     #endregion AlphaProgressCheck button callback
