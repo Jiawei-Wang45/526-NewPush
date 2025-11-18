@@ -1665,8 +1665,9 @@ MonoBehaviour:
   adjacentUnvisitedRoomIconPrefab: {fileID: 3811405899705987145, guid: af6f3615673bf9948a77aa5b88e4afc2, type: 3}
   startRoomIconPrefab: {fileID: 3811405899705987145, guid: 357721d32fb66e4489c423f5491e0b22, type: 3}
   endRoomIconPrefab: {fileID: 3811405899705987145, guid: 9deace9ca81a9c548aff63dc871397e5, type: 3}
-  minimapScale: 1
-  roomIconSize: 15
+  playerLocationIndicatorPrefab: {fileID: 3811405899705987145, guid: 859f8464c0283f34b972914599e9becf, type: 3}
+  minimapScale: 0.7
+  roomIconSize: 20
   showConnections: 1
   connectionLineWidth: 5
   connectionColor: {r: 1, g: 1, b: 1, a: 0.8}
@@ -8865,8 +8866,8 @@ MonoBehaviour:
   roadPrefab: {fileID: 5586165495642614983, guid: 9d7b4ec05a4cf72418cbb8f61163856a, type: 3}
   generateOnStart: 1
   assignRoomsToGameManager: 1
-  gridWidth: 10
-  gridHeight: 10
+  gridWidth: 8
+  gridHeight: 8
   roomCount: 20
   cellSize: {x: 75, y: 75}
   roomScale: 1

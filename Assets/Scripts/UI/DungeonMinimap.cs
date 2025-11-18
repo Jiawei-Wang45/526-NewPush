@@ -25,6 +25,9 @@ public class DungeonMinimap : MonoBehaviour
     [Tooltip("Icon prefab for end room")]
     public GameObject endRoomIconPrefab;
     
+    [Tooltip("Prefab for player location indicator (four-corner frame)")]
+    public GameObject playerLocationIndicatorPrefab;
+    
     [Header("Minimap Settings")]
     [Tooltip("Minimap scale factor (used to convert grid coordinates to UI coordinates)")]
     public float minimapScale = 0.1f;
@@ -52,6 +55,8 @@ public class DungeonMinimap : MonoBehaviour
     private HashSet<int> previouslyAdjacentUnvisited = new HashSet<int>();
     // Last known current room index (to detect room changes)
     private int lastCurrentRoomIndex = -1;
+    // Player location indicator (four-corner frame)
+    private GameObject playerLocationIndicator = null;
     
     private void Awake()
     {
@@ -171,6 +176,12 @@ public class DungeonMinimap : MonoBehaviour
         // This ensures correct prefabs are used from the start
         
         UpdateMinimapDisplay();
+        
+        // Initialize player location indicator
+        if (currentRoomIndex >= 0)
+        {
+            UpdatePlayerLocationIndicator(currentRoomIndex);
+        }
     }
     
     /// <summary>
@@ -193,7 +204,24 @@ public class DungeonMinimap : MonoBehaviour
                 UpdateMinimapDisplay();
             }
             
+            // Update player location indicator
+            UpdatePlayerLocationIndicator(currentRoomIndex);
+            
             lastCurrentRoomIndex = currentRoomIndex;
+        }
+        else
+        {
+            // Player is not in any room - keep showing indicator at last known room position
+            if (lastCurrentRoomIndex >= 0)
+            {
+                // Keep showing indicator at the last known room
+                UpdatePlayerLocationIndicator(lastCurrentRoomIndex);
+            }
+            // Only hide if we never had a valid room index
+            else if (playerLocationIndicator != null)
+            {
+                playerLocationIndicator.SetActive(false);
+            }
         }
     }
     
@@ -513,6 +541,55 @@ public class DungeonMinimap : MonoBehaviour
     
     
     /// <summary>
+    /// Update player location indicator to show current room
+    /// </summary>
+    private void UpdatePlayerLocationIndicator(int currentRoomIndex)
+    {
+        if (playerLocationIndicatorPrefab == null) return;
+        
+        Dictionary<int, Vector2> allRoomUIPositions = CalculateAllRoomUIPositions();
+        
+        if (!allRoomUIPositions.ContainsKey(currentRoomIndex)) return;
+        
+        Vector2 roomUIPosition = allRoomUIPositions[currentRoomIndex];
+        
+        // Create indicator if it doesn't exist
+        if (playerLocationIndicator == null)
+        {
+            playerLocationIndicator = Instantiate(playerLocationIndicatorPrefab, roomContainer);
+            RectTransform indicatorRect = playerLocationIndicator.GetComponent<RectTransform>();
+            if (indicatorRect == null)
+            {
+                indicatorRect = playerLocationIndicator.AddComponent<RectTransform>();
+            }
+            
+            // Set anchor and pivot to center
+            indicatorRect.anchorMin = new Vector2(0.5f, 0.5f);
+            indicatorRect.anchorMax = new Vector2(0.5f, 0.5f);
+            indicatorRect.pivot = new Vector2(0.5f, 0.5f);
+            indicatorRect.localScale = Vector3.one;
+            
+            // Apply size scaling if roomIconSize is set (same as room icons)
+            if (roomIconSize > 0)
+            {
+                indicatorRect.sizeDelta = new Vector2(roomIconSize, roomIconSize);
+            }
+        }
+        
+        // Update position to current room
+        RectTransform rect = playerLocationIndicator.GetComponent<RectTransform>();
+        if (rect != null)
+        {
+            rect.anchoredPosition = roomUIPosition;
+            // Ensure indicator is rendered on top of room icons
+            playerLocationIndicator.transform.SetAsLastSibling();
+        }
+        
+        // Show indicator
+        playerLocationIndicator.SetActive(true);
+    }
+    
+    /// <summary>
     /// Clear all icons and connections on the minimap
     /// </summary>
     private void ClearMinimap()
@@ -525,6 +602,12 @@ public class DungeonMinimap : MonoBehaviour
             }
         }
         roomIcons.Clear();
+        
+        if (playerLocationIndicator != null)
+        {
+            Destroy(playerLocationIndicator);
+            playerLocationIndicator = null;
+        }
         
         ClearConnections();
     }
