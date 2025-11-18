@@ -27,10 +27,12 @@ public class EnemyController : MonoBehaviour, IDamagable
     private float checkInterval = 0.1f;
     private Vector3 randomTarget;
 
-    private bool isBoss = false;
+    public bool isBoss2 = false;
+    private float spinFactor = 1.0f;
 
     //affected by pause ability
     protected float slowFactor = 1.0f;
+    protected Coroutine firingCoroutine;
 
     protected virtual void Awake()
     {
@@ -137,7 +139,7 @@ public class EnemyController : MonoBehaviour, IDamagable
             if (timeToFire >= weapon.fireRate)
             {
                 timeToFire = 0;
-                StartCoroutine(BeginFiringSequence());
+                firingCoroutine = StartCoroutine(BeginFiringSequence());
             }
         }
     }
@@ -229,21 +231,25 @@ public class EnemyController : MonoBehaviour, IDamagable
             {
                 yield return new WaitForSeconds(pattern.timeBetweenFiring * slowFactor);
             }
+            if (isBoss2)
+            {
+                spinFactor += 0.06f;
+            }
         }
     }
 
     private void FireOnce(int volleyIndex, BulletPattern pattern)
     {
-        float baseAngle = enemyAim.eulerAngles.z + (pattern.rotateBetweenFiring * volleyIndex) + pattern.baseAngleOffset;
+        float baseAngle = enemyAim.eulerAngles.z + (pattern.rotateBetweenFiring * volleyIndex * spinFactor) + pattern.baseAngleOffset;
         if (pattern.bulletCount == 1)
         {
             if (pattern.bulletDistribution == BulletPattern.bulletDistributionTypes.Even)
             {
-                CreateBullet(baseAngle);
+                CreateBullet(baseAngle, weapon.bulletSpeed);
             }
             else
             {
-                CreateBullet(baseAngle + UnityEngine.Random.Range(-pattern.firingAngle / 2, pattern.firingAngle / 2));
+                CreateBullet(baseAngle + UnityEngine.Random.Range(-pattern.firingAngle / 2, pattern.firingAngle / 2), weapon.bulletSpeed);
             }
         }
         else
@@ -283,37 +289,58 @@ public class EnemyController : MonoBehaviour, IDamagable
                     }
                     break;
             }
+            int bulletInd = 0;
+            Vector3 centerPosition = isBoss2 ? GetRandomVector3InXY() : Vector3.zero;
             foreach (float change in angleChanges)
             {
                 if (pattern.bulletDistribution == BulletPattern.bulletDistributionTypes.Radial)
                 {
-                    CreateBullet(change + (volleyIndex * pattern.rotateBetweenFiring));
+                    CreateBullet(
+                        change + (volleyIndex * pattern.rotateBetweenFiring * spinFactor), 
+                        weapon.bulletSpeed + bulletInd * weapon.bulletSpeedRange / pattern.bulletCount);
                 }
                 else
                 {
-                    CreateBullet(baseAngle + change + (volleyIndex * pattern.rotateBetweenFiring));   
+                    CreateBullet(
+                        baseAngle + change + (volleyIndex * pattern.rotateBetweenFiring * spinFactor),
+                        weapon.bulletSpeed + bulletInd * weapon.bulletSpeedRange / pattern.bulletCount, 
+                        0.0f, 
+                        centerPosition);   
                 }
+                bulletInd++;
             }   
         }
     }
 
-    private void CreateBullet(float angle, float offsetDistance = 0.0f, Vector3? centerPosition = null)
+    private void CreateBullet(float angle, float speed, float offsetDistance = 0.0f, Vector3? centerPosition = null)
     {
         if(centerPosition == null) centerPosition = Vector3.zero;
         Vector2 spawnVector = new Vector2(Mathf.Cos(angle * Mathf.Deg2Rad), Mathf.Sin(angle * Mathf.Deg2Rad));
         Vector3 spawnPosition = Vector3.zero;
-        if(!isBoss)
-        {
-            offsetDistance = GetComponent<Collider2D>().bounds.extents.magnitude * 0.9f;
-            spawnPosition = transform.position + (Vector3)(spawnVector * offsetDistance);
-        }
+        offsetDistance = GetComponent<Collider2D>().bounds.extents.magnitude * 0.9f;
         Quaternion rotation = Quaternion.Euler(0, 0, angle);
-        GameObject spawnedBullet = Instantiate(weapon.bulletType, spawnPosition, rotation);
-        Bullet_Default bulletAttributes = spawnedBullet.GetComponent<Bullet_Default>();   
-        bulletAttributes.InitBullet(weapon.bulletSpeed, weapon.bulletDamage);
-        if(PauseManager.instance.isPausing)
+        if(!weapon.isLaser)
         {
-            bulletAttributes.PauseStart(slowFactor);
+            spawnPosition = transform.position + (Vector3)centerPosition + (Vector3)(spawnVector * offsetDistance);
+            GameObject spawnedBullet = Instantiate(weapon.bulletType, spawnPosition, rotation);
+            Bullet_Default bulletAttributes = spawnedBullet.GetComponent<Bullet_Default>();   
+            bulletAttributes.InitBullet(speed, weapon.bulletDamage);
+            if(PauseManager.instance.isPausing)
+            {
+                bulletAttributes.PauseStart(slowFactor);
+            }
+        }
+        else
+        {
+            spawnPosition = transform.position + GetRandomVector3InXY() * 2.0f + (Vector3)(spawnVector * offsetDistance);
+            Vector2 direction = pc.transform.position - spawnPosition;
+            float laserAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            Quaternion targetRotation = Quaternion.AngleAxis(laserAngle, Vector3.forward);
+            Quaternion laserRotation = targetRotation * Quaternion.Euler(0.0f, 0.0f, 90.0f);
+                    
+            GameObject spawnedLaser = Instantiate(weapon.bulletType, spawnPosition - laserRotation * Vector2.up * 50.0f, laserRotation);
+            Bullet_Laser laserAttributes = spawnedLaser.GetComponent<Bullet_Laser>();
+            laserAttributes.InitBulletwithSpinup(0.0f, weapon.bulletDamage, 0, 2.0f);
         }
     }
 

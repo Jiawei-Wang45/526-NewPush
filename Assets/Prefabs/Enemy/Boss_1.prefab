@@ -418,9 +418,9 @@ MonoBehaviour:
   enemySpeed: 0
   comfortableDistance: 5
   bossWeaponList:
-  - {fileID: 11400000, guid: 6f817bbd3cabe4c1cac588bae03913df, type: 2}
-  - {fileID: 11400000, guid: 2f504e69458d84b22a3015cc83f5d04b, type: 2}
-  - {fileID: 11400000, guid: ce7798f7bd1134a17a2d77f337f270c0, type: 2}
+  - {fileID: 11400000, guid: d6e4fe47ffcc3db4ea73c6b9053402fe, type: 2}
+  - {fileID: 11400000, guid: 3d626b254b8e1ee4ebaddabc39f72ac1, type: 2}
+  - {fileID: 11400000, guid: 28c448bc3f09ea645b642772d8ae4d11, type: 2}
 --- !u!1 &8983558211772289796
 GameObject:
   m_ObjectHideFlags: 0

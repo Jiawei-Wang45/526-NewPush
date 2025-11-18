@@ -7,11 +7,13 @@ public class EnemyWeaponData : ScriptableObject
     public float bulletLifeTime;
     public float bulletDamage;
     public float bulletSpeed;
+    public float bulletSpeedRange;
 
     public GameObject bulletType;
     public float fireRate;
     public BulletPattern bulletPattern;
 
     public bool isComplex = false;
+    public bool isLaser = false;
     public BulletPattern[] compositePatterns;
 }

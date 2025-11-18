@@ -10,13 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8f049e53cb6dc4a2285268441f6201fb, type: 3}
-  m_Name: Spinner
+  m_Name: BossRadial
   m_EditorClassIdentifier: 
   bulletLifeTime: 10
-  bulletDamage: 1
+  bulletDamage: 2
   bulletSpeed: 6
+  bulletSpeedRange: 0
   bulletType: {fileID: 8604903965720594084, guid: 04d380db99e814f64a851e76366f14f9, type: 3}
-  fireRate: 5
-  bulletPattern: {fileID: 11400000, guid: 4f994eda8cc994e2bad38008efcbdfff, type: 2}
+  fireRate: 3
+  bulletPattern: {fileID: 11400000, guid: b5e092c5c012d7143aa96a06c907a9f6, type: 2}
   isComplex: 0
   compositePatterns: []
