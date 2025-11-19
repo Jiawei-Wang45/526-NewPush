@@ -3311,18 +3311,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1391816234}
-        m_TargetAssemblyTypeName: GameManagerForMenu, Assembly-CSharp
-        m_MethodName: StartGame
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!114 &1117099168
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4392,18 +4380,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1391816234}
-        m_TargetAssemblyTypeName: GameManagerForMenu, Assembly-CSharp
-        m_MethodName: StartGame
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!114 &1634216898
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4611,6 +4587,7 @@ MonoBehaviour:
   weapon: {fileID: 0}
   attackingAbility: {fileID: 0}
   defenseAbility: {fileID: 0}
+  selectedLevelIndex: 0
 --- !u!224 &1714406939
 RectTransform:
   m_ObjectHideFlags: 0

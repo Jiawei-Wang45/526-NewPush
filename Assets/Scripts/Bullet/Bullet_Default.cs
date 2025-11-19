@@ -14,8 +14,7 @@ public class Bullet_Default: MonoBehaviour
     //SpeedFactor is used during pause time for the enemy to slow the bullets down, In other case it's 1 by default
     public virtual void InitBullet(float bulletSpeed, float bulletDamage, int bounce = 0)
     {
-        this.bulletSpeed = bulletSpeed;
-        rb.linearVelocity = transform.right * bulletSpeed;
+        this.bulletSpeed = bulletSpeed;      
         this.bulletDamage = bulletDamage;
         this.bounceCount = bounce;
     }
@@ -26,7 +25,10 @@ public class Bullet_Default: MonoBehaviour
         PauseManager.instance.OnPauseStart += PauseStart;
         PauseManager.instance.OnPauseEnd += PauseEnd;
     }
-
+    protected virtual void Start()
+    {
+        rb.linearVelocity = transform.right * bulletSpeed;
+    }
     //private void Instance_OnPauseEnd()
     //{
     //    throw new System.NotImplementedException();
@@ -70,11 +72,11 @@ public class Bullet_Default: MonoBehaviour
         rb.linearVelocity = Vector2.Reflect(rb.linearVelocity, normalVector);
     }
     
-    public void PauseStart(float pauseStrength)
+    public virtual void PauseStart(float pauseStrength)
     {
         rb.linearVelocity /= pauseStrength;
     }
-    public void PauseEnd()
+    public virtual void PauseEnd()
     {
         rb.linearVelocity = transform.right * bulletSpeed;
     }

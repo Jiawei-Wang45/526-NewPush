@@ -19,5 +19,5 @@ MonoBehaviour:
   damage: 0
   slashCD: 0.7
   reflectCD: 1.2
-  slashEffectPrefab: {fileID: 6627703635825691995, guid: 94457d7c284500d49a8b2ca8f2c036fb, type: 3}
-  reflectEffectPrefab: {fileID: 8526945798473130149, guid: 72f457b19aa795d4fb1779af75d529b2, type: 3}
+  slashEffectPrefab: {fileID: 5701585943979361333, guid: 94457d7c284500d49a8b2ca8f2c036fb, type: 3}
+  reflectEffectPrefab: {fileID: 7843365697358270582, guid: 72f457b19aa795d4fb1779af75d529b2, type: 3}

@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b56f14fd2f199e41a5efbbf36549748, type: 3}
+  m_Name: Laser
+  m_EditorClassIdentifier: 
+  weaponName: Laser
+  weaponClass: 1
+  weaponIcon: {fileID: 0}
+  weaponPrefab: {fileID: 7258933175468369245, guid: 2db7113c471dca946a1a06fe97278454, type: 3}
+  weaponBulletLifeTime: 0
+  weaponBulletDamage: 12
+  weaponBulletSpeed: 180
+  weaponFireInterval: 0.25
+  weaponBulletInOneShot: 1
+  weaponFiringAngle: 0
+  weaponBulletSpread: 0
+  maxAmmoNums: 10
+  reloadTime: 1.5
+  bulletType: {fileID: 6811208238628217418, guid: 726bcf12f3663dd47b5787eee13cea0e, type: 3}

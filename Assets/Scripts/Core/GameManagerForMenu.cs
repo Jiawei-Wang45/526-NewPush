@@ -106,7 +106,6 @@ public class GameManagerForMenu : MonoBehaviour
         {
             selectedLevelIndex = levelIndex;
             // Save config and start game after selecting level
-            SaveCharacterConfig();
             StartGame();
         }
     }
