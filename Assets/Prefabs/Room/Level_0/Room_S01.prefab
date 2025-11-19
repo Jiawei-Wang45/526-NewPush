@@ -62,3 +62,4 @@ MonoBehaviour:
   clearExistingChildren: 0
   enemySpawner: {fileID: 0}
   isRoomActive: 0
+  winTrigger: {fileID: 0}

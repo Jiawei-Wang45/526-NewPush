@@ -280,7 +280,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemySpawnList:
-  - {fileID: 7980401159501858626, guid: cb298d38fe50fe8469fa224474718118, type: 3}
+  - {fileID: 7980401159501858626, guid: 1ff3d5095b554cf49a8fe674fecece7d, type: 3}
   canSpawnAfterRoomNumber: 
   enemySpawnIndicator: {fileID: 62652219401394802, guid: cc44a7ca5f6c670479244ae20d6b696c, type: 3}
   gameManager: {fileID: 0}
