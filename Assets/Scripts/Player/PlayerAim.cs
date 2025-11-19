@@ -2,10 +2,10 @@ using UnityEngine;
 
 public class PlayerAim : MonoBehaviour
 {
-    //public float RotationSpeed = 15.0f;
+    public bool IsAttacking { get; private set; } = false;
     private void Update()
     {
-        if (GameManager.instance.IsPaused) return;
+        if (GameManager.instance.IsPaused || IsAttacking) return;
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Vector3 playerToMouse= mousePosition-transform.position;
         float angle = Mathf.Atan2(playerToMouse.y, Mathf.Abs(playerToMouse.x)) * Mathf.Rad2Deg;
@@ -21,6 +21,10 @@ public class PlayerAim : MonoBehaviour
         //transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.deltaTime);
         // somehow some bullets are shot without a proper initial rotation. So just stop using slerp
         transform.rotation = targetRotation;
+    }
+    public void SetAttacking(bool inAttacking)
+    {
+        IsAttacking= inAttacking;
     }
 
 }

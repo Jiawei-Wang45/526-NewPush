@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
 
     [Header("UI paramaters")]
     public bool isPlayerAlive = true;
-    public bool IsPaused {  get; set; }
+    public bool IsPaused { get; set; } = false;
     public GameObject InGamePauseMenu;
     public GameObject InGameEndingMenu;
     public GameObject InGameWinMenu;

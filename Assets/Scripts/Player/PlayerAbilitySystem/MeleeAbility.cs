@@ -8,8 +8,7 @@ public class MeleeAbility: MonoBehaviour,IWeapon
     [NonSerialized] private int ENEMY_LAYER;
     [NonSerialized] private int ENEMYBULLET_LAYER;
     [NonSerialized] Transform attackPoint;
-    public MeleeWeapon currentWeapon;
-
+    public MeleeWeapon currentWeapon;   
     [NonSerialized] private PlayerController pc;
     [NonSerialized] private Animator animator;
     private bool isSlashing = false;
@@ -18,7 +17,7 @@ public class MeleeAbility: MonoBehaviour,IWeapon
     readonly int REFLECT_HASH = Animator.StringToHash("Reflect");
     private void Awake()
     {
-        pc = GetComponentInParent<PlayerController>();       
+        pc = GetComponentInParent<PlayerController>();
         ENEMY_LAYER = LayerMask.NameToLayer("Enemy");
         ENEMYBULLET_LAYER = LayerMask.NameToLayer("EnemyBullet");
     }
@@ -45,7 +44,7 @@ public class MeleeAbility: MonoBehaviour,IWeapon
         yield return new WaitForSeconds(currentWeapon.reflectCD);
         isReflecting = false;
     }
-
+    
 
     #region IWeapon interface
     public void LeftMouseTriggered()

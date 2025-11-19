@@ -12,6 +12,7 @@ public class WeaponController : MonoBehaviour
     [NonSerialized] private PlayerController pc;
     [NonSerialized] private MeleeAbility meleeAbility;
     [NonSerialized] private FireAbility fireAbility;
+    [NonSerialized] PlayerAim playerAim;
     [NonSerialized] private GameManager gameManager;
     public IWeapon IcurrentAbility;
     
@@ -25,6 +26,7 @@ public class WeaponController : MonoBehaviour
         pc = GetComponent<PlayerController>();
         meleeAbility=GetComponent<MeleeAbility>();
         fireAbility=GetComponent<FireAbility>();
+        playerAim = GetComponentInChildren<PlayerAim>();
         cachedSlotIndex = maxWeaponCount - 1;
         weaponHolder = transform.Find("PlayerAim/WeaponHolder");
         weaponList =new PlayerBaseWeapon[maxWeaponCount];   
@@ -96,6 +98,7 @@ public class WeaponController : MonoBehaviour
         {
             IcurrentAbility = meleeAbility;
             meleeAbility.ChangeWeapon((MeleeWeapon)weaponToEquip, weaponInstance.transform.GetChild(0), weaponInstance.GetComponent<Animator>());
+            weaponInstance.GetComponent<MeleeWeaponInstance>().InitPlayerAim(playerAim);
         }
         //UI update
         if (updateIcon)
