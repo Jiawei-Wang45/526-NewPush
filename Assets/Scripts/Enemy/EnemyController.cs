@@ -208,12 +208,15 @@ public class EnemyController : MonoBehaviour, IDamagable
         currentlyFiring = true;
         if (!weapon.isComplex)
         {
-            yield return FireBulletPattern(weapon.bulletPattern);
+            yield return FireBulletPattern(weapon.bulletPattern, 0, 0);
         } else
         {
-            foreach(BulletPattern pattern in weapon.compositePatterns)
+            for(int i = 0; i < weapon.compositePatterns.Length; i++)
             {
-                StartCoroutine(FireBulletPattern(pattern));
+                BulletPattern pattern = weapon.compositePatterns[i];
+                float angleOffset = weapon.angleOffsets.Length == weapon.compositePatterns.Length ? weapon.angleOffsets[i] : 0;
+                float speedOffset = weapon.speedOffsets.Length == weapon.compositePatterns.Length ? weapon.speedOffsets[i] : 0;
+                StartCoroutine(FireBulletPattern(pattern, angleOffset, speedOffset));
                 yield return new WaitForSeconds(pattern.waitUntilDone ? (pattern.timeBetweenFiring * pattern.fireCount) + pattern.delayAfterPattern : pattern.delayAfterPattern);
             }
         }
@@ -221,12 +224,12 @@ public class EnemyController : MonoBehaviour, IDamagable
 
     }
 
-    private IEnumerator FireBulletPattern(BulletPattern pattern)
+    private IEnumerator FireBulletPattern(BulletPattern pattern, float angleOffset, float speedOffset)
     {
 
         for (int i = 0; i < pattern.fireCount; i++)
         {
-            FireOnce(i, pattern);
+            FireOnce(i, pattern, angleOffset, speedOffset);
             if (i < pattern.fireCount - 1)
             {
                 yield return new WaitForSeconds(pattern.timeBetweenFiring * slowFactor);
@@ -238,18 +241,20 @@ public class EnemyController : MonoBehaviour, IDamagable
         }
     }
 
-    private void FireOnce(int volleyIndex, BulletPattern pattern)
+    private void FireOnce(int volleyIndex, BulletPattern pattern, float angleOffset, float speedOffset)
     {
-        float baseAngle = enemyAim.eulerAngles.z + (pattern.rotateBetweenFiring * volleyIndex * spinFactor) + pattern.baseAngleOffset;
+        float baseAngle = enemyAim.eulerAngles.z + (pattern.rotateBetweenFiring * volleyIndex * spinFactor) + pattern.baseAngleOffset + angleOffset;
+        float bulletSpeed = pattern.bulletSpeed + speedOffset;
         if (pattern.bulletCount == 1)
         {
+            float speedVariance = UnityEngine.Random.Range(pattern.speedVariance, -pattern.speedVariance);
             if (pattern.bulletDistribution == BulletPattern.bulletDistributionTypes.Even)
             {
-                CreateBullet(baseAngle, weapon.bulletSpeed);
+                CreateBullet(baseAngle, bulletSpeed + speedVariance);
             }
             else
             {
-                CreateBullet(baseAngle + UnityEngine.Random.Range(-pattern.firingAngle / 2, pattern.firingAngle / 2), weapon.bulletSpeed);
+                CreateBullet(baseAngle + UnityEngine.Random.Range(-pattern.firingAngle / 2, pattern.firingAngle / 2), bulletSpeed + speedVariance);
             }
         }
         else
@@ -293,17 +298,18 @@ public class EnemyController : MonoBehaviour, IDamagable
             Vector3 centerPosition = isBoss2 ? GetRandomVector3InXY() : Vector3.zero;
             foreach (float change in angleChanges)
             {
+                float speedVariance = UnityEngine.Random.Range(pattern.speedVariance, -pattern.speedVariance);
                 if (pattern.bulletDistribution == BulletPattern.bulletDistributionTypes.Radial)
                 {
                     CreateBullet(
                         change + (volleyIndex * pattern.rotateBetweenFiring * spinFactor), 
-                        weapon.bulletSpeed + bulletInd * weapon.bulletSpeedRange / pattern.bulletCount);
+                        bulletSpeed + (bulletInd * weapon.bulletSpeedRange / pattern.bulletCount) + speedVariance);
                 }
                 else
                 {
                     CreateBullet(
                         baseAngle + change + (volleyIndex * pattern.rotateBetweenFiring * spinFactor),
-                        weapon.bulletSpeed + bulletInd * weapon.bulletSpeedRange / pattern.bulletCount, 
+                        bulletSpeed + (bulletInd * weapon.bulletSpeedRange / pattern.bulletCount) + speedVariance, 
                         0.0f, 
                         centerPosition);   
                 }
