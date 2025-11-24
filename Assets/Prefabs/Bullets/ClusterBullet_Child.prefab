@@ -105,6 +105,7 @@ MonoBehaviour:
   bulletSpeed: 0
   bulletDamage: 0
   bounceCount: 0
+  bounceMultiplier: 2
   isParentBullet: 0
   parentBulletDamage: 0
   parentBulletSpeed: 0

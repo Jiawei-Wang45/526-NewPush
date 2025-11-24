@@ -17,7 +17,7 @@ public class Bullet_Default: MonoBehaviour
     {
         this.bulletSpeed = bulletSpeed;      
         this.bulletDamage = bulletDamage;
-        this.bounceCount = bounce;
+        this.bounceCount = bounceCount > 0 ? bounceCount : bounce;
     }
 
     protected virtual void Awake()
