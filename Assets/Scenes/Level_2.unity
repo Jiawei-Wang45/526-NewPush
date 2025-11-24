@@ -642,7 +642,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 850232882}
         m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: Restart
+        m_MethodName: LoadNextLevel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -824,7 +824,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Restart
+  m_text: 'Next Level
 
 '
   m_isRightToLeft: 0
@@ -4010,6 +4010,9 @@ MonoBehaviour:
   InGameDungeonMinimap: {fileID: 426069326}
   TutorialText: {fileID: 352880150}
   isInLevel: 1
+  levelScenes:
+  - Level_1
+  - Level_2
   rooms: []
   clearedRoomCount: 0
   levelStartTime: 0
@@ -9029,9 +9032,9 @@ MonoBehaviour:
   roadPrefab: {fileID: 5586165495642614983, guid: 9d7b4ec05a4cf72418cbb8f61163856a, type: 3}
   generateOnStart: 1
   assignRoomsToGameManager: 1
-  gridWidth: 8
-  gridHeight: 8
-  roomCount: 20
+  gridWidth: 6
+  gridHeight: 6
+  roomCount: 12
   cellSize: {x: 75, y: 75}
   roomScale: 1
   doorOutsideOffset: 1

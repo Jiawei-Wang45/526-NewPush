@@ -24,6 +24,9 @@ public class GameManager : MonoBehaviour
     public GameObject TutorialText;
     public bool isInLevel; //in contrast with tutorial level
 
+    [Header("Level Selection")]
+    // Level scenes array, matching GameManagerForMenu for consistency
+    public string[] levelScenes = { "Level_1", "Level_2" };
 
     [Header("Dungeon Rooms")]
     // Rooms in dungeon order. Assign in the inspector or dynamically at runtime.
@@ -479,6 +482,62 @@ public class GameManager : MonoBehaviour
 
     public void BackToMainMenu()
     {
+        SceneManager.LoadScene("MainMenu");
+    }
+
+    /// <summary>
+    /// Load the next level scene. Can be called by UI buttons.
+    /// References GameManagerForMenu's levelScenes array approach.
+    /// Finds current scene in levelScenes array and loads the next one.
+    /// If no next level exists, returns to MainMenu.
+    /// </summary>
+    public void LoadNextLevel()
+    {
+        if (levelScenes == null || levelScenes.Length == 0)
+        {
+            Debug.LogWarning("[GameManager] levelScenes array is not configured. Returning to MainMenu.");
+            Time.timeScale = 1;
+            SceneManager.LoadScene("MainMenu");
+            return;
+        }
+
+        string currentSceneName = SceneManager.GetActiveScene().name;
+        
+        // Find current scene index in levelScenes array
+        int currentLevelIndex = -1;
+        for (int i = 0; i < levelScenes.Length; i++)
+        {
+            if (levelScenes[i] == currentSceneName)
+            {
+                currentLevelIndex = i;
+                break;
+            }
+        }
+
+        // If current scene is found in array, load next level
+        if (currentLevelIndex >= 0)
+        {
+            int nextLevelIndex = currentLevelIndex + 1;
+            
+            // Check if next level exists
+            if (nextLevelIndex < levelScenes.Length && !string.IsNullOrEmpty(levelScenes[nextLevelIndex]))
+            {
+                Time.timeScale = 1; // Reset time scale before loading
+                SceneManager.LoadScene(levelScenes[nextLevelIndex]);
+                return;
+            }
+            else
+            {
+                Debug.Log($"[GameManager] No next level available (current: {currentLevelIndex}, total: {levelScenes.Length}). Returning to MainMenu.");
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"[GameManager] Current scene '{currentSceneName}' not found in levelScenes array. Returning to MainMenu.");
+        }
+        
+        // Fallback: return to main menu
+        Time.timeScale = 1; // Reset time scale before loading
         SceneManager.LoadScene("MainMenu");
     }
     //helper functions
