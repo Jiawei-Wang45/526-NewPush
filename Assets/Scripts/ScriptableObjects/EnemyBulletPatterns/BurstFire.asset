@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: BurstFire
   m_EditorClassIdentifier: 
   bulletCount: 1
+  bulletSpeed: 10
+  speedVariance: 0
   firingAngle: 10
   baseAngleOffset: 0
   bulletDistribution: 2

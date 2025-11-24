@@ -13,8 +13,13 @@ MonoBehaviour:
   m_Name: Flakshot
   m_EditorClassIdentifier: 
   bulletCount: 4
+  bulletSpeed: 4
+  speedVariance: 1
   firingAngle: 70
+  baseAngleOffset: 0
   bulletDistribution: 1
   fireCount: 3
   rotateBetweenFiring: 0
   timeBetweenFiring: 0.8
+  waitUntilDone: 1
+  delayAfterPattern: 0

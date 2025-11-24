@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: BossLaser
   m_EditorClassIdentifier: 
   bulletCount: 5
+  bulletSpeed: 1
+  speedVariance: 0
   firingAngle: 0
   baseAngleOffset: 0
   bulletDistribution: 2

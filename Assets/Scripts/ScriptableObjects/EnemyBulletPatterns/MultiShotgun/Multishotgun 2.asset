@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: Multishotgun 2
   m_EditorClassIdentifier: 
   bulletCount: 5
-  firingAngle: 55
+  bulletSpeed: 8
+  speedVariance: 0
+  firingAngle: 60
   baseAngleOffset: 0
   bulletDistribution: 0
   fireCount: 1

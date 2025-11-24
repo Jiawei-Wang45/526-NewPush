@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: ClockwiseSpray
   m_EditorClassIdentifier: 
   bulletCount: 1
+  bulletSpeed: 8
+  speedVariance: 0
   firingAngle: 0
   baseAngleOffset: -60
   bulletDistribution: 0

@@ -13,8 +13,13 @@ MonoBehaviour:
   m_Name: QuadShot
   m_EditorClassIdentifier: 
   bulletCount: 4
+  bulletSpeed: 5
+  speedVariance: 0
   firingAngle: 40
+  baseAngleOffset: 0
   bulletDistribution: 0
   fireCount: 1
   rotateBetweenFiring: 0
   timeBetweenFiring: 0
+  waitUntilDone: 1
+  delayAfterPattern: 0

@@ -13,11 +13,13 @@ MonoBehaviour:
   m_Name: SprayFire
   m_EditorClassIdentifier: 
   bulletCount: 12
-  firingAngle: 100
+  bulletSpeed: 8
+  speedVariance: 0
+  firingAngle: 95
   baseAngleOffset: 0
   bulletDistribution: 2
-  fireCount: 14
+  fireCount: 15
   rotateBetweenFiring: 0
-  timeBetweenFiring: 0.2
+  timeBetweenFiring: 0.18
   waitUntilDone: 1
   delayAfterPattern: 0
