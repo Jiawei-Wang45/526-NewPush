@@ -1137,6 +1137,8 @@ MonoBehaviour:
   - {fileID: 7980401159501858626, guid: edbe69e28685e402a9c72d8fc4233235, type: 3}
   - {fileID: 7980401159501858626, guid: f83fb9b3730f84541a29d7a52eef9042, type: 3}
   - {fileID: 1723346802044135853, guid: d7dc32f54f4044dca88b788935d0d69b, type: 3}
+  - {fileID: 7980401159501858626, guid: adb207474091c44d8b64185677e8a5fe, type: 3}
+  - {fileID: 7980401159501858626, guid: 5cc5d6a23833e447bace989fa83f7b3b, type: 3}
   canSpawnAfterRoomNumber: 0000000000000000000000000400000004000000
   enemySpawnIndicator: {fileID: 62652219401394802, guid: cc44a7ca5f6c670479244ae20d6b696c, type: 3}
   gameManager: {fileID: 0}

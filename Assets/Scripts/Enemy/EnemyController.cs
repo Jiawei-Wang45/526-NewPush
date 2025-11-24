@@ -250,11 +250,11 @@ public class EnemyController : MonoBehaviour, IDamagable
             float speedVariance = UnityEngine.Random.Range(pattern.speedVariance, -pattern.speedVariance);
             if (pattern.bulletDistribution == BulletPattern.bulletDistributionTypes.Even)
             {
-                CreateBullet(baseAngle, bulletSpeed + speedVariance);
+                CreateBullet(baseAngle, bulletSpeed + speedVariance, pattern.bulletType);
             }
             else
             {
-                CreateBullet(baseAngle + UnityEngine.Random.Range(-pattern.firingAngle / 2, pattern.firingAngle / 2), bulletSpeed + speedVariance);
+                CreateBullet(baseAngle + UnityEngine.Random.Range(-pattern.firingAngle / 2, pattern.firingAngle / 2), bulletSpeed + speedVariance, pattern.bulletType);
             }
         }
         else
@@ -303,13 +303,14 @@ public class EnemyController : MonoBehaviour, IDamagable
                 {
                     CreateBullet(
                         change + (volleyIndex * pattern.rotateBetweenFiring * spinFactor), 
-                        bulletSpeed + (bulletInd * weapon.bulletSpeedRange / pattern.bulletCount) + speedVariance);
+                        bulletSpeed + (bulletInd * weapon.bulletSpeedRange / pattern.bulletCount) + speedVariance, pattern.bulletType);
                 }
                 else
                 {
                     CreateBullet(
                         baseAngle + change + (volleyIndex * pattern.rotateBetweenFiring * spinFactor),
                         bulletSpeed + (bulletInd * weapon.bulletSpeedRange / pattern.bulletCount) + speedVariance, 
+                        pattern.bulletType,
                         0.0f, 
                         centerPosition);   
                 }
@@ -318,7 +319,7 @@ public class EnemyController : MonoBehaviour, IDamagable
         }
     }
 
-    private void CreateBullet(float angle, float speed, float offsetDistance = 0.0f, Vector3? centerPosition = null)
+    private void CreateBullet(float angle, float speed, GameObject bulletType, float offsetDistance = 0.0f, Vector3? centerPosition = null)
     {
         if(centerPosition == null) centerPosition = Vector3.zero;
         Vector2 spawnVector = new Vector2(Mathf.Cos(angle * Mathf.Deg2Rad), Mathf.Sin(angle * Mathf.Deg2Rad));
@@ -328,7 +329,7 @@ public class EnemyController : MonoBehaviour, IDamagable
         if(!weapon.isLaser)
         {
             spawnPosition = transform.position + (Vector3)centerPosition + (Vector3)(spawnVector * offsetDistance);
-            GameObject spawnedBullet = Instantiate(weapon.bulletType, spawnPosition, rotation);
+            GameObject spawnedBullet = Instantiate(bulletType, spawnPosition, rotation);
             Bullet_Default bulletAttributes = spawnedBullet.GetComponent<Bullet_Default>();   
             bulletAttributes.InitBullet(speed, weapon.bulletDamage);
             if(PauseManager.instance.isPausing)
@@ -344,7 +345,7 @@ public class EnemyController : MonoBehaviour, IDamagable
             Quaternion targetRotation = Quaternion.AngleAxis(laserAngle, Vector3.forward);
             Quaternion laserRotation = targetRotation * Quaternion.Euler(0.0f, 0.0f, 90.0f);
                     
-            GameObject spawnedLaser = Instantiate(weapon.bulletType, spawnPosition - laserRotation * Vector2.up * 50.0f, laserRotation);
+            GameObject spawnedLaser = Instantiate(bulletType, spawnPosition - laserRotation * Vector2.up * 50.0f, laserRotation);
             Bullet_Laser laserAttributes = spawnedLaser.GetComponent<Bullet_Laser>();
             laserAttributes.InitBulletwithSpinup(0.0f, weapon.bulletDamage, 0, 2.0f);
         }

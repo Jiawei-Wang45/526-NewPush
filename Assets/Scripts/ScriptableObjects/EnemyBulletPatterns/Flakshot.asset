@@ -15,6 +15,7 @@ MonoBehaviour:
   bulletCount: 4
   bulletSpeed: 4
   speedVariance: 1
+  bulletType: {fileID: 8604903965720594084, guid: 04d380db99e814f64a851e76366f14f9, type: 3}
   firingAngle: 70
   baseAngleOffset: 0
   bulletDistribution: 1

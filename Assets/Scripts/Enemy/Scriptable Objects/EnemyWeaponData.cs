@@ -7,8 +7,6 @@ public class EnemyWeaponData : ScriptableObject
     public float bulletLifeTime;
     public float bulletDamage;
     public float bulletSpeedRange;
-
-    public GameObject bulletType;
     public float fireRate;
     public BulletPattern bulletPattern;
 

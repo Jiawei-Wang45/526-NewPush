@@ -14,8 +14,11 @@ public class BulletPattern : ScriptableObject
     public int bulletCount = 1;
     public float bulletSpeed = 6;
     public float speedVariance = 0;
+        
+    public GameObject bulletType;
     public float firingAngle = 0;
     public float baseAngleOffset = 0;
+        
     public bulletDistributionTypes bulletDistribution;
 
     public int fireCount = 1;

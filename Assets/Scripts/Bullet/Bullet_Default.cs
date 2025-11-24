@@ -9,6 +9,7 @@ public class Bullet_Default: MonoBehaviour
     public float bulletSpeed;
     public float bulletDamage;
     public int bounceCount = 0;
+    public float bounceMultiplier = 2.0f;
 
 
     //SpeedFactor is used during pause time for the enemy to slow the bullets down, In other case it's 1 by default
@@ -54,7 +55,7 @@ public class Bullet_Default: MonoBehaviour
             if(bounceCount > 0)
             {
                 bounceCount--;
-                bulletDamage *= 2.0f;
+                bulletDamage *= bounceMultiplier;
             }
             else
             {

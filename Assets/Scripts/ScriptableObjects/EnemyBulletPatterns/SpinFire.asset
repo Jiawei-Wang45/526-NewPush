@@ -13,8 +13,14 @@ MonoBehaviour:
   m_Name: SpinFire
   m_EditorClassIdentifier: 
   bulletCount: 4
+  bulletSpeed: 6
+  speedVariance: 0
+  bulletType: {fileID: 8604903965720594084, guid: 04d380db99e814f64a851e76366f14f9, type: 3}
   firingAngle: 360
+  baseAngleOffset: 0
   bulletDistribution: 3
   fireCount: 25
   rotateBetweenFiring: 2
   timeBetweenFiring: 0.1
+  waitUntilDone: 1
+  delayAfterPattern: 0
