@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
 
 public class FireAbility: MonoBehaviour,IWeapon
 {
@@ -20,13 +21,14 @@ public class FireAbility: MonoBehaviour,IWeapon
     private Sword swordAttributes;
     //reload variables
     [Header("Reloading parameters")]
-    private int currentAmmo;
+    public int currentAmmo;
     private bool isReloading = false;
     //reload UI
     [Header("Reload UI settings")]
     public GameObject reloadBar;
     public GameObject backgroundBar;
     public GameObject handle;
+    public GameManager gameManager;
     private float targetOffsetX;
 
 
@@ -42,6 +44,9 @@ public class FireAbility: MonoBehaviour,IWeapon
     private void Start()
     {
         reloadBar.SetActive(false);
+        gameManager = GameManager.instance;
+
+
     }
     #endregion
 
@@ -187,6 +192,8 @@ public class FireAbility: MonoBehaviour,IWeapon
     public void ConsumeAmmo(int amount)
     {
         currentAmmo -= amount;
+        gameManager.UpdateAmmo(currentAmmo,currentWeapon.maxAmmoNums);
+
     }
     #endregion Fire
     #region Reload
@@ -217,6 +224,7 @@ public class FireAbility: MonoBehaviour,IWeapon
             yield return null;
         }
         SetAmmoToMax();
+        gameManager.UpdateAmmo(currentAmmo, currentWeapon.maxAmmoNums);
         ResetReload();
     }
     private void setHandleOffsetX(float percent)
@@ -251,6 +259,10 @@ public class FireAbility: MonoBehaviour,IWeapon
         attackPoint = inAttackPoint;
         animator = inAnimator;
         SetAmmoToMax();
+        if (gameManager)
+        {
+            gameManager.UpdateAmmo(currentAmmo, newWeapon.maxAmmoNums);
+        }
     }
     //private void ResetStates()
     //{

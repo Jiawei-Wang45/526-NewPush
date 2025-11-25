@@ -1,4 +1,5 @@
 using System;
+using GameAnalyticsSDK.Setup;
 using UnityEngine;
 using UnityEngine.Experimental.AI;
 using UnityEngine.InputSystem;
@@ -19,6 +20,7 @@ public class WeaponController : MonoBehaviour
     private const int maxWeaponCount = 6;  //temporarily set to 6, matching nums of the box
     private PlayerBaseWeapon[] weaponList;
     private GameObject weaponInstance;
+    private bool rangedWeaponEquipped = true;
     private int cachedSlotIndex;
 
     private void Awake()
@@ -40,6 +42,13 @@ public class WeaponController : MonoBehaviour
         pc.playerInput.Default.Reload.started += OnReloadTriggered;
         pc.playerInput.Default.ChangeWeapon.started += OnWeaponChanged;
         pc.playerInput.Default.DropWeapon.performed += OnWeaponDropped;
+        if (rangedWeaponEquipped && fireAbility.currentWeapon)
+        {
+            gameManager.UpdateAmmo(fireAbility.currentAmmo, fireAbility.currentWeapon.maxAmmoNums);
+        } else
+        {
+            gameManager.AmmoCounter.text = "";
+        }
     }
     #region callback
     private void OnLeftMouseTriggered(InputAction.CallbackContext context)
@@ -91,14 +100,23 @@ public class WeaponController : MonoBehaviour
         weaponInstance = Instantiate(weaponToEquip.weaponPrefab, weaponHolder.position, weaponHolder.rotation, weaponHolder);
         if (weaponToEquip.weaponClass != WeaponClass.Melee)
         {
+            rangedWeaponEquipped = true;
             IcurrentAbility = fireAbility;
             fireAbility.ChangeWeapon((RangedWeapon)weaponToEquip, weaponInstance.transform.GetChild(0), weaponInstance.GetComponent<Animator>());
+            if(gameManager){
+                gameManager.UpdateAmmo(fireAbility.currentAmmo,fireAbility.currentWeapon.maxAmmoNums);
+            }
         }
         else
         {
+            rangedWeaponEquipped = false;
             IcurrentAbility = meleeAbility;
             meleeAbility.ChangeWeapon((MeleeWeapon)weaponToEquip, weaponInstance.transform.GetChild(0), weaponInstance.GetComponent<Animator>());
             weaponInstance.GetComponent<MeleeWeaponInstance>().InitPlayerAim(playerAim);
+            if(gameManager){
+                gameManager.AmmoCounter.text = "";
+            }
+
         }
         //UI update
         if (updateIcon)

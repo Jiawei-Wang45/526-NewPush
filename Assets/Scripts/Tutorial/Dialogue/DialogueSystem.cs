@@ -23,6 +23,8 @@ public class DialogueSystem : MonoBehaviour
     [NonSerialized] private Dictionary<string, int> idToIndex;
     private bool hasShownButton = false;
 
+    public TMP_Text AmmoCounter;
+
     public delegate void DialogueEndDelegate();
     public event DialogueEndDelegate OnDialogueEnd;
 
@@ -121,6 +123,7 @@ public class DialogueSystem : MonoBehaviour
                 if (!hasShownButton)
                 {
                     isDisplaying = true;
+                    AmmoCounter.alpha = 0f;
                     StartCoroutine(DisplayTextCoroutine());
                 }        
             }
@@ -128,6 +131,7 @@ public class DialogueSystem : MonoBehaviour
             {
                 gameObject.SetActive(false);
                 OnDialogueEnd?.Invoke();
+                AmmoCounter.alpha = 1f;
             }
         }
         else
@@ -141,6 +145,7 @@ public class DialogueSystem : MonoBehaviour
     }
     private IEnumerator DisplayTextCoroutine()
     {
+        AmmoCounter.alpha = 0f;
         displayText.text = "";
         StringBuilder sb = new StringBuilder();
         for (int i=0;i< currentNode.text.Length;i++)

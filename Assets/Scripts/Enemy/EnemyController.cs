@@ -214,8 +214,9 @@ public class EnemyController : MonoBehaviour, IDamagable
             for(int i = 0; i < weapon.compositePatterns.Length; i++)
             {
                 BulletPattern pattern = weapon.compositePatterns[i];
-                float angleOffset = weapon.angleOffsets.Length == weapon.compositePatterns.Length ? weapon.angleOffsets[i] : 0;
-                float speedOffset = weapon.speedOffsets.Length == weapon.compositePatterns.Length ? weapon.speedOffsets[i] : 0;
+
+                float angleOffset = (weapon.angleOffsets != null && weapon.angleOffsets.Length == weapon.compositePatterns.Length) ? weapon.angleOffsets[i] : 0;
+                float speedOffset = (weapon.speedOffsets != null && weapon.speedOffsets.Length == weapon.compositePatterns.Length) ? weapon.speedOffsets[i] : 0;
                 StartCoroutine(FireBulletPattern(pattern, angleOffset, speedOffset));
                 yield return new WaitForSeconds(pattern.waitUntilDone ? (pattern.timeBetweenFiring * pattern.fireCount) + pattern.delayAfterPattern : pattern.delayAfterPattern);
             }

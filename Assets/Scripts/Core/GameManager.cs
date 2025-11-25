@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
     [Header("UI paramaters")]
     public bool isPlayerAlive = true;
     public bool IsPaused { get; set; } = false;
+    public TMP_Text AmmoCounter;
     public GameObject InGamePauseMenu;
     public GameObject InGameEndingMenu;
     public GameObject InGameWinMenu;
@@ -408,6 +409,11 @@ public class GameManager : MonoBehaviour
         {
             InGameDungeonMinimap.RefreshMinimap();
         }
+    }
+
+    public void UpdateAmmo(int ammo, int maxAmmo)
+    {
+        AmmoCounter.text = $"Ammo: {ammo}/{maxAmmo}";
     }
 
     // Called by a WinTrigger when the player reaches the goal
