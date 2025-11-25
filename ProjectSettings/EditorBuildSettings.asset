@@ -20,6 +20,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Level_2.unity
     guid: 7b3c05e70a6c6f54db9475863676b25e
+  - enabled: 1
+    path: Assets/Scenes/Level_3.unity
+    guid: 3cd61fb63da8e51468d56a79ec03ed47
   - enabled: 0
     path: Assets/Scenes/AlphaProgressCheck.unity
     guid: 03d535e78de2342b2b0e17331bb0e1f1

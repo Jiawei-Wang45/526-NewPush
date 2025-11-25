@@ -21,8 +21,8 @@ public class GameManagerForMenu : MonoBehaviour
 
     // Level Selection Management
     [Header("Level Selection")]
-    public string[] levelScenes = { "Level_1", "Level_2" };
-    public string[] levelNames = { "Level 1", "Level 2" };
+    public string[] levelScenes = { "Level_1", "Level_2", "Level_3" };
+    public string[] levelNames = { "Level 1", "Level 2", "Level 3" };
     private int selectedLevelIndex = 0;
     
     // CharacterConfig Management

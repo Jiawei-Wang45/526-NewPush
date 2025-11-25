@@ -27,7 +27,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Level Selection")]
     // Level scenes array, matching GameManagerForMenu for consistency
-    public string[] levelScenes = { "Level_1", "Level_2" };
+    public string[] levelScenes = { "Level_1", "Level_2", "Level_3" };
 
     [Header("Dungeon Rooms")]
     // Rooms in dungeon order. Assign in the inspector or dynamically at runtime.
