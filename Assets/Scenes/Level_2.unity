@@ -2963,6 +2963,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentWeapon: {fileID: 0}
   laser: {fileID: 3935374861718379042, guid: e434ac2d0536a9d4eb68dc3b8cb3ea17, type: 3}
+  currentAmmo: 0
   reloadBar: {fileID: 911609896}
   backgroundBar: {fileID: 2077663346}
   handle: {fileID: 1020185714}
@@ -3056,7 +3057,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!212 &651692631
 SpriteRenderer:
