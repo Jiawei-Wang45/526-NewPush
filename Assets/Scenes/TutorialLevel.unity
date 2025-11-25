@@ -11103,7 +11103,6 @@ GameObject:
   - component: {fileID: 987177546}
   - component: {fileID: 987177545}
   - component: {fileID: 987177544}
-  - component: {fileID: 987177543}
   - component: {fileID: 987177542}
   m_Layer: 3
   m_Name: Player
@@ -11237,18 +11236,6 @@ TrailRenderer:
   m_Autodestruct: 0
   m_Emitting: 0
   m_ApplyActiveColorSpace: 1
---- !u!114 &987177543
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 987177541}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5cc9f3fb9d696224a92c72fb934223d3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &987177544
 MonoBehaviour:
   m_ObjectHideFlags: 0
