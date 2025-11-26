@@ -10,17 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9fd78b07c1d854bed858b02a0fde1ad2, type: 3}
-  m_Name: BossRadial
+  m_Name: Boss1Buckshot
   m_EditorClassIdentifier: 
-  bulletCount: 12
-  bulletSpeed: 6
-  speedVariance: 0
+  bulletCount: 8
+  bulletSpeed: 5
+  speedVariance: 2
   bulletType: {fileID: 8604903965720594084, guid: 04d380db99e814f64a851e76366f14f9, type: 3}
-  firingAngle: 360
+  firingAngle: 40
   baseAngleOffset: 0
-  bulletDistribution: 3
-  fireCount: 6
-  rotateBetweenFiring: 15
-  timeBetweenFiring: 0.4
+  bulletDistribution: 2
+  fireCount: 1
+  rotateBetweenFiring: 0
+  timeBetweenFiring: 0
+  speedChangeBetweenFiring: 0
   waitUntilDone: 1
   delayAfterPattern: 0

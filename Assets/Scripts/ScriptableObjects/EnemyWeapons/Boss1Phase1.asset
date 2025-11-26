@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f049e53cb6dc4a2285268441f6201fb, type: 3}
+  m_Name: Boss1Phase1
+  m_EditorClassIdentifier: 
+  bulletLifeTime: 10
+  bulletDamage: 1
+  bulletSpeedRange: 0
+  fireRate: 2
+  bulletPattern: {fileID: 11400000, guid: 26ff04cf925fc9d45ac2dd73f2b774ca, type: 2}
+  isComplex: 1
+  isLaser: 0
+  compositePatterns:
+  - {fileID: 11400000, guid: 26ff04cf925fc9d45ac2dd73f2b774ca, type: 2}
+  - {fileID: 11400000, guid: 4c4182ae52dab440b89d7437150b0d11, type: 2}
+  - {fileID: 11400000, guid: 4c4182ae52dab440b89d7437150b0d11, type: 2}
+  - {fileID: 11400000, guid: 4c4182ae52dab440b89d7437150b0d11, type: 2}
+  - {fileID: 11400000, guid: 425024253b98644389f7135240778f8b, type: 2}
+  - {fileID: 11400000, guid: 4f94ba6ad0e464cbea9d2fab6d6e2ca4, type: 2}
+  - {fileID: 11400000, guid: 4f94ba6ad0e464cbea9d2fab6d6e2ca4, type: 2}
+  - {fileID: 11400000, guid: 4f94ba6ad0e464cbea9d2fab6d6e2ca4, type: 2}
+  angleOffsets:
+  - 0
+  - 80
+  - -80
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  speedOffsets:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - -4
+  - 4

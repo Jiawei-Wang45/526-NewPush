@@ -25,6 +25,7 @@ public class BulletPattern : ScriptableObject
 
     public float rotateBetweenFiring = 0;
     public float timeBetweenFiring = 0;
+    public float speedChangeBetweenFiring = 0;
 
     [Header("For composite patterns")]
     public bool waitUntilDone = true;

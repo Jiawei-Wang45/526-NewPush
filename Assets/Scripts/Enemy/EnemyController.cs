@@ -244,8 +244,12 @@ public class EnemyController : MonoBehaviour, IDamagable
 
     private void FireOnce(int volleyIndex, BulletPattern pattern, float angleOffset, float speedOffset)
     {
+        if (pattern.bulletCount == 0)
+        {
+            return;
+        }
         float baseAngle = enemyAim.eulerAngles.z + (pattern.rotateBetweenFiring * volleyIndex * spinFactor) + pattern.baseAngleOffset + angleOffset;
-        float bulletSpeed = pattern.bulletSpeed + speedOffset;
+        float bulletSpeed = pattern.bulletSpeed + (pattern.speedChangeBetweenFiring * volleyIndex) + speedOffset;
         if (pattern.bulletCount == 1)
         {
             float speedVariance = UnityEngine.Random.Range(pattern.speedVariance, -pattern.speedVariance);

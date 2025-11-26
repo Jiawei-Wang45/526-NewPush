@@ -10,17 +10,27 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8f049e53cb6dc4a2285268441f6201fb, type: 3}
-  m_Name: Cluster Launcher
+  m_Name: Boss1Phase2
   m_EditorClassIdentifier: 
   bulletLifeTime: 10
-  bulletDamage: 3
+  bulletDamage: 2
   bulletSpeedRange: 0
-  fireRate: 3.5
+  fireRate: 2
   bulletPattern: {fileID: 0}
   isComplex: 1
   isLaser: 0
   compositePatterns:
-  - {fileID: 11400000, guid: 423bafc3406bd4f4889e93bd0d5b216a, type: 2}
-  - {fileID: 11400000, guid: 8267309bc5aa642d1b216613d71a6da0, type: 2}
-  angleOffsets: []
-  speedOffsets: []
+  - {fileID: 11400000, guid: b5e092c5c012d7143aa96a06c907a9f6, type: 2}
+  - {fileID: 11400000, guid: 4c4182ae52dab440b89d7437150b0d11, type: 2}
+  - {fileID: 11400000, guid: 4c4182ae52dab440b89d7437150b0d11, type: 2}
+  - {fileID: 11400000, guid: 4c4182ae52dab440b89d7437150b0d11, type: 2}
+  angleOffsets:
+  - 0
+  - 0
+  - -80
+  - 80
+  speedOffsets:
+  - 0
+  - 0
+  - 0
+  - 0

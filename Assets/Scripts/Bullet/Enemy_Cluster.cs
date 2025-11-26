@@ -27,7 +27,7 @@ public class Enemy_Cluster : Bullet_Default
         {
             damagable.TakeDamage(bulletDamage);
         }   
-        if (collision.collider.gameObject.layer == LayerMask.NameToLayer("Wall"))
+        if (!(collision.collider.gameObject.layer == LayerMask.NameToLayer("Player")))
         {
             AudioManager.instance.PlaySound("explosion");
             Vector2 reverseDir = -transform.right;

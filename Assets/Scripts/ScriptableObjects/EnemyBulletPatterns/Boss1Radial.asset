@@ -10,17 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9fd78b07c1d854bed858b02a0fde1ad2, type: 3}
-  m_Name: BossSpinFire
+  m_Name: Boss1Radial
   m_EditorClassIdentifier: 
-  bulletCount: 8
-  bulletSpeed: 6
+  bulletCount: 2
+  bulletSpeed: 4
   speedVariance: 0
   bulletType: {fileID: 8604903965720594084, guid: 04d380db99e814f64a851e76366f14f9, type: 3}
   firingAngle: 360
   baseAngleOffset: 0
   bulletDistribution: 3
-  fireCount: 50
-  rotateBetweenFiring: 2
-  timeBetweenFiring: 0.15
+  fireCount: 60
+  rotateBetweenFiring: 15
+  timeBetweenFiring: 0.05
+  speedChangeBetweenFiring: 0.2
   waitUntilDone: 1
   delayAfterPattern: 0
