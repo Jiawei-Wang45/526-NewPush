@@ -10,17 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9fd78b07c1d854bed858b02a0fde1ad2, type: 3}
-  m_Name: BossLaser
+  m_Name: Boss2Spray
   m_EditorClassIdentifier: 
-  bulletCount: 5
-  bulletSpeed: 1
-  speedVariance: 0
-  bulletType: {fileID: 3935374861718379042, guid: f48af251745181548adf9b30f9a111c6, type: 3}
-  firingAngle: 0
+  bulletCount: 2
+  bulletSpeed: 9
+  speedVariance: 2
+  bulletType: {fileID: 8604903965720594084, guid: 04d380db99e814f64a851e76366f14f9, type: 3}
+  isLaser: 0
+  firingAngle: 90
   baseAngleOffset: 0
   bulletDistribution: 2
-  fireCount: 1
-  rotateBetweenFiring: 15
-  timeBetweenFiring: 0.4
+  fireCount: 10
+  rotateBetweenFiring: 0
+  timeBetweenFiring: 0.2
+  speedChangeBetweenFiring: 0
   waitUntilDone: 1
   delayAfterPattern: 0

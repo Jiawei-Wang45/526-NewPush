@@ -10,14 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8f049e53cb6dc4a2285268441f6201fb, type: 3}
-  m_Name: bulletLine
+  m_Name: Boss2Phase1
   m_EditorClassIdentifier: 
   bulletLifeTime: 8
-  bulletDamage: 0.5
-  bulletSpeed: 1
+  bulletDamage: 3
   bulletSpeedRange: 4
-  bulletType: {fileID: 8604903965720594084, guid: 04d380db99e814f64a851e76366f14f9, type: 3}
   fireRate: 0.5
-  bulletPattern: {fileID: 11400000, guid: 76732713d7dd0404c9dd050f7b469922, type: 2}
-  isComplex: 0
-  compositePatterns: []
+  bulletPattern: {fileID: 0}
+  isComplex: 1
+  isLaser: 0
+  compositePatterns:
+  - {fileID: 11400000, guid: 385de04f1444048cc895b7d6f4fc0f9f, type: 2}
+  - {fileID: 11400000, guid: 18aed9fd071db8549ae821a9517b31da, type: 2}
+  angleOffsets: []
+  speedOffsets: []

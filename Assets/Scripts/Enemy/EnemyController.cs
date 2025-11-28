@@ -255,11 +255,11 @@ public class EnemyController : MonoBehaviour, IDamagable
             float speedVariance = UnityEngine.Random.Range(pattern.speedVariance, -pattern.speedVariance);
             if (pattern.bulletDistribution == BulletPattern.bulletDistributionTypes.Even)
             {
-                CreateBullet(baseAngle, bulletSpeed + speedVariance, pattern.bulletType);
+                CreateBullet(baseAngle, bulletSpeed + speedVariance, pattern.bulletType, pattern.isLaser);
             }
             else
             {
-                CreateBullet(baseAngle + UnityEngine.Random.Range(-pattern.firingAngle / 2, pattern.firingAngle / 2), bulletSpeed + speedVariance, pattern.bulletType);
+                CreateBullet(baseAngle + UnityEngine.Random.Range(-pattern.firingAngle / 2, pattern.firingAngle / 2), bulletSpeed + speedVariance, pattern.bulletType, pattern.isLaser);
             }
         }
         else
@@ -308,7 +308,7 @@ public class EnemyController : MonoBehaviour, IDamagable
                 {
                     CreateBullet(
                         change + (volleyIndex * pattern.rotateBetweenFiring * spinFactor), 
-                        bulletSpeed + (bulletInd * weapon.bulletSpeedRange / pattern.bulletCount) + speedVariance, pattern.bulletType);
+                        bulletSpeed + (bulletInd * weapon.bulletSpeedRange / pattern.bulletCount) + speedVariance, pattern.bulletType, pattern.isLaser);
                 }
                 else
                 {
@@ -316,6 +316,7 @@ public class EnemyController : MonoBehaviour, IDamagable
                         baseAngle + change + (volleyIndex * pattern.rotateBetweenFiring * spinFactor),
                         bulletSpeed + (bulletInd * weapon.bulletSpeedRange / pattern.bulletCount) + speedVariance, 
                         pattern.bulletType,
+                        pattern.isLaser,
                         0.0f, 
                         centerPosition);   
                 }
@@ -324,14 +325,14 @@ public class EnemyController : MonoBehaviour, IDamagable
         }
     }
 
-    private void CreateBullet(float angle, float speed, GameObject bulletType, float offsetDistance = 0.0f, Vector3? centerPosition = null)
+    private void CreateBullet(float angle, float speed, GameObject bulletType, bool isLaser, float offsetDistance = 0.0f, Vector3? centerPosition = null)
     {
         if(centerPosition == null) centerPosition = Vector3.zero;
         Vector2 spawnVector = new Vector2(Mathf.Cos(angle * Mathf.Deg2Rad), Mathf.Sin(angle * Mathf.Deg2Rad));
         Vector3 spawnPosition = Vector3.zero;
         offsetDistance = GetComponent<Collider2D>().bounds.extents.magnitude * 0.9f;
         Quaternion rotation = Quaternion.Euler(0, 0, angle);
-        if(!weapon.isLaser)
+        if(!isLaser)
         {
             spawnPosition = transform.position + (Vector3)centerPosition + (Vector3)(spawnVector * offsetDistance);
             GameObject spawnedBullet = Instantiate(bulletType, spawnPosition, rotation);

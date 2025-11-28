@@ -16,6 +16,7 @@ public class BulletPattern : ScriptableObject
     public float speedVariance = 0;
         
     public GameObject bulletType;
+    public bool isLaser = false;
     public float firingAngle = 0;
     public float baseAngleOffset = 0;
         

@@ -10,19 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9fd78b07c1d854bed858b02a0fde1ad2, type: 3}
-  m_Name: bulletLine
+  m_Name: Boss2SpinFire
   m_EditorClassIdentifier: 
-  bulletCount: 15
-  bulletSpeed: 1
+  bulletCount: 5
+  bulletSpeed: 6
   speedVariance: 0
   bulletType: {fileID: 8604903965720594084, guid: 04d380db99e814f64a851e76366f14f9, type: 3}
-  isLaser: 0
-  firingAngle: 5
+  firingAngle: 360
   baseAngleOffset: 0
-  bulletDistribution: 2
-  fireCount: 1
-  rotateBetweenFiring: 0
+  bulletDistribution: 3
+  fireCount: 900
+  rotateBetweenFiring: 4
   timeBetweenFiring: 0.1
-  speedChangeBetweenFiring: 1
-  waitUntilDone: 0
-  delayAfterPattern: 0.5
+  waitUntilDone: 1
+  delayAfterPattern: 0

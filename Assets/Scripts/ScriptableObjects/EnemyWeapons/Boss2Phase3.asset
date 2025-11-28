@@ -10,15 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8f049e53cb6dc4a2285268441f6201fb, type: 3}
-  m_Name: BossLaser
+  m_Name: Boss2Phase3
   m_EditorClassIdentifier: 
-  bulletLifeTime: 8
-  bulletDamage: 3
-  bulletSpeed: 1
-  bulletSpeedRange: 4
-  bulletType: {fileID: 3935374861718379042, guid: f48af251745181548adf9b30f9a111c6, type: 3}
+  bulletLifeTime: 10
+  bulletDamage: 1
+  bulletSpeed: 6
+  bulletSpeedRange: 0
+  bulletType: {fileID: 8604903965720594084, guid: 04d380db99e814f64a851e76366f14f9, type: 3}
   fireRate: 5
-  bulletPattern: {fileID: 11400000, guid: 18aed9fd071db8549ae821a9517b31da, type: 2}
+  bulletPattern: {fileID: 11400000, guid: 5bbc052f722c9404fb5a733715b19bf5, type: 2}
   isComplex: 0
-  isLaser: 1
   compositePatterns: []
