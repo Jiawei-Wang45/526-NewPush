@@ -15,6 +15,8 @@ public class EnemyController : MonoBehaviour, IDamagable
     [NonSerialized] private Rigidbody2D rb;
     [NonSerialized] protected GameManager gameManager;
     [NonSerialized] protected Transform enemyAim;
+    [NonSerialized] private Animator anim;
+    [NonSerialized] private SpriteRenderer spriteRenderer;
     public float RotationSpeed = 15.0f;
     public float enemySpeed;
     public float comfortableDistance = 5.0f;
@@ -39,6 +41,8 @@ public class EnemyController : MonoBehaviour, IDamagable
         rb = GetComponent<Rigidbody2D>();
         enemyStats = GetComponent<EnemyStats>();
         enemyAim = transform.Find("EnemyAim");
+        anim = GetComponent<Animator>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
         //gameManager.onReset += ResetStates;
     }
     protected virtual void Start()
@@ -107,6 +111,18 @@ public class EnemyController : MonoBehaviour, IDamagable
                     factor = (transform.position - pc.transform.position).magnitude > comfortableDistance ? 1.0f : -1.0f * movementPattern.BackoffSpeedFactor;
                 }
                 rb.linearVelocity = factor * direction.normalized * enemySpeed / slowFactor;
+                
+                // Control walking animation if animator exists
+                if (anim != null)
+                {
+                    anim.SetBool("isWalking", rb.linearVelocity.magnitude > 0.1f);
+                }
+                
+                // Flip sprite when moving right
+                if (spriteRenderer != null && rb.linearVelocity.magnitude > 0.1f)
+                {
+                    spriteRenderer.flipX = rb.linearVelocity.x > 0;
+                }
             }
             else
             {
@@ -125,7 +141,25 @@ public class EnemyController : MonoBehaviour, IDamagable
                         Quaternion targetRotation = Quaternion.AngleAxis(angle, Vector3.forward);
                         enemyAim.rotation = Quaternion.Slerp(enemyAim.rotation, targetRotation, RotationSpeed * Time.fixedDeltaTime / slowFactor);
                         rb.linearVelocity = direction.normalized * enemySpeed / slowFactor;
+                        
+                        // Control walking animation if animator exists
+                        if (anim != null)
+                        {
+                            anim.SetBool("isWalking", rb.linearVelocity.magnitude > 0.1f);
+                        }
+                        
+                        // Flip sprite when moving right
+                        if (spriteRenderer != null && rb.linearVelocity.magnitude > 0.1f)
+                        {
+                            spriteRenderer.flipX = rb.linearVelocity.x > 0;
+                        }
                         break;
+                }
+                
+                // Stop animation when idle
+                if (anim != null && movementPattern.idleBehavior == EnemyMovementPattern.idleBehaviors.Stops)
+                {
+                    anim.SetBool("isWalking", false);
                 }
             }
         }
