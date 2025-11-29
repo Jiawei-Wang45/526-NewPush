@@ -1,3 +1,5 @@
+using System;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 /// <summary>
@@ -6,6 +8,8 @@ using UnityEngine;
 /// </summary>
 public static class RoomBuilder
 {
+    //private static readonly string[] doorNames = { "Door_North", "Door_East", "Door_South", "Door_West" };
+    //private static readonly string[] blockNames = { "Block_North", "Block_East", "Block_South", "Block_West" };
     public static void Build(Transform parent, float size, GameObject floorPrefab, GameObject wallPrefab, GameObject doorPrefab, float wallThickness, float doorOutsideOffset, bool clearExistingChildren)
     {
         if (parent == null) return;
@@ -17,7 +21,7 @@ public static class RoomBuilder
         GameObject floor = null;
         if (floorPrefab != null)
         {
-            floor = Object.Instantiate(floorPrefab, parent);
+            floor = GameObject.Instantiate(floorPrefab, parent);
             floor.AddComponent<RoomBuilderMarker>();
         }
         else
@@ -32,61 +36,62 @@ public static class RoomBuilder
         floor.transform.localPosition = Vector3.zero;
 
         // measure door size in world units (fallback to 1f if missing)
-        float doorWidth = 1f;
+        float doorLength = 1f;
         if (doorPrefab != null)
         {
             var dr = doorPrefab.GetComponentInChildren<Renderer>();
             if (dr != null)
             {
-                doorWidth = dr.bounds.size.y;
-                if (doorWidth <= 0f) doorWidth = 1f;
+                doorLength = dr.bounds.size.y;
+                if (doorLength <= 0f) doorLength = 1f;
             }
         }
 
         // Horizontal walls (north/south): split by doorWidth
-        float halfGapH = Mathf.Max(0f, (size - doorWidth) / 2f);
-        float leftLenH = halfGapH + wallThickness;
-        float rightLenH = leftLenH;
+        float halfGap = Mathf.Max(0f, (size - doorLength) / 2f);
+        float leftLen = halfGap + wallThickness;
+        float rightLen = leftLen;
 
         // North
-        CreateWall(parent, new Vector2(-(doorWidth / 2f + leftLenH / 2f), (size / 2f) + (wallThickness / 2f)), new Vector2(leftLenH, wallThickness), 0f, "Wall_North_Left", wallPrefab);
-        CreateWall(parent, new Vector2((doorWidth / 2f + rightLenH / 2f), (size / 2f) + (wallThickness / 2f)), new Vector2(rightLenH, wallThickness), 0f, "Wall_North_Right", wallPrefab);
+        CreateWall(parent, new Vector2(-(doorLength / 2f + leftLen / 2f), (size / 2f) + (wallThickness / 2f)), new Vector2(leftLen, wallThickness), 0f, "Wall_North_Left", wallPrefab);
+        CreateWall(parent, new Vector2((doorLength / 2f + rightLen / 2f), (size / 2f) + (wallThickness / 2f)), new Vector2(rightLen, wallThickness), 0f, "Wall_North_Right", wallPrefab);
 
         // South
-        CreateWall(parent, new Vector2(-(doorWidth / 2f + leftLenH / 2f), -(size / 2f) - (wallThickness / 2f)), new Vector2(leftLenH, wallThickness), 0f, "Wall_South_Left", wallPrefab);
-        CreateWall(parent, new Vector2((doorWidth / 2f + rightLenH / 2f), -(size / 2f) - (wallThickness / 2f)), new Vector2(rightLenH, wallThickness), 0f, "Wall_South_Right", wallPrefab);
+        CreateWall(parent, new Vector2(-(doorLength / 2f + leftLen / 2f), -(size / 2f) - (wallThickness / 2f)), new Vector2(leftLen, wallThickness), 0f, "Wall_South_Left", wallPrefab);
+        CreateWall(parent, new Vector2((doorLength / 2f + rightLen / 2f), -(size / 2f) - (wallThickness / 2f)), new Vector2(rightLen, wallThickness), 0f, "Wall_South_Right", wallPrefab);
 
         // Vertical walls (east/west): need door height
-        float doorHeight = 1f;
-        if (doorPrefab != null)
+ 
+        CreateWall(parent, new Vector2((size / 2f) + (wallThickness / 2f), -(doorLength / 2f + leftLen / 2f)), new Vector2(wallThickness, leftLen), 0f, "Wall_East_Bottom", wallPrefab);
+        CreateWall(parent, new Vector2((size / 2f) + (wallThickness / 2f), (doorLength / 2f + rightLen / 2f)), new Vector2(wallThickness, rightLen), 0f, "Wall_East_Top", wallPrefab);
+
+        CreateWall(parent, new Vector2(-(size / 2f) - (wallThickness / 2f), -(doorLength / 2f + leftLen / 2f)), new Vector2(wallThickness, leftLen), 0f, "Wall_West_Bottom", wallPrefab);
+        CreateWall(parent, new Vector2(-(size / 2f) - (wallThickness / 2f), (doorLength / 2f + rightLen / 2f)), new Vector2(wallThickness, rightLen), 0f, "Wall_West_Top", wallPrefab);
+
+        // delay creating doors since we may not need it
+        //if (doorPrefab != null)
+        //{
+        //    CreateDoor(parent, new Vector3(0f, size / 2f + doorOutsideOffset, 0f), 90f, "Door_North", doorPrefab);
+        //    CreateDoor(parent, new Vector3(0f, -size / 2f - doorOutsideOffset, 0f), -90f, "Door_South", doorPrefab);
+        //    CreateDoor(parent, new Vector3(size / 2f + doorOutsideOffset, 0f, 0f), 0f, "Door_East", doorPrefab);
+        //    CreateDoor(parent, new Vector3(-size / 2f - doorOutsideOffset, 0f, 0f), 0f, "Door_West", doorPrefab);
+        //}
+        RoomManager rm = parent.gameObject.GetComponent<RoomManager>();
+        int ObstacleNums = Enum.GetValues(typeof(RoomManager.ObstacleDirection)).Length;
+        for (int i = 0; i < ObstacleNums; i++)
         {
-            var dr = doorPrefab.GetComponentInChildren<Renderer>();
-            if (dr != null)
+            var dir = (RoomManager.ObstacleDirection)i;
+            var mode = rm.GetDoorMode(dir);
+            if (mode == RoomManager.DoorMode.PermanentlyLocked)
             {
-                doorHeight = dr.bounds.size.y;
-                if (doorHeight <= 0f) doorHeight = 1f;
+
+                CreateObstacle(rm, dir, size / 2 + doorOutsideOffset, $"Block_{dir}", wallPrefab);
+            }
+            else
+            {
+                CreateObstacle(rm, dir, size / 2 + doorOutsideOffset, $"Door_{dir}_Block", doorPrefab);
             }
         }
-
-        float halfGapV = Mathf.Max(0f, (size - doorHeight) / 2f);
-        float leftLenV = halfGapV + wallThickness;
-        float rightLenV = leftLenV;
-
-        CreateWall(parent, new Vector2((size / 2f) + (wallThickness / 2f), -(doorHeight / 2f + leftLenV / 2f)), new Vector2(wallThickness, leftLenV), 0f, "Wall_East_Bottom", wallPrefab);
-        CreateWall(parent, new Vector2((size / 2f) + (wallThickness / 2f), (doorHeight / 2f + rightLenV / 2f)), new Vector2(wallThickness, rightLenV), 0f, "Wall_East_Top", wallPrefab);
-
-        CreateWall(parent, new Vector2(-(size / 2f) - (wallThickness / 2f), -(doorHeight / 2f + leftLenV / 2f)), new Vector2(wallThickness, leftLenV), 0f, "Wall_West_Bottom", wallPrefab);
-        CreateWall(parent, new Vector2(-(size / 2f) - (wallThickness / 2f), (doorHeight / 2f + rightLenV / 2f)), new Vector2(wallThickness, rightLenV), 0f, "Wall_West_Top", wallPrefab);
-
-        // create doors at midpoint of each wall (place in front)
-        if (doorPrefab != null)
-        {
-            CreateDoor(parent, new Vector3(0f, size / 2f + doorOutsideOffset, 0f), 90f, "Door_North", doorPrefab);
-            CreateDoor(parent, new Vector3(0f, -size / 2f - doorOutsideOffset, 0f), -90f, "Door_South", doorPrefab);
-            CreateDoor(parent, new Vector3(size / 2f + doorOutsideOffset, 0f, 0f), 0f, "Door_East", doorPrefab);
-            CreateDoor(parent, new Vector3(-size / 2f - doorOutsideOffset, 0f, 0f), 0f, "Door_West", doorPrefab);
-        }
-
         // Create or update a BoxCollider2D on the parent to act as the room trigger.
         var existing = parent.gameObject.GetComponent<BoxCollider2D>();
         if (existing == null)
@@ -105,7 +110,7 @@ public static class RoomBuilder
             var c = parent.GetChild(i).gameObject;
             if (!clearExistingChildren)
             {
-                if (c.GetComponentInChildren<EnemySpawner>() != null || c.GetComponent<EnemySpawner>() != null)
+                if (c.GetComponentInChildren<EnemySpawner>(true) != null)
                 {
                     continue;
                 }
@@ -117,17 +122,17 @@ public static class RoomBuilder
             }
 
 #if UNITY_EDITOR
-            Object.DestroyImmediate(c);
+            GameObject.DestroyImmediate(c);
 #else
             Object.Destroy(c);
 #endif
         }
     }
 
-    private static void CreateWall(Transform parent, Vector2 localPos, Vector2 size, float zRot, string name, GameObject wallPrefab)
+    private static void CreateWall(Transform parent,Vector2 localPos, Vector2 size, float zRot, string name, GameObject wallPrefab)
     {
         GameObject wall;
-        if (wallPrefab != null) wall = Object.Instantiate(wallPrefab, parent);
+        if (wallPrefab != null) wall = GameObject.Instantiate(wallPrefab, parent);
         else
         {
             wall = new GameObject(name);
@@ -142,21 +147,46 @@ public static class RoomBuilder
         wall.AddComponent<RoomBuilderMarker>();
     }
 
-    private static void CreateDoor(Transform parent, Vector3 localPos, float zRot, string name, GameObject doorPrefab)
+    private static void CreateObstacle(RoomManager rm, RoomManager.ObstacleDirection dir, float offset, string name, GameObject obstaclePrefab)
     {
-        var door = Object.Instantiate(doorPrefab, parent);
-        door.name = name;
-        door.transform.localPosition = localPos;
-        door.transform.localRotation = Quaternion.Euler(0f, 0f, zRot);
-        var sr = door.GetComponentInChildren<SpriteRenderer>();
+        if (!obstaclePrefab) return;
+        Vector3 localPos=new Vector3();
+        float zRot = 0;
+        GameObject obstacle = GameObject.Instantiate(obstaclePrefab,rm.transform);
+        switch (dir)
+        {
+            case RoomManager.ObstacleDirection.North:
+                localPos = new Vector3(0, offset);
+                zRot = 90;
+                rm.obstacleNorth = obstacle;
+                break;
+            case RoomManager.ObstacleDirection.East:
+                localPos = new Vector3(offset, 0);
+                zRot = 0;
+                rm.obstacleEast = obstacle;
+                break;
+            case RoomManager.ObstacleDirection.South:
+                localPos = new Vector3(0, -offset);
+                zRot = -90;
+                rm.obstacleSouth = obstacle;
+                break;
+            case RoomManager.ObstacleDirection.West:
+                localPos = new Vector3(-offset, 0);
+                zRot = 0;
+                rm.obstacleWest = obstacle;
+                break;
+        }
+        obstacle.name = name;
+        obstacle.transform.localPosition = localPos;
+        obstacle.transform.localRotation= Quaternion.Euler(0f, 0f, zRot);
+        var sr = obstacle.GetComponentInChildren<SpriteRenderer>();
         if (sr != null)
         {
             sr.sortingOrder += 10;
         }
-        door.transform.SetAsLastSibling();
-        door.AddComponent<RoomBuilderMarker>();
+        //obstacle.transform.SetAsLastSibling();
+        obstacle.AddComponent<RoomBuilderMarker>();
     }
-
     private static void ScaleToSize(GameObject go, Vector2 targetSize)
     {
         if (go == null) return;

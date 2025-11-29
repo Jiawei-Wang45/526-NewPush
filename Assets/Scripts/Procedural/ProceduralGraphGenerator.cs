@@ -3,6 +3,13 @@ using UnityEngine;
 
 public static class ProceduralGraphGenerator
 {
+    private static readonly Vector2Int[] dirs =
+{
+    Vector2Int.up,
+    Vector2Int.right,
+    Vector2Int.down,
+    Vector2Int.left
+};
     public class GenerationResult
     {
         public List<Vector2Int> occupiedCells = new List<Vector2Int>();
@@ -38,9 +45,7 @@ public static class ProceduralGraphGenerator
             var cell = frontier[idx];
             frontier.RemoveAt(idx);
             occupiedCells.Add(cell);
-
-            Vector2Int[] dirs = new Vector2Int[] { Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left };
-            foreach (var d in dirs)
+            foreach (var d in ProceduralGraphGenerator.dirs)
             {
                 var nb = cell + d;
                 if (nb.x < 0 || nb.y < 0 || nb.x >= gridWidth || nb.y >= gridHeight) continue;
@@ -57,11 +62,10 @@ public static class ProceduralGraphGenerator
         var graph = new Dictionary<int, List<int>>();
         for (int i = 0; i < occupiedCells.Count; i++) graph[i] = new List<int>();
 
-        Vector2Int[] dirs2 = new Vector2Int[] { Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left };
         for (int i = 0; i < occupiedCells.Count; i++)
         {
             var c = occupiedCells[i];
-            foreach (var d in dirs2)
+            foreach (var d in dirs)
             {
                 var nb = c + d;
                 if (map.TryGetValue(nb, out int j))

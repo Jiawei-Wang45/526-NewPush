@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -11,18 +12,18 @@ public class RoomManager : MonoBehaviour
     public Collider2D roomTrigger;
 
     // Doors to activate when room is closed. Each side can be assigned or left null.
-    public enum DoorDirection { North, East, South, West }
+    public enum ObstacleDirection { North, East, South, West }
 
-    // Door GameObjects and modes are stored on RoomManager. RoomDoors is a static helper.
-    public GameObject doorNorth;
-    public GameObject doorEast;
-    public GameObject doorSouth;
-    public GameObject doorWest;
+    // use Obstacle instead, cause it may not be the door.  
+    public GameObject obstacleNorth;
+    public GameObject obstacleEast;
+    public GameObject obstacleSouth;
+    public GameObject obstacleWest;
 
-    public DoorMode doorNorthMode = DoorMode.Normal;
-    public DoorMode doorEastMode = DoorMode.Normal;
-    public DoorMode doorSouthMode = DoorMode.Normal;
-    public DoorMode doorWestMode = DoorMode.Normal;
+    public DoorMode obstacleNorthMode = DoorMode.Normal;
+    public DoorMode obstacleEastMode = DoorMode.Normal;
+    public DoorMode obstacleSouthMode = DoorMode.Normal;
+    public DoorMode obstacleWestMode = DoorMode.Normal;
 
     [Header("Builder (prefabs & options)")]
     // Prefabs and layout options (moved from RoomBuilder into RoomManager)
@@ -38,9 +39,9 @@ public class RoomManager : MonoBehaviour
     // If the door GameObject contains a child named "ExitPoint" that Transform will be used
     // (allowing prefab authors to customize the exact anchor). Otherwise the door GameObject
     // position is returned.
-    public Vector3 GetDoorEndpoint(DoorDirection dir)
+    public Vector3 GetDoorEndpoint(ObstacleDirection dir)
     {
-        var door = GetDoor(dir);
+        var door = GetObstacle(dir);
         if (door == null) return Vector3.zero;
         var exit = door.transform.Find("ExitPoint");
         if (exit != null) return exit.position;
@@ -48,18 +49,38 @@ public class RoomManager : MonoBehaviour
     }
 
     // Helper accessors for external systems (e.g. procedural generator) to query existing doors.
-    public GameObject GetDoor(DoorDirection dir) => RoomDoors.GetDoor(this, dir);
+    public GameObject GetObstacle(ObstacleDirection dir)
+    {
+        switch (dir)
+        {
+            case RoomManager.ObstacleDirection.North: return obstacleNorth;
+            case RoomManager.ObstacleDirection.East: return obstacleEast;
+            case RoomManager.ObstacleDirection.South: return obstacleSouth;
+            case RoomManager.ObstacleDirection.West: return obstacleWest;
+            default: return null;
+        }
+    }
 
-    public bool HasDoor(DoorDirection dir) => GetDoor(dir) != null;
+    //public bool HasDoor(ObstacleDirection dir) => GetDoor(dir) != null;
 
-    public GameObject[] GetAllDoors() => RoomDoors.GetAllDoors(this);
+    //public GameObject[] GetAllDoors() => RoomDoors.GetAllDoors(this);
 
     public enum DoorMode { Normal, PermanentlyLocked }
 
     // Backwards-compatible accessors that forward to RoomDoors
-    public DoorMode GetDoorMode(DoorDirection dir) => RoomDoors.GetDoorMode(this, dir);
+    public DoorMode GetDoorMode(ObstacleDirection dir)
+    {
+        switch (dir)
+        {
+            case RoomManager.ObstacleDirection.North: return obstacleNorthMode;
+            case RoomManager.ObstacleDirection.East: return obstacleEastMode;
+            case RoomManager.ObstacleDirection.South: return obstacleSouthMode;
+            case RoomManager.ObstacleDirection.West: return obstacleWestMode;
+            default: return RoomManager.DoorMode.Normal;
+        }
+    }
 
-    public void SetDoorMode(DoorDirection dir, DoorMode mode) => RoomDoors.SetDoorMode(this, dir, mode);
+    public void SetDoorMode(ObstacleDirection dir, DoorMode mode) => RoomDoors.SetDoorMode(this, dir, mode);
 
     // Enemy spawner inside this room. This project uses a single spawner per room.
     // Assign the spawner in the Inspector to `enemySpawner`.
@@ -97,46 +118,47 @@ public class RoomManager : MonoBehaviour
     private void Start()
     {
         // Build geometry (if configured) then ensure/position doors and open them
-        BuildGeometryIfNeeded();
+        //BuildGeometryIfNeeded();
         // Delegate door discovery/opening to static RoomDoors helper
         //RoomDoors.EnsureDoorsExist(this);
+        roomTrigger = GetComponentInChildren<BoxCollider2D>(true);
         RoomDoors.OpenDoors(this);
+        AssignGameManagerToSpawners();
         isRoomActive = false;
         hasPlayerEntered = false;
     }
 
     // Build room geometry using RoomBuilder when configured. Kept separate so Start() stays concise.
-    private void BuildGeometryIfNeeded()
-    {
-        // Use RoomManager settings and the static RoomBuilder helper to create geometry.
-        float size = defaultSize;
-        var existingTrigger = GetComponent<BoxCollider2D>();
-        if (existingTrigger != null)
-        {
-            var s = existingTrigger.size;
-            size = Mathf.Max(s.x, s.y);
-        }
+    //private void BuildGeometryIfNeeded()
+    //{
+    //    // Use RoomManager settings and the static RoomBuilder helper to create geometry.
+    //    float size = defaultSize;
+    //    var existingTrigger = GetComponent<BoxCollider2D>();
+    //    if (existingTrigger != null)
+    //    {
+    //        var s = existingTrigger.size;
+    //        size = Mathf.Max(s.x, s.y);
+    //    }
 
-        RoomBuilder.Build(transform, size, floorPrefab, wallPrefab, doorPrefab, wallThickness, doorOutsideOffset, clearExistingChildren);
+    //    RoomBuilder.Build(transform, size, floorPrefab, wallPrefab, doorPrefab, wallThickness, doorOutsideOffset, clearExistingChildren);
 
-        // After builder runs, adopt the trigger it created (builder may be on a child)
-        roomTrigger = GetComponentInChildren<BoxCollider2D>(true);
-        // Let the RoomDoors rediscover any doors the builder created
-        RoomDoors.EnsureDoorsExist(this);
-    }
+    //    // After builder runs, adopt the trigger it created (builder may be on a child)
+    //    roomTrigger = GetComponentInChildren<BoxCollider2D>(true);
+    //    // Let the RoomDoors rediscover any doors the builder created
+    //    //RoomDoors.EnsureDoorsExist(this);
+    //}
 
     // Public helper to make sure doors are created and the open/closed visual state is applied.
     // This is useful when rooms are instantiated by editor-time generators which call RoomManager
     // methods immediately after Instantiate (Start may not have executed yet in that context).
-    public void InitializeDoors()
-    {
-        RoomDoors.EnsureDoorsExist(this);
-        // Apply open/closed logic using RoomDoors
-        RoomDoors.OpenDoors(this);
-        // Ensure spawners have a reference to the GameManager when rooms are created by generators
-        AssignGameManagerToSpawners();
-    }
-
+    //public void InitializeDoors()
+    //{
+    //    //RoomDoors.EnsureDoorsExist(this);
+    //    // Apply open/closed logic using RoomDoors
+    //    RoomDoors.OpenDoors(this);
+    //    // Ensure spawners have a reference to the GameManager when rooms are created by generators
+    //    AssignGameManagerToSpawners();
+    //}
     // Ensure any EnemySpawner on this room has a reference to the global GameManager instance.
     // This is defensive: generators or designers might forget to wire the reference in the Inspector.
     private void AssignGameManagerToSpawners()

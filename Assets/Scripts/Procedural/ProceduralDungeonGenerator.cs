@@ -61,29 +61,29 @@ public class ProceduralDungeonGenerator : MonoBehaviour
 		// compute dungeonOffset so the start room is placed at the player's position (if a player exists)
 		Vector3 dungeonOffset = Vector3.zero;
 		// find player by layer named "Player" (some projects use layers instead of tags)
-		GameObject player = null;
-		int playerLayer = LayerMask.NameToLayer("Player");
-		if (playerLayer != -1)
-		{
-			var allGOs = Object.FindObjectsByType<GameObject>(FindObjectsSortMode.None);
-			for (int gi = 0; gi < allGOs.Length; gi++)
-			{
-				var go = allGOs[gi];
-				if (go != null && go.layer == playerLayer)
-				{
-					player = go;
-					break;
-				}
-			}
-		}
+		GameObject player = PlayerController.instance.gameObject;
+		//int playerLayer = LayerMask.NameToLayer("Player");
+		//if (playerLayer != -1)
+		//{
+		//	var allGOs = Object.FindObjectsByType<GameObject>(FindObjectsSortMode.None);
+		//	for (int gi = 0; gi < allGOs.Length; gi++)
+		//	{
+		//		var go = allGOs[gi];
+		//		if (go != null && go.layer == playerLayer)
+		//		{
+		//			player = go;
+		//			break;
+		//		}
+		//	}
+		//}
 		if (player != null && result.startIndex >= 0 && result.startIndex < result.occupiedCells.Count)
 		{
 			var startCell = result.occupiedCells[result.startIndex];
 			Vector3 startCenter = new Vector3(startCell.x * cellSize.x, startCell.y * cellSize.y, 0f);
 			// world position of the start room without any offset
-			Vector3 startWorld = startCenter + this.transform.position;
+			//Vector3 startWorld = startCenter + this.transform.position;
 			// compute offset so start room ends up at player position
-			dungeonOffset = player.transform.position - startWorld;
+			dungeonOffset = player.transform.position - startCenter;
 		}
 
 		instantiatedRooms = ProceduralDungeonInstantiator.InstantiateFromGraph(

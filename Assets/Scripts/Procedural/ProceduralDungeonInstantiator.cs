@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using UnityEditor;
+using UnityEditor.EditorTools;
 using UnityEngine;
 
 public static class ProceduralDungeonInstantiator
@@ -28,7 +30,8 @@ public static class ProceduralDungeonInstantiator
         for (int i = 0; i < occupiedCells.Count; i++)
         {
             var cell = occupiedCells[i];
-            Vector3 worldPos = new Vector3(cell.x * cellSize.x, cell.y * cellSize.y, 0f) + parent.position + dungeonOffset;
+            Vector3 worldPos = new Vector3(cell.x * cellSize.x, cell.y * cellSize.y, 0f) + dungeonOffset;
+            //Vector3 worldPos = new Vector3(cell.x * cellSize.x, cell.y * cellSize.y, 0f) + parent.position + dungeonOffset;
             GameObject roomInstance = null;
             GameObject prefabToUse = null;
             if (i == graphResult.startIndex && startRoomPrefab != null) prefabToUse = startRoomPrefab;
@@ -53,26 +56,27 @@ public static class ProceduralDungeonInstantiator
             // Apply scale so any built geometry matches intended world size
             roomInstance.transform.localScale = Vector3.one * roomScale;
 
-            // Use RoomManager's settings and static RoomBuilder to create or update geometry
-            RoomBuilder.Build(roomInstance.transform, rm.defaultSize, rm.floorPrefab, rm.wallPrefab, rm.doorPrefab, rm.wallThickness, rm.doorOutsideOffset, rm.clearExistingChildren);
-            rm.roomTrigger = roomInstance.GetComponentInChildren<BoxCollider2D>(true);
-
             // Determine connectivity for each cardinal direction from adjacency graph
             for (int d = 0; d < cardinalDirs.Length; d++)
             {
                 var nbCell = cell + cardinalDirs[d];
                 bool connected = false;
                 if (cellToIndex.TryGetValue(nbCell, out int nbIndex))
-                {
-                    if (adjacencyGraph.TryGetValue(i, out var neighs) && neighs.Contains(nbIndex)) connected = true;
+                {                    
+                    if (adjacencyGraph[i].Contains(nbIndex)) connected = true;
                 }
 
-                var dirEnum = (RoomManager.DoorDirection)d;
-                rm.SetDoorMode(dirEnum, connected ? RoomManager.DoorMode.Normal : RoomManager.DoorMode.PermanentlyLocked);
+                var dirEnum = (RoomManager.ObstacleDirection)d;
+                if (!connected)
+                    rm.SetDoorMode(dirEnum, RoomManager.DoorMode.PermanentlyLocked);
             }
 
+            // Use RoomManager's settings and static RoomBuilder to create or update geometry
+            RoomBuilder.Build(roomInstance.transform, rm.defaultSize, rm.floorPrefab, rm.wallPrefab, rm.doorPrefab, rm.wallThickness, rm.doorOutsideOffset, rm.clearExistingChildren);
+            //rm.roomTrigger = roomInstance.GetComponentInChildren<BoxCollider2D>(true);
             // Ensure doors exist and apply open/closed state immediately
-            rm.InitializeDoors();
+
+            //rm.InitializeDoors();
 
             instantiatedRooms.Add(roomInstance);
         }
@@ -80,15 +84,16 @@ public static class ProceduralDungeonInstantiator
         // Create roads
         if (roadPrefab != null)
         {
-            var created = new HashSet<string>();
+            //var created = new HashSet<string>();
             for (int i = 0; i < occupiedCells.Count; i++)
             {
                 foreach (var j in adjacencyGraph[i])
                 {
-                    if (i == j) continue;
-                    string key = i < j ? $"{i}-{j}" : $"{j}-{i}";
-                    if (created.Contains(key)) continue;
-                    created.Add(key);
+                    //if (i == j) continue;
+                    if (j < i) continue;
+                    //string key = i < j ? $"{i}-{j}" : $"{j}-{i}";
+                    //if (created.Contains(key)) continue;
+                    //created.Add(key);
                     CreateRoadBetween(instantiatedRooms, occupiedCells, i, j, roadPrefab, cellSize, parent);
                 }
             }
@@ -101,41 +106,52 @@ public static class ProceduralDungeonInstantiator
     {
         var aCell = occupiedCells[indexA];
         var bCell = occupiedCells[indexB];
-        Vector3 aPos = GetEndpointForConnection(instantiatedRooms, occupiedCells, indexA, bCell, cellSize);
-        Vector3 bPos = GetEndpointForConnection(instantiatedRooms, occupiedCells, indexB, aCell, cellSize);
+        Vector3 aPos;
+        Vector3 bPos;
+        GetEndpointForConnection(instantiatedRooms, occupiedCells, indexA, indexB,out aPos,out bPos);
+
         TileRoadBetween(aPos, bPos, roadPrefab, cellSize, parent);
     }
 
-    private static Vector3 GetEndpointForConnection(List<GameObject> instantiatedRooms, List<Vector2Int> occupiedCells, int roomIndex, Vector2Int neighborCell, Vector2 cellSize)
+    private static void GetEndpointForConnection(List<GameObject> instantiatedRooms, List<Vector2Int> occupiedCells, int indexA, int indexB, out Vector3 aPos,out Vector3 bPos)
     {
-    var cell = occupiedCells[roomIndex];
-    var roomGO = instantiatedRooms[roomIndex];
-    Vector3 center = roomGO != null ? roomGO.transform.position : new Vector3(cell.x * cellSize.x, cell.y * cellSize.y, 0f);
-        Vector2Int dir = neighborCell - cell;
+        var roomA = instantiatedRooms[indexA];
+        var roomB=  instantiatedRooms[indexB];
+        Vector2Int dir = occupiedCells[indexB] - occupiedCells[indexA];
+        RoomManager.ObstacleDirection forwardDir;
+        RoomManager.ObstacleDirection reverseDir;
 
-        RoomManager.DoorDirection doorDir = RoomManager.DoorDirection.North;
-        if (dir.x > 0) doorDir = RoomManager.DoorDirection.East;
-        else if (dir.x < 0) doorDir = RoomManager.DoorDirection.West;
-        else if (dir.y > 0) doorDir = RoomManager.DoorDirection.North;
-        else if (dir.y < 0) doorDir = RoomManager.DoorDirection.South;
-
-        if (roomGO != null)
+        if (dir.x > 0)
         {
-            var rm = roomGO.GetComponent<RoomManager>();
-            if (rm != null && rm.HasDoor(doorDir))
-            {
-                // use exit anchor if provided
-                return rm.GetDoorEndpoint(doorDir);
-            }
+            forwardDir = RoomManager.ObstacleDirection.East;
+            reverseDir= RoomManager.ObstacleDirection.West;
         }
+        else if (dir.x < 0)
+        {
+            forwardDir = RoomManager.ObstacleDirection.West;
+            reverseDir= RoomManager.ObstacleDirection.East;
+        }
+        else if (dir.y > 0)
+        {
+            forwardDir = RoomManager.ObstacleDirection.North;
+            reverseDir= RoomManager.ObstacleDirection.South;
+        }
+        else
+        {
+            forwardDir = RoomManager.ObstacleDirection.South;
+            reverseDir= RoomManager.ObstacleDirection.North;
+        }
+        aPos = roomA.GetComponent<RoomManager>().GetDoorEndpoint(forwardDir);
+        bPos=roomB.GetComponent<RoomManager>().GetDoorEndpoint(reverseDir);
+        //Vector3 center = roomGO != null ? roomGO.transform.position : new Vector3(cell.x * cellSize.x, cell.y * cellSize.y, 0f);
+        //Vector3 offset = Vector3.zero;
+        //if (dir.x > 0) offset = new Vector3(cellSize.x * 0.5f, 0f, 0f);
+        //else if (dir.x < 0) offset = new Vector3(-cellSize.x * 0.5f, 0f, 0f);
+        //else if (dir.y > 0) offset = new Vector3(0f, cellSize.y * 0.5f, 0f);
+        //else if (dir.y < 0) offset = new Vector3(0f, -cellSize.y * 0.5f, 0f);
 
-        Vector3 offset = Vector3.zero;
-        if (dir.x > 0) offset = new Vector3(cellSize.x * 0.5f, 0f, 0f);
-        else if (dir.x < 0) offset = new Vector3(-cellSize.x * 0.5f, 0f, 0f);
-        else if (dir.y > 0) offset = new Vector3(0f, cellSize.y * 0.5f, 0f);
-        else if (dir.y < 0) offset = new Vector3(0f, -cellSize.y * 0.5f, 0f);
+        //return center + offset;
 
-        return center + offset;
     }
 
     private static void TileRoadBetween(Vector3 from, Vector3 to, GameObject roadPrefab, Vector2 cellSize, Transform parent)
