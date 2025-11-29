@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f049e53cb6dc4a2285268441f6201fb, type: 3}
+  m_Name: Elite Sprayer
+  m_EditorClassIdentifier: 
+  bulletLifeTime: 10
+  bulletDamage: 2
+  bulletSpeedRange: 0
+  fireRate: 2
+  bulletPattern: {fileID: 0}
+  isComplex: 1
+  isLaser: 0
+  compositePatterns:
+  - {fileID: 11400000, guid: 0ce20c2e89efb43bbac81ef9af8aa68e, type: 2}
+  - {fileID: 11400000, guid: 0ce20c2e89efb43bbac81ef9af8aa68e, type: 2}
+  - {fileID: 11400000, guid: 0ce20c2e89efb43bbac81ef9af8aa68e, type: 2}
+  - {fileID: 11400000, guid: 0ba0e3c0b56d04781b85cbf10470074b, type: 2}
+  - {fileID: 11400000, guid: 06d840596dec646fbb4c64de88b82236, type: 2}
+  - {fileID: 11400000, guid: 06d840596dec646fbb4c64de88b82236, type: 2}
+  - {fileID: 11400000, guid: 06d840596dec646fbb4c64de88b82236, type: 2}
+  - {fileID: 11400000, guid: 0ba0e3c0b56d04781b85cbf10470074b, type: 2}
+  - {fileID: 11400000, guid: a7479062edf904c9aa1920f7e6b4af0e, type: 2}
+  - {fileID: 11400000, guid: a7479062edf904c9aa1920f7e6b4af0e, type: 2}
+  - {fileID: 11400000, guid: a7479062edf904c9aa1920f7e6b4af0e, type: 2}
+  - {fileID: 11400000, guid: 0ba0e3c0b56d04781b85cbf10470074b, type: 2}
+  - {fileID: 11400000, guid: 463198bf72a824b3d9ef0d46e313c03a, type: 2}
+  angleOffsets: []
+  speedOffsets:
+  - 0
+  - 0.5
+  - 1
+  - 0
+  - 0
+  - 0.5
+  - 1
+  - 0
+  - 0
+  - 0.5
+  - 1
+  - 0
+  - 0

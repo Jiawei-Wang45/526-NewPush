@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8784066047790718971}
   - component: {fileID: 4653769384714688799}
   m_Layer: 9
-  m_Name: EnemyBullet
+  m_Name: EnemyAcceleratingBullet
   m_TagString: Pausable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -80,7 +80,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 2
   m_Sprite: {fileID: -2346302928887187388, guid: 2a0067308492c344ba4558cb0881ef8b, type: 3}
-  m_Color: {r: 0.98039216, g: 0, b: 0.09017458, a: 1}
+  m_Color: {r: 1, g: 0.19302337, b: 0.062745094, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -106,7 +106,7 @@ MonoBehaviour:
   bulletDamage: 0
   bounceCount: 0
   bounceMultiplier: 2
-  speedChangeMultiplier: 1
+  speedChangeMultiplier: 1.07
 --- !u!58 &8784066047790718971
 CircleCollider2D:
   m_ObjectHideFlags: 0

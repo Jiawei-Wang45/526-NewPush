@@ -234,7 +234,7 @@ GameObject:
   - component: {fileID: 9089810499782621227}
   - component: {fileID: 5909494509922052004}
   m_Layer: 7
-  m_Name: EliteEnemy
+  m_Name: EliteEnemy LV2
   m_TagString: Pausable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -251,7 +251,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -4.14, y: -4.775823, z: 0}
   m_LocalScale: {x: 2.5, y: 2.5, z: 2.5}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 2361447581016555971}
   - {fileID: 8930376595193157606}
@@ -411,8 +411,8 @@ MonoBehaviour:
   pc: {fileID: 0}
   enemyStats: {fileID: 0}
   challengeLevel: 10
-  weapon: {fileID: 11400000, guid: aabba1882d1394a2a9a64346836149e9, type: 2}
-  movementPattern: {fileID: 11400000, guid: b41bbdffea2f93a44bfeb6c6de3e41bf, type: 2}
+  weapon: {fileID: 11400000, guid: a75067be125fa437a9e148d9777f433d, type: 2}
+  movementPattern: {fileID: 11400000, guid: 5ecd999a8b9aafb4881ba454561786b8, type: 2}
   RotationSpeed: 15
   enemySpeed: 0
   comfortableDistance: 5

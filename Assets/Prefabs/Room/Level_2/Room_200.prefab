@@ -972,11 +972,14 @@ MonoBehaviour:
   - {fileID: 7980401159501858626, guid: adb207474091c44d8b64185677e8a5fe, type: 3}
   - {fileID: 7980401159501858626, guid: 5cc5d6a23833e447bace989fa83f7b3b, type: 3}
   - {fileID: 7980401159501858626, guid: cfafe216a5b294928a3156b9c33ee352, type: 3}
+  eliteSpawnList:
+  - {fileID: 7980401159501858626, guid: 9d8adc7fecb6441edbb360240c49254d, type: 3}
   canSpawnAfterRoomNumber: 0000000000000000000000000400000004000000
   enemySpawnIndicator: {fileID: 62652219401394802, guid: cc44a7ca5f6c670479244ae20d6b696c, type: 3}
   gameManager: {fileID: 0}
   spawnBox: {fileID: 177841893781875243}
-  spawnBudget: 20
+  spawnBudget: 30
+  eliteSpawnChance: 0.25
   waveBudgets: 
   loopWaves: 0
   totalWaves: 2
@@ -1045,6 +1048,14 @@ MonoBehaviour:
   doorOutsideOffset: 1
   defaultSize: 45
   clearExistingChildren: 0
+  useTilemapBuilder: 0
+  floorRuleTile: {fileID: 0}
+  wallTopRuleTile: {fileID: 0}
+  wallLeftRuleTile: {fileID: 0}
+  wallRightRuleTile: {fileID: 0}
+  wallBottomRuleTile: {fileID: 0}
+  sharedGrid: {fileID: 0}
+  isProcedurallyGenerated: 0
   enemySpawner: {fileID: 3945821863562805851}
   isRoomActive: 0
   winTrigger: {fileID: 0}
