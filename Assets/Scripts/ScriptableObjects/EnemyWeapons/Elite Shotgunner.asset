@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f049e53cb6dc4a2285268441f6201fb, type: 3}
+  m_Name: Elite Shotgunner
+  m_EditorClassIdentifier: 
+  bulletLifeTime: 10
+  bulletDamage: 2
+  bulletSpeedRange: 0
+  fireRate: 1
+  bulletPattern: {fileID: 0}
+  isComplex: 1
+  isLaser: 0
+  compositePatterns:
+  - {fileID: 11400000, guid: 8ce4530cdb4a949a98635196c6849a74, type: 2}
+  - {fileID: 11400000, guid: 551af511b72ac4937aa19206c55611eb, type: 2}
+  - {fileID: 11400000, guid: 15595df44e90a4747962378f7e97d0b3, type: 2}
+  - {fileID: 11400000, guid: 7aed21c7c16b041b59cae26eb44f3dea, type: 2}
+  angleOffsets: []
+  speedOffsets: []

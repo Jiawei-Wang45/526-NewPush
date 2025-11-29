@@ -50,7 +50,7 @@ public class Bullet_Default: MonoBehaviour
             damagable.TakeDamage(bulletDamage);
         }
 
-        if(collision.collider.gameObject.layer == LayerMask.NameToLayer("Wall"))
+        if(collision.collider.gameObject.layer == LayerMask.NameToLayer("Wall") || collision.collider.gameObject.layer == LayerMask.NameToLayer("Default"))
         {
             if(bounceCount > 0)
             {

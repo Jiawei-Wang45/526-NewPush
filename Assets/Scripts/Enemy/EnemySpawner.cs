@@ -1,12 +1,11 @@
 using System;
 using UnityEngine;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
 
 public class EnemySpawner : MonoBehaviour
 {
     public GameObject[] enemySpawnList;
+    public GameObject[] eliteSpawnList;
     public int[] canSpawnAfterRoomNumber;
     //Optional parameter that can let the user set enemies to spawn only after a certain number of rooms
     private List<GameObject> roomSpawnList = new List<GameObject>();
@@ -16,6 +15,8 @@ public class EnemySpawner : MonoBehaviour
     public GameManager gameManager;
     public GameObject spawnBox;
     public int spawnBudget = 20;
+    public float eliteSpawnChance = 0.2f;
+    private bool eliteHasSpawned = false;
     // Optional fixed per-wave budgets. If provided and length > 0, the spawner will use these budgets per wave.
     public int[] waveBudgets;
     // If true, the spawner will automatically start the next wave after a clear (or when totalWaves is 0 meaning infinite).
@@ -68,6 +69,18 @@ public class EnemySpawner : MonoBehaviour
             pointsToSpend = waveBudgets[idx];
         }
         Debug.Log($"{roomSpawnList.Count} vs {difficultyCosts.Count}");
+
+        //Rolls elite enemy spawn chance. If elite enemy spawns, room gets 50% less budget
+        float eliteSpawnNum = UnityEngine.Random.value;
+        if(eliteSpawnNum <= eliteSpawnChance && eliteSpawnList.Length > 0 && !eliteHasSpawned)
+        {
+            eliteHasSpawned = true;
+            pointsToSpend /= 2;
+            int eliteIndex = UnityEngine.Random.Range(0, eliteSpawnList.Length);
+            enemiesInWave.Add(InstantiateNewEnemy(eliteSpawnList[eliteIndex]));
+            spawnPositions.Add(GetRandomSpawnPoint());
+        }
+
         while (pointsToSpend > 0)
         {
             int index = UnityEngine.Random.Range(0, roomSpawnList.Count);
@@ -172,6 +185,7 @@ public class EnemySpawner : MonoBehaviour
     // Returns true when the spawner has finished all its waves (only meaningful if HasFiniteWaves==true)
     public bool HasFinishedAllWaves()
     {
+        eliteHasSpawned = false;
         if (!HasFiniteWaves()) return false;
         return currentWaveIndex >= totalWaves && !IsWaveActive;
     }

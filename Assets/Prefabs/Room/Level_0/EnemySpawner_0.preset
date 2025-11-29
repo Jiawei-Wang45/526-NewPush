@@ -65,6 +65,14 @@ Preset:
     value: 
     objectReference: {fileID: 7980401159501858626, guid: edbe69e28685e402a9c72d8fc4233235, type: 3}
   - target: {fileID: 0}
+    propertyPath: eliteSpawnList.Array.size
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: 'eliteSpawnList.Array.data[0]'
+    value: 
+    objectReference: {fileID: 7980401159501858626, guid: df85fd08d89374bc683c6fc6ae20324b, type: 3}
+  - target: {fileID: 0}
     propertyPath: canSpawnAfterRoomNumber.Array.size
     value: 9
     objectReference: {fileID: 0}
@@ -119,6 +127,10 @@ Preset:
   - target: {fileID: 0}
     propertyPath: spawnBudget
     value: 10
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: eliteSpawnChance
+    value: 0.2
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: waveBudgets.Array.size

@@ -57,7 +57,7 @@ Transform:
   m_GameObject: {fileID: 4953910494302052286}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.5, y: -0.251, z: 0}
+  m_LocalPosition: {x: -0.5, y: -0.21, z: 0}
   m_LocalScale: {x: 1, y: 0.2, z: 0.57142854}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -145,7 +145,7 @@ Transform:
   m_GameObject: {fileID: 6828978454221379553}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.5, y: -0.251, z: 0}
+  m_LocalPosition: {x: -0.5, y: -0.2099998, z: 0}
   m_LocalScale: {x: 1, y: 0.2, z: 0.57142854}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -232,9 +232,9 @@ GameObject:
   - component: {fileID: 4865390068369684851}
   - component: {fileID: 6649102851320243265}
   - component: {fileID: 9089810499782621227}
-  - component: {fileID: 6614620813083432372}
+  - component: {fileID: 5909494509922052004}
   m_Layer: 7
-  m_Name: HeavyWeaponsGuy LV2
+  m_Name: EliteEnemy
   m_TagString: Pausable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -250,7 +250,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -4.14, y: -4.775823, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_LocalScale: {x: 2.25, y: 2.25, z: 2.25}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 2361447581016555971}
@@ -303,7 +303,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 1
   m_Sprite: {fileID: -8934980636991000890, guid: c0731b58b566768409389f552e69c9e0, type: 3}
-  m_Color: {r: 0.7169812, g: 0.20810279, b: 0.1724813, a: 1}
+  m_Color: {r: 0.83137256, g: 0.63682646, b: 0.01960784, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -347,8 +347,8 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0.6586987}
-  m_Radius: 0.72801125
+  m_Offset: {x: 0, y: 0.68366975}
+  m_Radius: 0.69879776
 --- !u!50 &4865390068369684851
 Rigidbody2D:
   serializedVersion: 5
@@ -388,12 +388,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac480c8c553b27e4d832a7d380874813, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 25
+  maxHealth: 40
   health: 0
   life: 0
   enemyMovementSpeed: 1
   spawner: {fileID: 0}
-  droppableItems: {fileID: 11400000, guid: a6bab4fc5fbd71c49a5f65af40143fd8, type: 2}
+  droppableItems: {fileID: 11400000, guid: e88cfb53170692646b74076048c24606, type: 2}
   dyingEffect: {fileID: 4296032697232908170, guid: 9c4b2aba842fcaa4cb15e255307712f1, type: 3}
   restoreDefaultMatTime: 0.1
 --- !u!114 &9089810499782621227
@@ -410,14 +410,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pc: {fileID: 0}
   enemyStats: {fileID: 0}
-  challengeLevel: 7
-  weapon: {fileID: 11400000, guid: ed363e42c7e7e4ea08fc87c90b93a66e, type: 2}
-  movementPattern: {fileID: 11400000, guid: 18106d55485b945458ed90a67576b881, type: 2}
+  challengeLevel: 10
+  weapon: {fileID: 11400000, guid: aabba1882d1394a2a9a64346836149e9, type: 2}
+  movementPattern: {fileID: 11400000, guid: b41bbdffea2f93a44bfeb6c6de3e41bf, type: 2}
   RotationSpeed: 15
   enemySpeed: 0
   comfortableDistance: 5
   isBoss2: 0
---- !u!95 &6614620813083432372
+--- !u!95 &5909494509922052004
 Animator:
   serializedVersion: 7
   m_ObjectHideFlags: 0
