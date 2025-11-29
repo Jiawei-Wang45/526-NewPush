@@ -15,7 +15,7 @@ MonoBehaviour:
   bulletLifeTime: 10
   bulletDamage: 2
   bulletSpeedRange: 0
-  fireRate: 2
+  fireRate: 4
   bulletPattern: {fileID: 0}
   isComplex: 1
   isLaser: 0
@@ -31,6 +31,6 @@ MonoBehaviour:
   - 80
   speedOffsets:
   - 0
-  - 0
-  - 0
-  - 0
+  - -8
+  - -3
+  - -3
