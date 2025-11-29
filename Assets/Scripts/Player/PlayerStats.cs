@@ -3,7 +3,7 @@ using UnityEngine;
 public class PlayerStats : MonoBehaviour
 {
     public static PlayerStats Instance;
-    public float maxHealth = 5.0f;
+    public float maxHealth = 10.0f;
     public float health;
 
     // Invincibility flag for testing or power-ups

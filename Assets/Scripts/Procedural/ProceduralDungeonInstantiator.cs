@@ -1,10 +1,26 @@
 using System.Collections.Generic;
-using UnityEditor;
-using UnityEditor.EditorTools;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public static class ProceduralDungeonInstantiator
 {
+    // Static fields to pass tilemap info to road creation
+    private static bool s_useTilemapSystem;
+    private static TileBase s_floorRuleTile;
+    private static TileBase s_wallTopRuleTile;
+    private static TileBase s_wallLeftRuleTile;
+    private static TileBase s_wallRightRuleTile;
+    private static TileBase s_wallBottomRuleTile;
+    private static TileBase s_innerTopRuleTile;
+    private static TileBase s_innerBottomRuleTile;
+    private static TileBase s_innerLeftRuleTile;
+    private static TileBase s_innerRightRuleTile;
+    private static TileBase s_innerBottomLeftRuleTile;
+    private static TileBase s_innerBottomRightRuleTile;
+    private static TileBase s_fillRuleTile;
+    private static Color s_tilemapColor;
+    private static Grid s_sharedGrid; // 共享 Grid
+
     // Instantiate rooms and roads from a GenerationResult produced by ProceduralGraphGenerator
     public static List<GameObject> InstantiateFromGraph(
         ProceduralGraphGenerator.GenerationResult graphResult,
@@ -15,8 +31,41 @@ public static class ProceduralDungeonInstantiator
         Vector2 cellSize,
         float roomScale,
         Vector3 dungeonOffset,
-        Transform parent)
+        Transform parent,
+        bool useTilemapSystem = false,
+        TileBase floorRuleTile = null,
+        TileBase wallTopRuleTile = null,
+        TileBase wallLeftRuleTile = null,
+        TileBase wallRightRuleTile = null,
+        TileBase wallBottomRuleTile = null,
+        TileBase innerTopRuleTile = null,
+        TileBase innerBottomRuleTile = null,
+        TileBase innerLeftRuleTile = null,
+        TileBase innerRightRuleTile = null,
+        TileBase innerBottomLeftRuleTile = null,
+        TileBase innerBottomRightRuleTile = null,
+        TileBase fillRuleTile = null,
+        Color? tilemapColor = null,
+        Grid sharedGrid = null)
     {
+        // Store tilemap parameters for road creation
+        s_useTilemapSystem = useTilemapSystem;
+        s_floorRuleTile = floorRuleTile;
+        s_wallTopRuleTile = wallTopRuleTile;
+        s_wallLeftRuleTile = wallLeftRuleTile;
+        s_wallRightRuleTile = wallRightRuleTile;
+        s_wallBottomRuleTile = wallBottomRuleTile;
+        s_innerTopRuleTile = innerTopRuleTile;
+        s_innerBottomRuleTile = innerBottomRuleTile;
+        s_innerLeftRuleTile = innerLeftRuleTile;
+        s_innerRightRuleTile = innerRightRuleTile;
+        s_innerBottomLeftRuleTile = innerBottomLeftRuleTile;
+        s_innerBottomRightRuleTile = innerBottomRightRuleTile;
+        s_fillRuleTile = fillRuleTile;
+        
+        Color colorToUse = tilemapColor ?? Color.white;
+        s_tilemapColor = colorToUse;
+        s_sharedGrid = sharedGrid; // save shared Grid reference
         var instantiatedRooms = new List<GameObject>();
         var occupiedCells = graphResult.occupiedCells;
         var adjacencyGraph = graphResult.adjacencyGraph;
@@ -30,13 +79,71 @@ public static class ProceduralDungeonInstantiator
         for (int i = 0; i < occupiedCells.Count; i++)
         {
             var cell = occupiedCells[i];
-            Vector3 worldPos = new Vector3(cell.x * cellSize.x, cell.y * cellSize.y, 0f) + dungeonOffset;
-            //Vector3 worldPos = new Vector3(cell.x * cellSize.x, cell.y * cellSize.y, 0f) + parent.position + dungeonOffset;
+            Vector3 worldPos = new Vector3(cell.x * cellSize.x, cell.y * cellSize.y, 0f) + parent.position + dungeonOffset;
             GameObject roomInstance = null;
             GameObject prefabToUse = null;
             if (i == graphResult.startIndex && startRoomPrefab != null) prefabToUse = startRoomPrefab;
             else if (i == graphResult.endIndex && endRoomPrefab != null) prefabToUse = endRoomPrefab;
             else if (roomPrefabs != null && roomPrefabs.Length > 0) prefabToUse = roomPrefabs[UnityEngine.Random.Range(0, roomPrefabs.Length)];
+
+            // If NOT using tilemap system, avoid _Tilemap variants
+            if (!useTilemapSystem && prefabToUse != null && prefabToUse.name.EndsWith("_Tilemap"))
+            {
+                string originalName = prefabToUse.name.Substring(0, prefabToUse.name.Length - "_Tilemap".Length);
+                GameObject nonTilemapVariant = null;
+                
+                // Try to find non-tilemap version in the same array
+                if (i == graphResult.startIndex && startRoomPrefab != null)
+                {
+                    nonTilemapVariant = FindTilemapVariant(roomPrefabs, originalName);
+                }
+                else if (i == graphResult.endIndex && endRoomPrefab != null)
+                {
+                    nonTilemapVariant = FindTilemapVariant(roomPrefabs, originalName);
+                }
+                else
+                {
+                    nonTilemapVariant = FindTilemapVariant(roomPrefabs, originalName);
+                }
+                
+                if (nonTilemapVariant != null)
+                {
+                    prefabToUse = nonTilemapVariant;
+                }
+            }
+            // If using tilemap system, try to find a _Tilemap variant of the prefab
+            else if (useTilemapSystem && prefabToUse != null)
+            {
+                string prefabName = prefabToUse.name;
+                if (!prefabName.EndsWith("_Tilemap"))
+                {
+                    // First try to find it in the same array (roomPrefabs, startRoomPrefab, endRoomPrefab)
+                    GameObject tilemapVariant = null;
+                    string tilemapVariantName = prefabName + "_Tilemap";
+                    
+                    // Check if we're looking at start/end room or regular room
+                    if (i == graphResult.startIndex && startRoomPrefab != null)
+                    {
+                        // For start room, also check roomPrefabs array
+                        tilemapVariant = FindTilemapVariant(roomPrefabs, tilemapVariantName);
+                    }
+                    else if (i == graphResult.endIndex && endRoomPrefab != null)
+                    {
+                        // For end room, also check roomPrefabs array
+                        tilemapVariant = FindTilemapVariant(roomPrefabs, tilemapVariantName);
+                    }
+                    else
+                    {
+                        // For regular rooms, search in roomPrefabs array
+                        tilemapVariant = FindTilemapVariant(roomPrefabs, tilemapVariantName);
+                    }
+                    
+                    if (tilemapVariant != null)
+                    {
+                        prefabToUse = tilemapVariant;
+                    }
+                }
+            }
 
             if (prefabToUse != null)
             {
@@ -53,47 +160,117 @@ public static class ProceduralDungeonInstantiator
             var rm = roomInstance.GetComponent<RoomManager>();
             if (rm == null) rm = roomInstance.AddComponent<RoomManager>();
 
+            // Preserve existing EnemySpawner from prefab
+            var existingSpawner = roomInstance.GetComponentInChildren<EnemySpawner>(true);
+
+            // If using tilemap system and this is a tilemap prefab, move tilemaps to sharedGrid
+            if (useTilemapSystem && sharedGrid != null && prefabToUse != null && prefabToUse.name.EndsWith("_Tilemap"))
+            {
+                MoveTilemapsToSharedGrid(roomInstance, sharedGrid, worldPos, colorToUse);
+            }
+
             // Apply scale so any built geometry matches intended world size
             roomInstance.transform.localScale = Vector3.one * roomScale;
 
-            // Determine connectivity for each cardinal direction from adjacency graph
+            //  calculate connection info (which directions have road/room connections)
+            bool hasNorth = false, hasEast = false, hasSouth = false, hasWest = false;
+            
             for (int d = 0; d < cardinalDirs.Length; d++)
             {
                 var nbCell = cell + cardinalDirs[d];
                 bool connected = false;
                 if (cellToIndex.TryGetValue(nbCell, out int nbIndex))
-                {                    
-                    if (adjacencyGraph[i].Contains(nbIndex)) connected = true;
+                {
+                    if (adjacencyGraph.TryGetValue(i, out var neighs) && neighs.Contains(nbIndex))
+                    {
+                        connected = true;
+                    }
                 }
-
-                var dirEnum = (RoomManager.ObstacleDirection)d;
-                if (!connected)
-                    rm.SetDoorMode(dirEnum, RoomManager.DoorMode.PermanentlyLocked);
+                
+                // set connection flags
+                if (d == 0) hasNorth = connected;
+                else if (d == 1) hasEast = connected;
+                else if (d == 2) hasSouth = connected;
+                else if (d == 3) hasWest = connected;
             }
 
             // Use RoomManager's settings and static RoomBuilder to create or update geometry
-            RoomBuilder.Build(roomInstance.transform, rm.defaultSize, rm.floorPrefab, rm.wallPrefab, rm.doorPrefab, rm.wallThickness, rm.doorOutsideOffset, rm.clearExistingChildren);
-            //rm.roomTrigger = roomInstance.GetComponentInChildren<BoxCollider2D>(true);
-            // Ensure doors exist and apply open/closed state immediately
+            if (useTilemapSystem && floorRuleTile != null && wallTopRuleTile != null)
+            {
+                // using Tilemap system
+                rm.useTilemapBuilder = true;
+                rm.floorRuleTile = floorRuleTile;
+                rm.wallTopRuleTile = wallTopRuleTile;
+                rm.wallLeftRuleTile = wallLeftRuleTile;
+                rm.wallRightRuleTile = wallRightRuleTile;
+                rm.wallBottomRuleTile = wallBottomRuleTile;
+                
+                // pass shared Grid, room world position, and connection info
+                RoomTilemapBuilder.BuildTilemapRoom(sharedGrid, worldPos, rm.defaultSize, floorRuleTile, 
+                    wallTopRuleTile, wallLeftRuleTile, wallRightRuleTile, wallBottomRuleTile,
+                    s_innerTopRuleTile, s_innerBottomRuleTile, s_innerLeftRuleTile, s_innerRightRuleTile, s_innerBottomLeftRuleTile, s_innerBottomRightRuleTile, s_fillRuleTile,
+                    roomInstance.transform, hasNorth, hasEast, hasSouth, hasWest);
+                
+                // apply color to room Grid
+                if (i == 0) // only apply color for the first room to avoid redundant work
+                {
+                    ApplyColorToGridTilemaps(sharedGrid.transform, colorToUse);
+                }
+            }
+            else
+            {
+                // use traditional sprite system
+                RoomBuilder.Build(roomInstance.transform, rm.defaultSize, rm.floorPrefab, rm.wallPrefab, rm.doorPrefab, rm.wallThickness, rm.doorOutsideOffset, rm.clearExistingChildren);
+            }
+            
+            // Ensure room trigger is properly set
+            rm.roomTrigger = roomInstance.GetComponent<BoxCollider2D>();
+            if (rm.roomTrigger == null)
+            {
+                rm.roomTrigger = roomInstance.GetComponentInChildren<BoxCollider2D>(true);
+            }
+            // set flag to prevent RoomManager.Start() from rebuilding geometry
+            rm.isProcedurallyGenerated = true;
+            
+            // set door modes (based on previously calculated connection info)
+            rm.SetDoorMode(RoomManager.DoorDirection.North, hasNorth ? RoomManager.DoorMode.Normal : RoomManager.DoorMode.PermanentlyLocked);
+            rm.SetDoorMode(RoomManager.DoorDirection.East, hasEast ? RoomManager.DoorMode.Normal : RoomManager.DoorMode.PermanentlyLocked);
+            rm.SetDoorMode(RoomManager.DoorDirection.South, hasSouth ? RoomManager.DoorMode.Normal : RoomManager.DoorMode.PermanentlyLocked);
+            rm.SetDoorMode(RoomManager.DoorDirection.West, hasWest ? RoomManager.DoorMode.Normal : RoomManager.DoorMode.PermanentlyLocked);
 
-            //rm.InitializeDoors();
+            // set sharedGrid reference
+            rm.sharedGrid = s_sharedGrid;
+
+            // Ensure doors exist and apply open/closed state immediately
+            rm.InitializeDoors();
+
+            // Restore EnemySpawner reference if it exists in the prefab
+            if (existingSpawner != null)
+            {
+                rm.enemySpawner = existingSpawner;
+                // Ensure spawner has a gameManager reference
+                if (existingSpawner.gameManager == null && GameManager.instance != null)
+                {
+                    existingSpawner.gameManager = GameManager.instance;
+                }
+            }
 
             instantiatedRooms.Add(roomInstance);
         }
 
         // Create roads
-        if (roadPrefab != null)
+        if (roadPrefab != null || useTilemapSystem)
         {
-            //var created = new HashSet<string>();
+            var created = new HashSet<string>();
             for (int i = 0; i < occupiedCells.Count; i++)
             {
+                if (!adjacencyGraph.ContainsKey(i)) continue;
                 foreach (var j in adjacencyGraph[i])
                 {
-                    //if (i == j) continue;
-                    if (j < i) continue;
-                    //string key = i < j ? $"{i}-{j}" : $"{j}-{i}";
-                    //if (created.Contains(key)) continue;
-                    //created.Add(key);
+                    if (i == j) continue;
+                    string key = i < j ? $"{i}-{j}" : $"{j}-{i}";
+                    if (created.Contains(key)) continue;
+                    created.Add(key);
                     CreateRoadBetween(instantiatedRooms, occupiedCells, i, j, roadPrefab, cellSize, parent);
                 }
             }
@@ -106,52 +283,111 @@ public static class ProceduralDungeonInstantiator
     {
         var aCell = occupiedCells[indexA];
         var bCell = occupiedCells[indexB];
-        Vector3 aPos;
-        Vector3 bPos;
-        GetEndpointForConnection(instantiatedRooms, occupiedCells, indexA, indexB,out aPos,out bPos);
+        Vector3 aPos = GetEndpointForConnection(instantiatedRooms, occupiedCells, indexA, bCell, cellSize);
+        Vector3 bPos = GetEndpointForConnection(instantiatedRooms, occupiedCells, indexB, aCell, cellSize);
+        
+        if (s_useTilemapSystem && s_floorRuleTile != null && s_wallTopRuleTile != null)
+        {
+            // using Tilemap system to create roads
+            GameObject roadObj = new GameObject($"Road_{indexA}_{indexB}");
+            roadObj.transform.SetParent(parent, false);
+            roadObj.transform.position = Vector3.zero; // Grid must be at origin, otherwise WorldToCell will be incorrect
 
-        TileRoadBetween(aPos, bPos, roadPrefab, cellSize, parent);
+            // If endpoints are effectively equal (zero-length road), attempt to recompute endpoints
+            if (Vector3.Distance(aPos, bPos) < 0.01f)
+            {
+                Vector3 centerA = instantiatedRooms[indexA] != null ? instantiatedRooms[indexA].transform.position : new Vector3(aCell.x * cellSize.x, aCell.y * cellSize.y, 0f);
+                Vector3 centerB = instantiatedRooms[indexB] != null ? instantiatedRooms[indexB].transform.position : new Vector3(bCell.x * cellSize.x, bCell.y * cellSize.y, 0f);
+                Vector3 delta = centerB - centerA;
+                    if (delta.magnitude < 0.01f)
+                {
+                        // fallback to sprite-based road if possible
+                        if (roadPrefab != null)
+                        {
+                            TileRoadBetween(aPos, bPos, roadPrefab, cellSize, parent);
+                        }
+                }
+                else
+                {
+                    bool horizontal = Mathf.Abs(delta.x) > Mathf.Abs(delta.y);
+                    if (horizontal)
+                    {
+                        float halfX = cellSize.x * 0.5f;
+                        aPos = centerA + new Vector3(Mathf.Sign(delta.x) * halfX, 0f, 0f);
+                        bPos = centerB + new Vector3(-Mathf.Sign(delta.x) * halfX, 0f, 0f);
+                    }
+                    else
+                    {
+                        float halfY = cellSize.y * 0.5f;
+                        aPos = centerA + new Vector3(0f, Mathf.Sign(delta.y) * halfY, 0f);
+                        bPos = centerB + new Vector3(0f, -Mathf.Sign(delta.y) * halfY, 0f);
+                    }
+                    // If recomputation still resulted in a zero-length road, fallback to sprite-based road
+                    if (Vector3.Distance(aPos, bPos) < 0.01f)
+                    {
+                        if (roadPrefab != null)
+                        {
+                            TileRoadBetween(aPos, bPos, roadPrefab, cellSize, parent);
+                        }
+                        return;
+                    }
+                }
+            }
+            RoomTilemapBuilder.BuildTilemapRoad(s_sharedGrid, roadObj.transform, aPos, bPos, s_floorRuleTile, 
+                s_wallTopRuleTile, s_wallLeftRuleTile, s_wallRightRuleTile, s_wallBottomRuleTile, 2);
+            
+            // apply color to road Grid
+            ApplyColorToGridTilemaps(roadObj.transform, s_tilemapColor);
+        }
+        else if (roadPrefab != null)
+        {
+            // use traditional sprite system
+            TileRoadBetween(aPos, bPos, roadPrefab, cellSize, parent);
+        }
     }
 
-    private static void GetEndpointForConnection(List<GameObject> instantiatedRooms, List<Vector2Int> occupiedCells, int indexA, int indexB, out Vector3 aPos,out Vector3 bPos)
+    private static Vector3 GetEndpointForConnection(List<GameObject> instantiatedRooms, List<Vector2Int> occupiedCells, int roomIndex, Vector2Int neighborCell, Vector2 cellSize)
     {
-        var roomA = instantiatedRooms[indexA];
-        var roomB=  instantiatedRooms[indexB];
-        Vector2Int dir = occupiedCells[indexB] - occupiedCells[indexA];
-        RoomManager.ObstacleDirection forwardDir;
-        RoomManager.ObstacleDirection reverseDir;
+        var cell = occupiedCells[roomIndex];
+        var roomGO = instantiatedRooms[roomIndex];
+        Vector3 center = roomGO != null ? roomGO.transform.position : new Vector3(cell.x * cellSize.x, cell.y * cellSize.y, 0f);
+        Vector2Int dir = neighborCell - cell;
 
-        if (dir.x > 0)
-        {
-            forwardDir = RoomManager.ObstacleDirection.East;
-            reverseDir= RoomManager.ObstacleDirection.West;
-        }
-        else if (dir.x < 0)
-        {
-            forwardDir = RoomManager.ObstacleDirection.West;
-            reverseDir= RoomManager.ObstacleDirection.East;
-        }
-        else if (dir.y > 0)
-        {
-            forwardDir = RoomManager.ObstacleDirection.North;
-            reverseDir= RoomManager.ObstacleDirection.South;
-        }
-        else
-        {
-            forwardDir = RoomManager.ObstacleDirection.South;
-            reverseDir= RoomManager.ObstacleDirection.North;
-        }
-        aPos = roomA.GetComponent<RoomManager>().GetDoorEndpoint(forwardDir);
-        bPos=roomB.GetComponent<RoomManager>().GetDoorEndpoint(reverseDir);
-        //Vector3 center = roomGO != null ? roomGO.transform.position : new Vector3(cell.x * cellSize.x, cell.y * cellSize.y, 0f);
-        //Vector3 offset = Vector3.zero;
-        //if (dir.x > 0) offset = new Vector3(cellSize.x * 0.5f, 0f, 0f);
-        //else if (dir.x < 0) offset = new Vector3(-cellSize.x * 0.5f, 0f, 0f);
-        //else if (dir.y > 0) offset = new Vector3(0f, cellSize.y * 0.5f, 0f);
-        //else if (dir.y < 0) offset = new Vector3(0f, -cellSize.y * 0.5f, 0f);
+        RoomManager.DoorDirection doorDir = RoomManager.DoorDirection.North;
+        if (dir.x > 0) doorDir = RoomManager.DoorDirection.East;
+        else if (dir.x < 0) doorDir = RoomManager.DoorDirection.West;
+        else if (dir.y > 0) doorDir = RoomManager.DoorDirection.North;
+        else if (dir.y < 0) doorDir = RoomManager.DoorDirection.South;
 
-        //return center + offset;
+        // calculate door endpoint based on RoomManager door endpoint if available
+        float roomSize = 8f; // default room size
+        if (roomGO != null)
+        {
+            var rm = roomGO.GetComponent<RoomManager>();
+            if (rm != null)
+            {
+                roomSize = rm.defaultSize;
+                // if there is a door endpoint, use it
+                if (rm.HasDoor(doorDir))
+                {
+                    Vector3 doorEndpoint = rm.GetDoorEndpoint(doorDir);
+                    return doorEndpoint;
+                }
+            }
+        }
 
+        // otherwise calculate door position (midpoint of room outer wall, aligned with outer wall)
+        Vector3 offset = Vector3.zero;
+        float halfSize = roomSize * 0.5f;
+        // door should be at room edge (outer wall position), no extra offset needed
+        
+        if (dir.x > 0) offset = new Vector3(halfSize, 0f, 0f); // East
+        else if (dir.x < 0) offset = new Vector3(-halfSize, 0f, 0f); // West
+        else if (dir.y > 0) offset = new Vector3(0f, halfSize, 0f); // North
+        else if (dir.y < 0) offset = new Vector3(0f, -halfSize, 0f); // South
+
+        Vector3 endpoint = center + offset;
+        return endpoint;
     }
 
     private static void TileRoadBetween(Vector3 from, Vector3 to, GameObject roadPrefab, Vector2 cellSize, Transform parent)
@@ -193,5 +429,159 @@ public static class ProceduralDungeonInstantiator
         }
         Object.DestroyImmediate(tmp);
         return len;
+    }
+
+    // Apply color to all TilemapRenderers under the Grid
+    private static void ApplyColorToGridTilemaps(Transform roomTransform, Color color)
+    {
+        Grid grid = roomTransform.GetComponentInChildren<Grid>();
+        if (grid == null) return;
+
+        TilemapRenderer[] renderers = grid.GetComponentsInChildren<TilemapRenderer>();
+        foreach (var renderer in renderers)
+        {
+            // TilemapRenderer uses material.color instead of a direct color property
+            if (renderer.material != null)
+            {
+                renderer.material.color = color;
+            }
+        }
+}
+
+    // Find a tilemap variant by name in the prefabs array
+    private static GameObject FindTilemapVariant(GameObject[] prefabs, string variantName)
+    {
+        if (prefabs == null || prefabs.Length == 0) return null;
+        
+        foreach (GameObject prefab in prefabs)
+        {
+            if (prefab != null && prefab.name == variantName)
+            {
+                return prefab;
+            }
+        }
+        return null;
+    }
+
+    // Move tilemaps from prefab's Grid to the shared Grid and apply color
+    private static void MoveTilemapsToSharedGrid(GameObject roomInstance, Grid sharedGrid, Vector3 worldPos, Color color)
+    {
+        // Find the Grid in the prefab instance
+        Grid prefabGrid = roomInstance.GetComponentInChildren<Grid>();
+        if (prefabGrid == null) return;
+
+        // Get all tilemaps under the prefab's Grid
+        Tilemap[] tilemaps = prefabGrid.GetComponentsInChildren<Tilemap>();
+        if (tilemaps.Length == 0) return;
+
+        // Calculate the center cell position in the shared grid for this room
+        Vector3Int roomCenterCell = sharedGrid.WorldToCell(worldPos);
+        
+        // Move each tilemap to the shared Grid by copying tiles
+        foreach (Tilemap sourceTilemap in tilemaps)
+        {
+            string originalName = sourceTilemap.name;
+            
+            // Find or create the corresponding tilemap in the shared grid
+            Tilemap targetTilemap = FindOrCreateSharedTilemap(sharedGrid, originalName, sourceTilemap, color);
+            
+            // Get all tiles from the source tilemap
+            BoundsInt bounds = sourceTilemap.cellBounds;
+            TileBase[] allTiles = sourceTilemap.GetTilesBlock(bounds);
+            
+            // Calculate offset: where the source tilemap's origin should map to in the target
+            // The source tilemap is centered at (0,0) in prefab space
+            // We want it to be centered at roomCenterCell in shared grid space
+            Vector3Int boundsCenter = new Vector3Int(
+                Mathf.RoundToInt(bounds.center.x),
+                Mathf.RoundToInt(bounds.center.y),
+                Mathf.RoundToInt(bounds.center.z)
+            );
+            Vector3Int offset = roomCenterCell - boundsCenter;
+                        
+            // Copy tiles to target tilemap with offset
+            int tileCount = 0;
+            for (int x = 0; x < bounds.size.x; x++)
+            {
+                for (int y = 0; y < bounds.size.y; y++)
+                {
+                    for (int z = 0; z < bounds.size.z; z++)
+                    {
+                        int index = x + y * bounds.size.x + z * bounds.size.x * bounds.size.y;
+                        TileBase tile = allTiles[index];
+                        if (tile != null)
+                        {
+                            Vector3Int sourcePos = new Vector3Int(bounds.xMin + x, bounds.yMin + y, bounds.zMin + z);
+                            Vector3Int targetPos = sourcePos + offset;
+                            targetTilemap.SetTile(targetPos, tile);
+                            tileCount++;
+                        }
+                    }
+                }
+            }            
+            // Refresh the target tilemap to apply rule tiles
+            targetTilemap.RefreshAllTiles();
+        }
+
+        // Destroy the now-empty Grid from the prefab instance
+        Object.DestroyImmediate(prefabGrid.gameObject);
+    }
+    
+    // Find or create a tilemap in the shared grid with matching properties
+    private static Tilemap FindOrCreateSharedTilemap(Grid sharedGrid, string name, Tilemap sourceTilemap, Color color)
+    {
+        // Try to find existing tilemap with this name
+        Transform existing = sharedGrid.transform.Find(name);
+        if (existing != null)
+        {
+            Tilemap existingTilemap = existing.GetComponent<Tilemap>();
+            if (existingTilemap != null) return existingTilemap;
+        }
+        
+        // Create new tilemap GameObject
+        GameObject tilemapObj = new GameObject(name);
+        tilemapObj.transform.SetParent(sharedGrid.transform, false);
+        tilemapObj.transform.localPosition = Vector3.zero;
+        
+        // Add Tilemap component
+        Tilemap targetTilemap = tilemapObj.AddComponent<Tilemap>();
+        
+        // Add and configure TilemapRenderer
+        TilemapRenderer renderer = tilemapObj.AddComponent<TilemapRenderer>();
+        TilemapRenderer sourceRenderer = sourceTilemap.GetComponent<TilemapRenderer>();
+        if (sourceRenderer != null)
+        {
+            renderer.sortingOrder = sourceRenderer.sortingOrder;
+            renderer.sortingLayerID = sourceRenderer.sortingLayerID;
+        }
+        if (renderer.material != null)
+        {
+            renderer.material.color = color;
+        }
+        
+        // Check if source has collider and add to target if needed
+        TilemapCollider2D sourceCollider = sourceTilemap.GetComponent<TilemapCollider2D>();
+        if (sourceCollider != null)
+        {
+            TilemapCollider2D collider = tilemapObj.AddComponent<TilemapCollider2D>();
+            collider.usedByComposite = true;
+            
+            // Add Rigidbody2D (required for CompositeCollider2D)
+            Rigidbody2D rb = tilemapObj.AddComponent<Rigidbody2D>();
+            rb.bodyType = RigidbodyType2D.Static;
+            
+            // Add CompositeCollider2D for better performance
+            CompositeCollider2D compositeCollider = tilemapObj.AddComponent<CompositeCollider2D>();
+            compositeCollider.geometryType = CompositeCollider2D.GeometryType.Polygons;
+            compositeCollider.generationType = CompositeCollider2D.GenerationType.Synchronous;
+            
+            // Set Wall layer if it's a wall tilemap
+            if (name.Contains("Wall"))
+            {
+                tilemapObj.layer = LayerMask.NameToLayer("Wall") != -1 ? LayerMask.NameToLayer("Wall") : 6;
+            }
+        }
+        
+        return targetTilemap;
     }
 }

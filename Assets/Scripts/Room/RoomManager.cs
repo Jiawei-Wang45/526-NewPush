@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 // Controls a single room: when the player enters, close doors and start spawning enemies;
 // when all enemies inside the room are dead, open doors again.
@@ -34,6 +35,21 @@ public class RoomManager : MonoBehaviour
     public float doorOutsideOffset = 0.1f;
     public float defaultSize = 8f;
     public bool clearExistingChildren = false;
+
+    [Header("Tilemap Builder (RuleTile)")]
+    public bool useTilemapBuilder = false;
+    public TileBase floorRuleTile;
+    public TileBase wallTopRuleTile;
+    public TileBase wallLeftRuleTile;
+    public TileBase wallRightRuleTile;
+    public TileBase wallBottomRuleTile;
+
+    [Header("Shared Grid")]
+    [HideInInspector]
+    public Grid sharedGrid; // shared Grid for Tilemap-based rooms
+
+    [HideInInspector]
+    public bool isProcedurallyGenerated = false; // marked true if room was created by procedural generator
 
     // Return a world-space point representing the logical exit for the given door direction.
     // If the door GameObject contains a child named "ExitPoint" that Transform will be used
@@ -117,8 +133,12 @@ public class RoomManager : MonoBehaviour
 
     private void Start()
     {
-        // Build geometry (if configured) then ensure/position doors and open them
-        //BuildGeometryIfNeeded();
+        // if the room was created by procedural generator, skip duplicate build
+        if (!isProcedurallyGenerated)
+        {
+            // Build geometry (if configured) then ensure/position doors and open them
+            BuildGeometryIfNeeded();
+        }
         // Delegate door discovery/opening to static RoomDoors helper
         //RoomDoors.EnsureDoorsExist(this);
         roomTrigger = GetComponentInChildren<BoxCollider2D>(true);
@@ -140,7 +160,31 @@ public class RoomManager : MonoBehaviour
     //        size = Mathf.Max(s.x, s.y);
     //    }
 
-    //    RoomBuilder.Build(transform, size, floorPrefab, wallPrefab, doorPrefab, wallThickness, doorOutsideOffset, clearExistingChildren);
+        // use Tilemap system or traditional sprite system
+        if (useTilemapBuilder && floorRuleTile != null && wallTopRuleTile != null)
+        {
+            // use shared Grid to build Tilemap room
+            // BuildTilemapRoom signature now accepts optional inner corner & fill tiles before the room Transform
+            RoomTilemapBuilder.BuildTilemapRoom(sharedGrid, transform.position, size, floorRuleTile, 
+                wallTopRuleTile, wallLeftRuleTile, wallRightRuleTile, wallBottomRuleTile,
+                null, null, null, null, null, null, // innerTop, innerBottom, innerLeft, innerRight, innerBottomLeft, innerBottomRight
+                null, // fill
+                transform, false, false, false, false);
+            
+            // create doors - prefer shared Grid overload
+            if (doorNorthMode != DoorMode.PermanentlyLocked)
+                RoomTilemapBuilder.CreateDoor(sharedGrid, transform, DoorDirection.North, 2, size);
+            if (doorSouthMode != DoorMode.PermanentlyLocked)
+                RoomTilemapBuilder.CreateDoor(sharedGrid, transform, DoorDirection.South, 2, size);
+            if (doorEastMode != DoorMode.PermanentlyLocked)
+                RoomTilemapBuilder.CreateDoor(sharedGrid, transform, DoorDirection.East, 2, size);
+            if (doorWestMode != DoorMode.PermanentlyLocked)
+                RoomTilemapBuilder.CreateDoor(sharedGrid, transform, DoorDirection.West, 2, size);
+        }
+        else
+        {
+            RoomBuilder.Build(transform, size, floorPrefab, wallPrefab, doorPrefab, wallThickness, doorOutsideOffset, clearExistingChildren);
+        }
 
     //    // After builder runs, adopt the trigger it created (builder may be on a child)
     //    roomTrigger = GetComponentInChildren<BoxCollider2D>(true);

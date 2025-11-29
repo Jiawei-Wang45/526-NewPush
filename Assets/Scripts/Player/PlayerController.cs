@@ -10,6 +10,8 @@ public class PlayerController : MonoBehaviour, IDamagable
     [NonSerialized] private Rigidbody2D rb;
     [NonSerialized] private PlayerStats stats;
     [NonSerialized] private WeaponController weaponController;
+    [NonSerialized] private Animator anim; 
+    [NonSerialized] private SpriteRenderer sr; 
     public PlayerInput playerInput;
     public int weaponIndex = -1;
     public int abilityIndex = -1;
@@ -37,6 +39,8 @@ public class PlayerController : MonoBehaviour, IDamagable
         rb = GetComponent<Rigidbody2D>();
         stats = GetComponent<PlayerStats>();
         weaponController = GetComponent<WeaponController>();
+        anim = GetComponent<Animator>(); 
+        sr = GetComponent<SpriteRenderer>(); 
     }
     private void OnEnable()
     {
@@ -60,11 +64,38 @@ public class PlayerController : MonoBehaviour, IDamagable
     {
         knockback += force;
         stats.SetInvincible(true);
-        SpriteRenderer parentSprite = GetComponentInParent<SpriteRenderer>();
-        Color color = parentSprite.color;
+        // Use the cached SpriteRenderer reference (sr) to change alpha instead of searching each time
+        Color color = sr != null ? sr.color : GetComponentInParent<SpriteRenderer>().color;
         color.a = 0.5f;
-        parentSprite.color = color;
+        if (sr != null) sr.color = color;
+        else GetComponentInParent<SpriteRenderer>().color = color;
         stats.preventDamage = true;
+    }
+
+    private void Update()
+    {
+        // Control animation: set isWalking to true if player is moving
+        if (movement.sqrMagnitude > 0)
+        {
+            anim.SetBool("isWalking", true);
+        }
+        else
+        {
+            anim.SetBool("isWalking", false);
+        }
+
+        // Control sprite flipping based on horizontal movement
+        // Use SpriteRenderer.flipX so only the sprite is mirrored, not the entire transform
+        if (movement.x > 0)
+        {
+            // Moving right: do not flip the sprite (facing right)
+            if (sr != null) sr.flipX = false;
+        }
+        else if (movement.x < 0)
+        {
+            // Moving left: flip the sprite horizontally (facing left)
+            if (sr != null) sr.flipX = true;
+        }
     }
 
     private void FixedUpdate()
@@ -74,10 +105,11 @@ public class PlayerController : MonoBehaviour, IDamagable
         if((combinationIndex == 6 || combinationIndex == 7) && knockback.magnitude < 3.0f)
         {
             stats.SetInvincible(false);
-            SpriteRenderer parentSprite = GetComponentInParent<SpriteRenderer>();
-            Color color = parentSprite.color;
+            // Use the cached SpriteRenderer reference (sr) to change alpha
+            Color color = sr != null ? sr.color : GetComponentInParent<SpriteRenderer>().color;
             color.a = 1.0f;
-            parentSprite.color = color;
+            if (sr != null) sr.color = color;
+            else GetComponentInParent<SpriteRenderer>().color = color;
             stats.preventDamage = false;
             knockback *= 0.0f;
         }

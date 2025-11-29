@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Heart : ConsumableItem
 {
-    public float healAmount = 1.0f;
+    public float healAmount = 2.0f;
     public float thresholdDistance=5.0f;
     public float movingSpeed = 6.0f;
     public float rotationSpeed = 5.0f;
