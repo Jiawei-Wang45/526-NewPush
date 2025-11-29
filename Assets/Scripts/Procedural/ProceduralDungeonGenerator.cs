@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 // Simple procedural dungeon generator that places rooms on a grid, builds a graph
 // based on 4-neighborhood connectivity (N/E/S/W), repairs connectivity between
@@ -21,6 +22,26 @@ public class ProceduralDungeonGenerator : MonoBehaviour
 	public GameObject roadPrefab;
 	public bool generateOnStart = false;
 	public bool assignRoomsToGameManager = true;
+	[Tooltip("When using tilemap system, automatically substitute _Tilemap variants of prefabs if available")]
+	public bool autoUseTilemapPrefabs = true;
+
+	[Header("Tilemap support")]
+	public bool useTilemapSystem = false;
+	public TileBase floorRuleTile;
+	public TileBase wallTopRuleTile;
+	public TileBase wallLeftRuleTile;
+	public TileBase wallRightRuleTile;
+	public TileBase wallBottomRuleTile;
+	[Header("Inner Corner & Fill Tiles")]
+	public TileBase innerTopRuleTile;        
+	public TileBase innerBottomRuleTile;     
+	public TileBase innerLeftRuleTile;      
+	public TileBase innerRightRuleTile;       
+	public TileBase innerBottomLeftRuleTile;  
+	public TileBase innerBottomRightRuleTile; 
+	public TileBase fillRuleTile;             
+	[Header("Tilemap color")]
+	public Color tilemapColor = Color.white;
 
 	[Header("Grid layout")]
 	public int gridWidth = 5;
@@ -86,8 +107,22 @@ public class ProceduralDungeonGenerator : MonoBehaviour
 			dungeonOffset = player.transform.position - startWorld;
 		}
 
+		// if using tilemap system, create a shared Grid object
+		Grid sharedGrid = null;
+		if (useTilemapSystem)
+		{
+			GameObject gridObj = new GameObject("SharedGrid");
+			gridObj.transform.SetParent(this.transform, false);
+			gridObj.transform.localPosition = Vector3.zero;
+			sharedGrid = gridObj.AddComponent<Grid>();
+			sharedGrid.cellSize = new Vector3(4, 4, 0);
+		}
+
 		instantiatedRooms = ProceduralDungeonInstantiator.InstantiateFromGraph(
-			result, roomPrefabs, startRoomPrefab, endRoomPrefab, roadPrefab, cellSize, roomScale, dungeonOffset, this.transform);
+			result, roomPrefabs, startRoomPrefab, endRoomPrefab, roadPrefab, cellSize, roomScale, dungeonOffset, this.transform,
+			useTilemapSystem, floorRuleTile, wallTopRuleTile, wallLeftRuleTile, wallRightRuleTile, wallBottomRuleTile, 
+			innerTopRuleTile, innerBottomRuleTile, innerLeftRuleTile, innerRightRuleTile, innerBottomLeftRuleTile, innerBottomRightRuleTile, fillRuleTile, 
+			tilemapColor, sharedGrid);
 
 		// Optionally assign generated rooms back to GameManager
 		if (assignRoomsToGameManager && GameManager.instance != null)

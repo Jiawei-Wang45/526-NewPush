@@ -8114,11 +8114,28 @@ MonoBehaviour:
   - {fileID: 4811822070566930807, guid: 5d94691c52701b1489a00a4023f4c3ff, type: 3}
   - {fileID: 4811822070566930807, guid: c50cff2508d940744972bb088cbb7ce6, type: 3}
   - {fileID: 4811822070566930807, guid: 425e867d849ad2f4eb56b70b9b8b6986, type: 3}
+  - {fileID: 4811822070566930807, guid: 30ee5f22759affe418f436873e486580, type: 3}
+  - {fileID: 4811822070566930807, guid: 39ed32209f00f0544888110dfd1eb2c4, type: 3}
   startRoomPrefab: {fileID: 4811822070566930807, guid: e07f8302e3eca3140a39b0eb926f03af, type: 3}
   endRoomPrefab: {fileID: 4811822070566930807, guid: 62f308bd673f4e94184496830d3fd217, type: 3}
   roadPrefab: {fileID: 5586165495642614983, guid: ca43d6c8fd477534797884aef3869258, type: 3}
   generateOnStart: 1
   assignRoomsToGameManager: 1
+  autoUseTilemapPrefabs: 1
+  useTilemapSystem: 1
+  floorRuleTile: {fileID: 11400000, guid: 5a9dcbd3467c13944be9644f40df23c9, type: 2}
+  wallTopRuleTile: {fileID: 11400000, guid: f3125c72d199e204ab91a664b667fc7e, type: 2}
+  wallLeftRuleTile: {fileID: 11400000, guid: c33fa6bf0e7f3d9488a73ba83e602c18, type: 2}
+  wallRightRuleTile: {fileID: 11400000, guid: 74dd5e5bdf8fd144b94cdc9207eba716, type: 2}
+  wallBottomRuleTile: {fileID: 11400000, guid: b108b6422e7f9ad46b25b959c1bc401e, type: 2}
+  innerTopRuleTile: {fileID: 11400000, guid: b0c04253daae515408cc4703481d123e, type: 2}
+  innerBottomRuleTile: {fileID: 11400000, guid: 4b4179355cda408418387a7230a5c1f7, type: 2}
+  innerLeftRuleTile: {fileID: 11400000, guid: 666e807f9c6ab5948a2072471626eb3d, type: 2}
+  innerRightRuleTile: {fileID: 11400000, guid: bbd08750e7c57864f9ee1188af8a937d, type: 2}
+  innerBottomLeftRuleTile: {fileID: 11400000, guid: cdf43bdf574c0804a97a0dffe832acbe, type: 2}
+  innerBottomRightRuleTile: {fileID: 11400000, guid: 619bf97517a88984b808420d6c06ab35, type: 2}
+  fillRuleTile: {fileID: 11400000, guid: 82856698efaea9941a8df1485010eb7b, type: 2}
+  tilemapColor: {r: 1, g: 1, b: 1, a: 1}
   gridWidth: 4
   gridHeight: 4
   roomCount: 8

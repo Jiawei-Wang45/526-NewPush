@@ -64,21 +64,56 @@ public static class RoomDoors
     public static void CloseDoors(RoomManager rm)
     {
         if (rm == null) return;
-        var all = GetAllDoors(rm);
-        for (int i = 0; i < all.Length; i++)
+        
+        // isf using Tilemap system, add wall tiles to close doors
+        if (rm.useTilemapBuilder)
         {
-            var dir = (RoomManager.DoorDirection)i;
-            var door = all[i];
-            var mode = GetDoorMode(rm, dir);
-            if (mode == RoomManager.DoorMode.PermanentlyLocked)
+            for (int i = 0; i < 4; i++)
             {
-                if (door != null) door.SetActive(false);
-                CreateBlockForDoor(rm, dir);
+                var dir = (RoomManager.DoorDirection)i;
+                var mode = GetDoorMode(rm, dir);
+                if (mode != RoomManager.DoorMode.PermanentlyLocked)
+                {
+                    // get corresponding wall tile for direction
+                    UnityEngine.Tilemaps.TileBase wallTile = null;
+                    switch (dir)
+                    {
+                        case RoomManager.DoorDirection.North: wallTile = rm.wallTopRuleTile; break;
+                        case RoomManager.DoorDirection.South: wallTile = rm.wallBottomRuleTile; break;
+                        case RoomManager.DoorDirection.East: wallTile = rm.wallRightRuleTile; break;
+                        case RoomManager.DoorDirection.West: wallTile = rm.wallLeftRuleTile; break;
+                    }
+                    // use shared Grid overload
+                    if (rm.sharedGrid != null)
+                    {
+                        RoomTilemapBuilder.CloseDoor(rm.sharedGrid, rm.transform, dir, wallTile, 2, rm.defaultSize);
+                    }
+                    else
+                    {
+                        RoomTilemapBuilder.CloseDoor(rm.transform, dir, wallTile, 2, rm.defaultSize);
+                    }
+                }
             }
-            else
+        }
+        else
+        {
+            // use traditional sprite system
+            var all = GetAllDoors(rm);
+            for (int i = 0; i < all.Length; i++)
             {
-                if (door != null) door.SetActive(true);
-                RemoveBlockForDoor(rm, dir);
+                var dir = (RoomManager.DoorDirection)i;
+                var door = all[i];
+                var mode = GetDoorMode(rm, dir);
+                if (mode == RoomManager.DoorMode.PermanentlyLocked)
+                {
+                    if (door != null) door.SetActive(false);
+                    CreateBlockForDoor(rm, dir);
+                }
+                else
+                {
+                    if (door != null) door.SetActive(true);
+                    RemoveBlockForDoor(rm, dir);
+                }
             }
         }
     }
@@ -86,21 +121,47 @@ public static class RoomDoors
     public static void OpenDoors(RoomManager rm)
     {
         if (rm == null) return;
-        var all = GetAllDoors(rm);
-        for (int i = 0; i < all.Length; i++)
+        
+        // if using Tilemap system, remove wall tiles to open doors
+        if (rm.useTilemapBuilder)
         {
-            var dir = (RoomManager.DoorDirection)i;
-            var door = all[i];
-            var mode = GetDoorMode(rm, dir);
-            if (mode == RoomManager.DoorMode.PermanentlyLocked)
+            for (int i = 0; i < 4; i++)
             {
-                if (door != null) door.SetActive(false);
-                CreateBlockForDoor(rm, dir);
+                var dir = (RoomManager.DoorDirection)i;
+                var mode = GetDoorMode(rm, dir);
+                if (mode != RoomManager.DoorMode.PermanentlyLocked)
+                {
+                    // use shared Grid overload
+                    if (rm.sharedGrid != null)
+                    {
+                        RoomTilemapBuilder.OpenDoor(rm.sharedGrid, rm.transform, dir, 2, rm.defaultSize);
+                    }
+                    else
+                    {
+                        RoomTilemapBuilder.OpenDoor(rm.transform, dir, 2, rm.defaultSize);
+                    }
+                }
             }
-            else
+        }
+        else
+        {
+            // use traditional sprite system
+            var all = GetAllDoors(rm);
+            for (int i = 0; i < all.Length; i++)
             {
-                if (door != null) door.SetActive(false);
-                RemoveBlockForDoor(rm, dir);
+                var dir = (RoomManager.DoorDirection)i;
+                var door = all[i];
+                var mode = GetDoorMode(rm, dir);
+                if (mode == RoomManager.DoorMode.PermanentlyLocked)
+                {
+                    if (door != null) door.SetActive(false);
+                    CreateBlockForDoor(rm, dir);
+                }
+                else
+                {
+                    if (door != null) door.SetActive(false);
+                    RemoveBlockForDoor(rm, dir);
+                }
             }
         }
     }
