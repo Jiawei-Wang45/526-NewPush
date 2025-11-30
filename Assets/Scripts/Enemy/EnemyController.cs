@@ -341,7 +341,7 @@ public class EnemyController : MonoBehaviour, IDamagable
                 if (pattern.bulletDistribution == BulletPattern.bulletDistributionTypes.Radial)
                 {
                     CreateBullet(
-                        change + (volleyIndex * pattern.rotateBetweenFiring * spinFactor), 
+                        angleOffset + pattern.baseAngleOffset + change + (volleyIndex * pattern.rotateBetweenFiring * spinFactor), 
                         bulletSpeed + (bulletInd * weapon.bulletSpeedRange / pattern.bulletCount) + speedVariance, pattern.bulletType, pattern.isLaser);
                 }
                 else

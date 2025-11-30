@@ -80,7 +80,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 2
   m_Sprite: {fileID: -2346302928887187388, guid: 2a0067308492c344ba4558cb0881ef8b, type: 3}
-  m_Color: {r: 0.8679245, g: 0.2587601, b: 0, a: 1}
+  m_Color: {r: 0.8301887, g: 0.2827717, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -169,6 +169,7 @@ MonoBehaviour:
   bulletDamage: 0
   bounceCount: 0
   bounceMultiplier: 2
+  speedChangeMultiplier: 1
   explosionEffect: {fileID: 8097343779803676001, guid: 33b18ee29e38b2640af24231bdc36dcf, type: 3}
   childToSpawn: {fileID: 2384064034941488593, guid: 04d380db99e814f64a851e76366f14f9, type: 3}
   childNums: 6

@@ -22,7 +22,7 @@ public class Bullet_Cluster : Bullet_Default
     {
         rb = GetComponent<Rigidbody2D>();
     }
-    private void FixedUpdate()
+    protected override void FixedUpdate()
     {
         if (!isParentBullet)
         {
