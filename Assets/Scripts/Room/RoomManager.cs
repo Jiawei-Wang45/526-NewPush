@@ -149,16 +149,16 @@ public class RoomManager : MonoBehaviour
     }
 
     // Build room geometry using RoomBuilder when configured. Kept separate so Start() stays concise.
-    //private void BuildGeometryIfNeeded()
-    //{
-    //    // Use RoomManager settings and the static RoomBuilder helper to create geometry.
-    //    float size = defaultSize;
-    //    var existingTrigger = GetComponent<BoxCollider2D>();
-    //    if (existingTrigger != null)
-    //    {
-    //        var s = existingTrigger.size;
-    //        size = Mathf.Max(s.x, s.y);
-    //    }
+    private void BuildGeometryIfNeeded()
+    {
+        // Use RoomManager settings and the static RoomBuilder helper to create geometry.
+        float size = defaultSize;
+        var existingTrigger = GetComponent<BoxCollider2D>();
+        if (existingTrigger != null)
+        {
+            var s = existingTrigger.size;
+            size = Mathf.Max(s.x, s.y);
+        }
 
         // use Tilemap system or traditional sprite system
         if (useTilemapBuilder && floorRuleTile != null && wallTopRuleTile != null)
@@ -172,25 +172,24 @@ public class RoomManager : MonoBehaviour
                 transform, false, false, false, false);
             
             // create doors - prefer shared Grid overload
-            if (doorNorthMode != DoorMode.PermanentlyLocked)
-                RoomTilemapBuilder.CreateDoor(sharedGrid, transform, DoorDirection.North, 2, size);
-            if (doorSouthMode != DoorMode.PermanentlyLocked)
-                RoomTilemapBuilder.CreateDoor(sharedGrid, transform, DoorDirection.South, 2, size);
-            if (doorEastMode != DoorMode.PermanentlyLocked)
-                RoomTilemapBuilder.CreateDoor(sharedGrid, transform, DoorDirection.East, 2, size);
-            if (doorWestMode != DoorMode.PermanentlyLocked)
-                RoomTilemapBuilder.CreateDoor(sharedGrid, transform, DoorDirection.West, 2, size);
+            if (obstacleNorthMode != DoorMode.PermanentlyLocked)
+                RoomTilemapBuilder.CreateDoor(sharedGrid, transform, ObstacleDirection.North, 2, size);
+            if (obstacleEastMode != DoorMode.PermanentlyLocked)
+                RoomTilemapBuilder.CreateDoor(sharedGrid, transform, ObstacleDirection.South, 2, size);
+            if (obstacleSouthMode != DoorMode.PermanentlyLocked)
+                RoomTilemapBuilder.CreateDoor(sharedGrid, transform, ObstacleDirection.East, 2, size);
+            if (obstacleWestMode != DoorMode.PermanentlyLocked)
+                RoomTilemapBuilder.CreateDoor(sharedGrid, transform, ObstacleDirection.West, 2, size);
         }
         else
         {
             RoomBuilder.Build(transform, size, floorPrefab, wallPrefab, doorPrefab, wallThickness, doorOutsideOffset, clearExistingChildren);
         }
 
-    //    // After builder runs, adopt the trigger it created (builder may be on a child)
-    //    roomTrigger = GetComponentInChildren<BoxCollider2D>(true);
+        // After builder runs, adopt the trigger it created (builder may be on a child)
     //    // Let the RoomDoors rediscover any doors the builder created
     //    //RoomDoors.EnsureDoorsExist(this);
-    //}
+    }
 
     // Public helper to make sure doors are created and the open/closed visual state is applied.
     // This is useful when rooms are instantiated by editor-time generators which call RoomManager

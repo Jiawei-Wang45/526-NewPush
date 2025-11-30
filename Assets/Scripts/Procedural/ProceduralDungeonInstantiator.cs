@@ -233,16 +233,17 @@ public static class ProceduralDungeonInstantiator
             rm.isProcedurallyGenerated = true;
             
             // set door modes (based on previously calculated connection info)
-            rm.SetDoorMode(RoomManager.DoorDirection.North, hasNorth ? RoomManager.DoorMode.Normal : RoomManager.DoorMode.PermanentlyLocked);
-            rm.SetDoorMode(RoomManager.DoorDirection.East, hasEast ? RoomManager.DoorMode.Normal : RoomManager.DoorMode.PermanentlyLocked);
-            rm.SetDoorMode(RoomManager.DoorDirection.South, hasSouth ? RoomManager.DoorMode.Normal : RoomManager.DoorMode.PermanentlyLocked);
-            rm.SetDoorMode(RoomManager.DoorDirection.West, hasWest ? RoomManager.DoorMode.Normal : RoomManager.DoorMode.PermanentlyLocked);
+            rm.SetDoorMode(RoomManager.ObstacleDirection.North, hasNorth ? RoomManager.DoorMode.Normal : RoomManager.DoorMode.PermanentlyLocked);
+            rm.SetDoorMode(RoomManager.ObstacleDirection.East, hasEast ? RoomManager.DoorMode.Normal : RoomManager.DoorMode.PermanentlyLocked);
+            rm.SetDoorMode(RoomManager.ObstacleDirection.South, hasSouth ? RoomManager.DoorMode.Normal : RoomManager.DoorMode.PermanentlyLocked);
+            rm.SetDoorMode(RoomManager.ObstacleDirection.West, hasWest ? RoomManager.DoorMode.Normal : RoomManager.DoorMode.PermanentlyLocked);
 
             // set sharedGrid reference
             rm.sharedGrid = s_sharedGrid;
 
             // Ensure doors exist and apply open/closed state immediately
-            rm.InitializeDoors();
+            RoomDoors.EnsureDoorsExist(rm);
+            RoomDoors.OpenDoors(rm);
 
             // Restore EnemySpawner reference if it exists in the prefab
             if (existingSpawner != null)
@@ -283,8 +284,8 @@ public static class ProceduralDungeonInstantiator
     {
         var aCell = occupiedCells[indexA];
         var bCell = occupiedCells[indexB];
-        Vector3 aPos = GetEndpointForConnection(instantiatedRooms, occupiedCells, indexA, bCell, cellSize);
-        Vector3 bPos = GetEndpointForConnection(instantiatedRooms, occupiedCells, indexB, aCell, cellSize);
+        Vector3 aPos = GetEndpointForConnection(instantiatedRooms, occupiedCells, indexA, indexB);
+        Vector3 bPos = GetEndpointForConnection(instantiatedRooms, occupiedCells, indexB, indexA);
         
         if (s_useTilemapSystem && s_floorRuleTile != null && s_wallTopRuleTile != null)
         {
@@ -346,48 +347,44 @@ public static class ProceduralDungeonInstantiator
         }
     }
 
-    private static Vector3 GetEndpointForConnection(List<GameObject> instantiatedRooms, List<Vector2Int> occupiedCells, int roomIndex, Vector2Int neighborCell, Vector2 cellSize)
+    private static Vector3 GetEndpointForConnection(List<GameObject> instantiatedRooms, List<Vector2Int> occupiedCells, int indexA, int indexB)
     {
-        var cell = occupiedCells[roomIndex];
-        var roomGO = instantiatedRooms[roomIndex];
-        Vector3 center = roomGO != null ? roomGO.transform.position : new Vector3(cell.x * cellSize.x, cell.y * cellSize.y, 0f);
-        Vector2Int dir = neighborCell - cell;
+        var room = instantiatedRooms[indexA];
+        Vector2Int dir = occupiedCells[indexB] - occupiedCells[indexA];
 
-        RoomManager.DoorDirection doorDir = RoomManager.DoorDirection.North;
-        if (dir.x > 0) doorDir = RoomManager.DoorDirection.East;
-        else if (dir.x < 0) doorDir = RoomManager.DoorDirection.West;
-        else if (dir.y > 0) doorDir = RoomManager.DoorDirection.North;
-        else if (dir.y < 0) doorDir = RoomManager.DoorDirection.South;
+        RoomManager.ObstacleDirection doorDir = RoomManager.ObstacleDirection.North;
+        if (dir.x > 0) doorDir = RoomManager.ObstacleDirection.East;
+        else if (dir.x < 0) doorDir = RoomManager.ObstacleDirection.West;
+        else if (dir.y > 0) doorDir = RoomManager.ObstacleDirection.North;
+        else if (dir.y < 0) doorDir = RoomManager.ObstacleDirection.South;
 
         // calculate door endpoint based on RoomManager door endpoint if available
         float roomSize = 8f; // default room size
-        if (roomGO != null)
+        if (room != null)
         {
-            var rm = roomGO.GetComponent<RoomManager>();
+            var rm = room.GetComponent<RoomManager>();
             if (rm != null)
             {
                 roomSize = rm.defaultSize;
                 // if there is a door endpoint, use it
-                if (rm.HasDoor(doorDir))
-                {
-                    Vector3 doorEndpoint = rm.GetDoorEndpoint(doorDir);
-                    return doorEndpoint;
-                }
+                Vector3 doorEndpoint = rm.GetDoorEndpoint(doorDir);
+                return doorEndpoint;
             }
         }
-
+        return Vector3.zero;
         // otherwise calculate door position (midpoint of room outer wall, aligned with outer wall)
-        Vector3 offset = Vector3.zero;
-        float halfSize = roomSize * 0.5f;
-        // door should be at room edge (outer wall position), no extra offset needed
+        //Vector3 center = roomGO != null ? roomGO.transform.position : new Vector3(cell.x * cellSize.x, cell.y * cellSize.y, 0f);
+        //Vector3 offset = Vector3.zero;
+        //float halfSize = roomSize * 0.5f;
+        //// door should be at room edge (outer wall position), no extra offset needed
         
-        if (dir.x > 0) offset = new Vector3(halfSize, 0f, 0f); // East
-        else if (dir.x < 0) offset = new Vector3(-halfSize, 0f, 0f); // West
-        else if (dir.y > 0) offset = new Vector3(0f, halfSize, 0f); // North
-        else if (dir.y < 0) offset = new Vector3(0f, -halfSize, 0f); // South
+        //if (dir.x > 0) offset = new Vector3(halfSize, 0f, 0f); // East
+        //else if (dir.x < 0) offset = new Vector3(-halfSize, 0f, 0f); // West
+        //else if (dir.y > 0) offset = new Vector3(0f, halfSize, 0f); // North
+        //else if (dir.y < 0) offset = new Vector3(0f, -halfSize, 0f); // South
 
-        Vector3 endpoint = center + offset;
-        return endpoint;
+        //Vector3 endpoint = center + offset;
+        //return endpoint;
     }
 
     private static void TileRoadBetween(Vector3 from, Vector3 to, GameObject roadPrefab, Vector2 cellSize, Transform parent)
@@ -565,7 +562,6 @@ public static class ProceduralDungeonInstantiator
         {
             TilemapCollider2D collider = tilemapObj.AddComponent<TilemapCollider2D>();
             collider.usedByComposite = true;
-            
             // Add Rigidbody2D (required for CompositeCollider2D)
             Rigidbody2D rb = tilemapObj.AddComponent<Rigidbody2D>();
             rb.bodyType = RigidbodyType2D.Static;

@@ -270,7 +270,7 @@ public static class RoomTilemapBuilder
         }
 
         // Create a door on the wall (remove wall tiles) - using shared Grid
-        public static void CreateDoor(Grid sharedGrid, Transform roomTransform, RoomManager.DoorDirection direction, int doorWidth = 2, float roomSize = 8f)
+        public static void CreateDoor(Grid sharedGrid, Transform roomTransform, RoomManager.ObstacleDirection direction, int doorWidth = 2, float roomSize = 8f)
         {
                 if (sharedGrid == null) return;
 
@@ -278,16 +278,16 @@ public static class RoomTilemapBuilder
                 Tilemap wallTilemap = null;
                 switch (direction)
                 {
-                        case RoomManager.DoorDirection.North:
+                        case RoomManager.ObstacleDirection.North:
                                 wallTilemap = sharedGrid.transform.Find("WallTop")?.GetComponent<Tilemap>();
                                 break;
-                        case RoomManager.DoorDirection.South:
+                        case RoomManager.ObstacleDirection.South:
                                 wallTilemap = sharedGrid.transform.Find("WallBottom")?.GetComponent<Tilemap>();
                                 break;
-                        case RoomManager.DoorDirection.East:
+                        case RoomManager.ObstacleDirection.East:
                                 wallTilemap = sharedGrid.transform.Find("WallRight")?.GetComponent<Tilemap>();
                                 break;
-                        case RoomManager.DoorDirection.West:
+                        case RoomManager.ObstacleDirection.West:
                                 wallTilemap = sharedGrid.transform.Find("WallLeft")?.GetComponent<Tilemap>();
                                 break;
                 }
@@ -303,28 +303,28 @@ public static class RoomTilemapBuilder
                 // Remove wall tiles to create a door based on direction
                 switch (direction)
                 {
-                        case RoomManager.DoorDirection.North:
+                        case RoomManager.ObstacleDirection.North:
                                 for (int i = -halfWidth; i <= halfWidth; i++)
                                 {
                                         wallTilemap.SetTile(centerCell + new Vector3Int(i, halfTiles + 1, 0), null);
                                 }
                                 break;
 
-                        case RoomManager.DoorDirection.South:
+                        case RoomManager.ObstacleDirection.South:
                                 for (int i = -halfWidth; i <= halfWidth; i++)
                                 {
                                         wallTilemap.SetTile(centerCell + new Vector3Int(i, -halfTiles - 1, 0), null);
                                 }
                                 break;
 
-                        case RoomManager.DoorDirection.East:
+                        case RoomManager.ObstacleDirection.East:
                                 for (int i = -halfWidth; i <= halfWidth; i++)
                                 {
                                         wallTilemap.SetTile(centerCell + new Vector3Int(halfTiles + 1, i, 0), null);
                                 }
                                 break;
 
-                        case RoomManager.DoorDirection.West:
+                        case RoomManager.ObstacleDirection.West:
                                 for (int i = -halfWidth; i <= halfWidth; i++)
                                 {
                                         wallTilemap.SetTile(centerCell + new Vector3Int(-halfTiles - 1, i, 0), null);
@@ -334,7 +334,7 @@ public static class RoomTilemapBuilder
         }
 
         // Create a door on the wall
-        public static void CreateDoor(Transform roomTransform, RoomManager.DoorDirection direction, int doorWidth = 2, float roomSize = 8f)
+        public static void CreateDoor(Transform roomTransform, RoomManager.ObstacleDirection direction, int doorWidth = 2, float roomSize = 8f)
         {
                 Grid grid = roomTransform.GetComponentInChildren<Grid>();
                 if (grid == null) return;
@@ -342,16 +342,16 @@ public static class RoomTilemapBuilder
                 Tilemap wallTilemap = null;
                 switch (direction)
                 {
-                        case RoomManager.DoorDirection.North:
+                        case RoomManager.ObstacleDirection.North:
                                 wallTilemap = grid.transform.Find("WallTop")?.GetComponent<Tilemap>();
                                 break;
-                        case RoomManager.DoorDirection.South:
+                        case RoomManager.ObstacleDirection.South:
                                 wallTilemap = grid.transform.Find("WallBottom")?.GetComponent<Tilemap>();
                                 break;
-                        case RoomManager.DoorDirection.East:
+                        case RoomManager.ObstacleDirection.East:
                                 wallTilemap = grid.transform.Find("WallRight")?.GetComponent<Tilemap>();
                                 break;
-                        case RoomManager.DoorDirection.West:
+                        case RoomManager.ObstacleDirection.West:
                                 wallTilemap = grid.transform.Find("WallLeft")?.GetComponent<Tilemap>();
                                 break;
                 }
@@ -367,28 +367,28 @@ public static class RoomTilemapBuilder
                 // Walls are one tile outside the floor boundary, so it's halfTiles+1
                 switch (direction)
                 {
-                        case RoomManager.DoorDirection.North:
+                        case RoomManager.ObstacleDirection.North:
                                 for (int i = -halfWidth; i <= halfWidth; i++)
                                 {
                                         wallTilemap.SetTile(new Vector3Int(i, halfTiles + 1, 0), null);
                                 }
                                 break;
 
-                        case RoomManager.DoorDirection.South:
+                        case RoomManager.ObstacleDirection.South:
                                 for (int i = -halfWidth; i <= halfWidth; i++)
                                 {
                                         wallTilemap.SetTile(new Vector3Int(i, -halfTiles - 1, 0), null);
                                 }
                                 break;
 
-                        case RoomManager.DoorDirection.East:
+                        case RoomManager.ObstacleDirection.East:
                                 for (int i = -halfWidth; i <= halfWidth; i++)
                                 {
                                         wallTilemap.SetTile(new Vector3Int(halfTiles + 1, i, 0), null);
                                 }
                                 break;
 
-                        case RoomManager.DoorDirection.West:
+                        case RoomManager.ObstacleDirection.West:
                                 for (int i = -halfWidth; i <= halfWidth; i++)
                                 {
                                         wallTilemap.SetTile(new Vector3Int(-halfTiles - 1, i, 0), null);
@@ -400,7 +400,7 @@ public static class RoomTilemapBuilder
         }
 
         // close door 
-        public static void CloseDoor(Grid sharedGrid, Transform roomTransform, RoomManager.DoorDirection direction, TileBase wallTile, int doorWidth = 2, float roomSize = 8f)
+        public static void CloseDoor(Grid sharedGrid, Transform roomTransform, RoomManager.ObstacleDirection direction, TileBase wallTile, int doorWidth = 2, float roomSize = 8f)
         {
                 if (sharedGrid == null || wallTile == null) return;
 
@@ -408,16 +408,16 @@ public static class RoomTilemapBuilder
                 Tilemap wallTilemap = null;
                 switch (direction)
                 {
-                        case RoomManager.DoorDirection.North:
+                        case RoomManager.ObstacleDirection.North:
                                 wallTilemap = sharedGrid.transform.Find("WallTop")?.GetComponent<Tilemap>();
                                 break;
-                        case RoomManager.DoorDirection.South:
+                        case RoomManager.ObstacleDirection.South:
                                 wallTilemap = sharedGrid.transform.Find("WallBottom")?.GetComponent<Tilemap>();
                                 break;
-                        case RoomManager.DoorDirection.East:
+                        case RoomManager.ObstacleDirection.East:
                                 wallTilemap = sharedGrid.transform.Find("WallRight")?.GetComponent<Tilemap>();
                                 break;
-                        case RoomManager.DoorDirection.West:
+                        case RoomManager.ObstacleDirection.West:
                                 wallTilemap = sharedGrid.transform.Find("WallLeft")?.GetComponent<Tilemap>();
                                 break;
                 }
@@ -432,19 +432,19 @@ public static class RoomTilemapBuilder
                 // Place wall tiles at the outer wall position (halfTiles+1)
                 switch (direction)
                 {
-                        case RoomManager.DoorDirection.North:
+                        case RoomManager.ObstacleDirection.North:
                                 for (int i = -halfWidth; i <= halfWidth; i++)
                                         wallTilemap.SetTile(centerCell + new Vector3Int(i, halfTiles + 1, 0), wallTile);
                                 break;
-                        case RoomManager.DoorDirection.South:
+                        case RoomManager.ObstacleDirection.South:
                                 for (int i = -halfWidth; i <= halfWidth; i++)
                                         wallTilemap.SetTile(centerCell + new Vector3Int(i, -halfTiles - 1, 0), wallTile);
                                 break;
-                        case RoomManager.DoorDirection.East:
+                        case RoomManager.ObstacleDirection.East:
                                 for (int i = -halfWidth; i <= halfWidth; i++)
                                         wallTilemap.SetTile(centerCell + new Vector3Int(halfTiles + 1, i, 0), wallTile);
                                 break;
-                        case RoomManager.DoorDirection.West:
+                        case RoomManager.ObstacleDirection.West:
                                 for (int i = -halfWidth; i <= halfWidth; i++)
                                         wallTilemap.SetTile(centerCell + new Vector3Int(-halfTiles - 1, i, 0), wallTile);
                                 break;
@@ -454,7 +454,7 @@ public static class RoomTilemapBuilder
         }
 
         // close door  
-        public static void CloseDoor(Transform roomTransform, RoomManager.DoorDirection direction, TileBase wallTile, int doorWidth = 2, float roomSize = 8f)
+        public static void CloseDoor(Transform roomTransform, RoomManager.ObstacleDirection direction, TileBase wallTile, int doorWidth = 2, float roomSize = 8f)
         {
                 Grid grid = roomTransform.GetComponentInChildren<Grid>();
                 if (grid == null) return;
@@ -462,16 +462,16 @@ public static class RoomTilemapBuilder
                 Tilemap wallTilemap = null;
                 switch (direction)
                 {
-                        case RoomManager.DoorDirection.North:
+                        case RoomManager.ObstacleDirection.North:
                                 wallTilemap = grid.transform.Find("WallTop")?.GetComponent<Tilemap>();
                                 break;
-                        case RoomManager.DoorDirection.South:
+                        case RoomManager.ObstacleDirection.South:
                                 wallTilemap = grid.transform.Find("WallBottom")?.GetComponent<Tilemap>();
                                 break;
-                        case RoomManager.DoorDirection.East:
+                        case RoomManager.ObstacleDirection.East:
                                 wallTilemap = grid.transform.Find("WallRight")?.GetComponent<Tilemap>();
                                 break;
-                        case RoomManager.DoorDirection.West:
+                        case RoomManager.ObstacleDirection.West:
                                 wallTilemap = grid.transform.Find("WallLeft")?.GetComponent<Tilemap>();
                                 break;
                 }
@@ -485,19 +485,19 @@ public static class RoomTilemapBuilder
                 // Place wall tiles at the outer wall position  
                 switch (direction)
                 {
-                        case RoomManager.DoorDirection.North:
+                        case RoomManager.ObstacleDirection.North:
                                 for (int i = -halfWidth; i <= halfWidth; i++)
                                         wallTilemap.SetTile(new Vector3Int(i, halfTiles + 1, 0), wallTile);
                                 break;
-                        case RoomManager.DoorDirection.South:
+                        case RoomManager.ObstacleDirection.South:
                                 for (int i = -halfWidth; i <= halfWidth; i++)
                                         wallTilemap.SetTile(new Vector3Int(i, -halfTiles - 1, 0), wallTile);
                                 break;
-                        case RoomManager.DoorDirection.East:
+                        case RoomManager.ObstacleDirection.East:
                                 for (int i = -halfWidth; i <= halfWidth; i++)
                                         wallTilemap.SetTile(new Vector3Int(halfTiles + 1, i, 0), wallTile);
                                 break;
-                        case RoomManager.DoorDirection.West:
+                        case RoomManager.ObstacleDirection.West:
                                 for (int i = -halfWidth; i <= halfWidth; i++)
                                         wallTilemap.SetTile(new Vector3Int(-halfTiles - 1, i, 0), wallTile);
                                 break;
@@ -507,13 +507,13 @@ public static class RoomTilemapBuilder
         }
 
         // open door  - using shared Grid
-        public static void OpenDoor(Grid sharedGrid, Transform roomTransform, RoomManager.DoorDirection direction, int doorWidth = 2, float roomSize = 8f)
+        public static void OpenDoor(Grid sharedGrid, Transform roomTransform, RoomManager.ObstacleDirection direction, int doorWidth = 2, float roomSize = 8f)
         {
                 CreateDoor(sharedGrid, roomTransform, direction, doorWidth, roomSize);
         }
 
         // open door  - equivalent to CreateDoor
-        public static void OpenDoor(Transform roomTransform, RoomManager.DoorDirection direction, int doorWidth = 2, float roomSize = 8f)
+        public static void OpenDoor(Transform roomTransform, RoomManager.ObstacleDirection direction, int doorWidth = 2, float roomSize = 8f)
         {
                 CreateDoor(roomTransform, direction, doorWidth, roomSize);
         }

@@ -6,20 +6,20 @@ using static RoomManager;
 public static class RoomDoors
 {
     // Discover child door GameObjects by conventional names if present and assign into RoomManager
-    //public static void EnsureDoorsExist(RoomManager rm)
-    //{
-    //    if (rm == null) return;
-    //    // Use recursive search to be robust in builds where hierarchy or naming may differ.
-    //    var transforms = rm.GetComponentsInChildren<Transform>(true);
-    //    foreach (var tt in transforms)
-    //    {
-    //        var n = tt.name;
-    //        if (n.StartsWith("Door_North")) rm.obstacleNorth = tt.gameObject;
-    //        else if (n.StartsWith("Door_East")) rm.obstacleEast = tt.gameObject;
-    //        else if (n.StartsWith("Door_South")) rm.obstacleSouth = tt.gameObject;
-    //        else if (n.StartsWith("Door_West")) rm.obstacleWest = tt.gameObject;
-    //    }
-    //}
+    public static void EnsureDoorsExist(RoomManager rm)
+    {
+        if (rm == null) return;
+        // Use recursive search to be robust in builds where hierarchy or naming may differ.
+        var transforms = rm.GetComponentsInChildren<Transform>(true);
+        foreach (var tt in transforms)
+        {
+            var n = tt.name;
+            if (n.StartsWith("Door_North")) rm.obstacleNorth = tt.gameObject;
+            else if (n.StartsWith("Door_East")) rm.obstacleEast = tt.gameObject;
+            else if (n.StartsWith("Door_South")) rm.obstacleSouth = tt.gameObject;
+            else if (n.StartsWith("Door_West")) rm.obstacleWest = tt.gameObject;
+        }
+    }
     private static readonly int ObstacleNums= Enum.GetValues(typeof(RoomManager.ObstacleDirection)).Length;
     public static GameObject GetDoor(RoomManager rm, RoomManager.ObstacleDirection dir)
     {
@@ -58,7 +58,7 @@ public static class RoomDoors
         {
             for (int i = 0; i < 4; i++)
             {
-                var dir = (RoomManager.DoorDirection)i;
+                var dir = (RoomManager.ObstacleDirection)i;
                 var mode = GetDoorMode(rm, dir);
                 if (mode != RoomManager.DoorMode.PermanentlyLocked)
                 {
@@ -66,10 +66,10 @@ public static class RoomDoors
                     UnityEngine.Tilemaps.TileBase wallTile = null;
                     switch (dir)
                     {
-                        case RoomManager.DoorDirection.North: wallTile = rm.wallTopRuleTile; break;
-                        case RoomManager.DoorDirection.South: wallTile = rm.wallBottomRuleTile; break;
-                        case RoomManager.DoorDirection.East: wallTile = rm.wallRightRuleTile; break;
-                        case RoomManager.DoorDirection.West: wallTile = rm.wallLeftRuleTile; break;
+                        case RoomManager.ObstacleDirection.North: wallTile = rm.wallTopRuleTile; break;
+                        case RoomManager.ObstacleDirection.South: wallTile = rm.wallBottomRuleTile; break;
+                        case RoomManager.ObstacleDirection.East: wallTile = rm.wallRightRuleTile; break;
+                        case RoomManager.ObstacleDirection.West: wallTile = rm.wallLeftRuleTile; break;
                     }
                     // use shared Grid overload
                     if (rm.sharedGrid != null)
@@ -86,21 +86,14 @@ public static class RoomDoors
         else
         {
             // use traditional sprite system
-            var all = GetAllDoors(rm);
-            for (int i = 0; i < all.Length; i++)
+            for (int i = 0; i < ObstacleNums; i++)
             {
-                var dir = (RoomManager.DoorDirection)i;
-                var door = all[i];
+                var dir = (RoomManager.ObstacleDirection)i;
+                var door = GetDoor(rm, dir);
                 var mode = GetDoorMode(rm, dir);
-                if (mode == RoomManager.DoorMode.PermanentlyLocked)
-                {
-                    if (door != null) door.SetActive(false);
-                    CreateBlockForDoor(rm, dir);
-                }
-                else
+                if (mode == RoomManager.DoorMode.Normal)
                 {
                     if (door != null) door.SetActive(true);
-                    RemoveBlockForDoor(rm, dir);
                 }
             }
         }
@@ -115,7 +108,7 @@ public static class RoomDoors
         {
             for (int i = 0; i < 4; i++)
             {
-                var dir = (RoomManager.DoorDirection)i;
+                var dir = (RoomManager.ObstacleDirection)i;
                 var mode = GetDoorMode(rm, dir);
                 if (mode != RoomManager.DoorMode.PermanentlyLocked)
                 {
@@ -134,21 +127,14 @@ public static class RoomDoors
         else
         {
             // use traditional sprite system
-            var all = GetAllDoors(rm);
-            for (int i = 0; i < all.Length; i++)
+            for (int i = 0; i < ObstacleNums; i++)
             {
-                var dir = (RoomManager.DoorDirection)i;
-                var door = all[i];
+                var dir = (RoomManager.ObstacleDirection)i;
+                var door = GetDoor(rm, dir);
                 var mode = GetDoorMode(rm, dir);
-                if (mode == RoomManager.DoorMode.PermanentlyLocked)
+                if (mode == RoomManager.DoorMode.Normal)
                 {
                     if (door != null) door.SetActive(false);
-                    CreateBlockForDoor(rm, dir);
-                }
-                else
-                {
-                    if (door != null) door.SetActive(false);
-                    RemoveBlockForDoor(rm, dir);
                 }
             }
         }
