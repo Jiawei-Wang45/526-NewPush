@@ -242,8 +242,6 @@ public static class ProceduralDungeonInstantiator
             rm.sharedGrid = s_sharedGrid;
 
             // Ensure doors exist and apply open/closed state immediately
-            RoomDoors.EnsureDoorsExist(rm);
-            RoomDoors.OpenDoors(rm);
 
             // Restore EnemySpawner reference if it exists in the prefab
             if (existingSpawner != null)
@@ -262,16 +260,12 @@ public static class ProceduralDungeonInstantiator
         // Create roads
         if (roadPrefab != null || useTilemapSystem)
         {
-            var created = new HashSet<string>();
             for (int i = 0; i < occupiedCells.Count; i++)
             {
                 if (!adjacencyGraph.ContainsKey(i)) continue;
                 foreach (var j in adjacencyGraph[i])
                 {
-                    if (i == j) continue;
-                    string key = i < j ? $"{i}-{j}" : $"{j}-{i}";
-                    if (created.Contains(key)) continue;
-                    created.Add(key);
+                    if (j < i) continue;
                     CreateRoadBetween(instantiatedRooms, occupiedCells, i, j, roadPrefab, cellSize, parent);
                 }
             }
@@ -284,8 +278,8 @@ public static class ProceduralDungeonInstantiator
     {
         var aCell = occupiedCells[indexA];
         var bCell = occupiedCells[indexB];
-        Vector3 aPos = GetEndpointForConnection(instantiatedRooms, occupiedCells, indexA, indexB);
-        Vector3 bPos = GetEndpointForConnection(instantiatedRooms, occupiedCells, indexB, indexA);
+        Vector3 aPos = GetEndpointForConnection(instantiatedRooms, occupiedCells, indexA, indexB,cellSize);
+        Vector3 bPos = GetEndpointForConnection(instantiatedRooms, occupiedCells, indexB, indexA,cellSize);
         
         if (s_useTilemapSystem && s_floorRuleTile != null && s_wallTopRuleTile != null)
         {
@@ -347,7 +341,7 @@ public static class ProceduralDungeonInstantiator
         }
     }
 
-    private static Vector3 GetEndpointForConnection(List<GameObject> instantiatedRooms, List<Vector2Int> occupiedCells, int indexA, int indexB)
+    private static Vector3 GetEndpointForConnection(List<GameObject> instantiatedRooms, List<Vector2Int> occupiedCells, int indexA, int indexB, Vector2 cellSize)
     {
         var room = instantiatedRooms[indexA];
         Vector2Int dir = occupiedCells[indexB] - occupiedCells[indexA];
@@ -367,24 +361,27 @@ public static class ProceduralDungeonInstantiator
             {
                 roomSize = rm.defaultSize;
                 // if there is a door endpoint, use it
-                Vector3 doorEndpoint = rm.GetDoorEndpoint(doorDir);
-                return doorEndpoint;
+                if (rm.GetObstacle(doorDir)!=null)
+                {
+                    Vector3 doorEndpoint = rm.GetDoorEndpoint(doorDir);
+                    return doorEndpoint;
+                }
+                
             }
         }
-        return Vector3.zero;
         // otherwise calculate door position (midpoint of room outer wall, aligned with outer wall)
-        //Vector3 center = roomGO != null ? roomGO.transform.position : new Vector3(cell.x * cellSize.x, cell.y * cellSize.y, 0f);
-        //Vector3 offset = Vector3.zero;
-        //float halfSize = roomSize * 0.5f;
-        //// door should be at room edge (outer wall position), no extra offset needed
-        
-        //if (dir.x > 0) offset = new Vector3(halfSize, 0f, 0f); // East
-        //else if (dir.x < 0) offset = new Vector3(-halfSize, 0f, 0f); // West
-        //else if (dir.y > 0) offset = new Vector3(0f, halfSize, 0f); // North
-        //else if (dir.y < 0) offset = new Vector3(0f, -halfSize, 0f); // South
+        Vector3 center = room != null ? room.transform.position : new Vector3(occupiedCells[indexA].x * cellSize.x, occupiedCells[indexA].y * cellSize.y, 0f);
+        Vector3 offset = Vector3.zero;
+        float halfSize = roomSize * 0.5f;
+        // door should be at room edge (outer wall position), no extra offset needed
 
-        //Vector3 endpoint = center + offset;
-        //return endpoint;
+        if (dir.x > 0) offset = new Vector3(halfSize, 0f, 0f); // East
+        else if (dir.x < 0) offset = new Vector3(-halfSize, 0f, 0f); // West
+        else if (dir.y > 0) offset = new Vector3(0f, halfSize, 0f); // North
+        else if (dir.y < 0) offset = new Vector3(0f, -halfSize, 0f); // South
+
+        Vector3 endpoint = center + offset;
+        return endpoint;
     }
 
     private static void TileRoadBetween(Vector3 from, Vector3 to, GameObject roadPrefab, Vector2 cellSize, Transform parent)
