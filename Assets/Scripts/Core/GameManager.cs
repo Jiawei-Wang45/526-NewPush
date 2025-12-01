@@ -528,6 +528,9 @@ public class GameManager : MonoBehaviour
             // Check if next level exists
             if (nextLevelIndex < levelScenes.Length && !string.IsNullOrEmpty(levelScenes[nextLevelIndex]))
             {
+                // Save current player weapon and abilities to config before loading next level
+                SaveCurrentPlayerConfig();
+                
                 Time.timeScale = 1; // Reset time scale before loading
                 SceneManager.LoadScene(levelScenes[nextLevelIndex]);
                 return;
@@ -546,6 +549,70 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1; // Reset time scale before loading
         SceneManager.LoadScene("MainMenu");
     }
+    
+    /// <summary>
+    /// Save current player's weapon and abilities to CharacterConfigHolder before loading next level.
+    /// This ensures the player keeps their equipment when transitioning between levels.
+    /// </summary>
+    private void SaveCurrentPlayerConfig()
+    {
+        if (CharacterConfigHolder.instance == null)
+        {
+            Debug.LogWarning("[GameManager] CharacterConfigHolder.instance is null. Cannot save player config.");
+            return;
+        }
+        
+        // Get current weapon from WeaponController
+        WeaponController weaponController = FindFirstObjectByType<WeaponController>();
+        if (weaponController != null)
+        {
+            PlayerBaseWeapon currentWeapon = weaponController.GetCurrentWeapon();
+            if (currentWeapon != null)
+            {
+                CharacterConfigHolder.instance.weapon = currentWeapon;
+                Debug.Log($"[GameManager] Saved current weapon: {currentWeapon.name}");
+            }
+        }
+        
+        // Get current abilities from AbilityController
+        AbilityController abilityController = FindFirstObjectByType<AbilityController>();
+        if (abilityController != null)
+        {
+            PlayerAbility currentAttackingAbility = abilityController.GetCurrentAttackingAbility();
+            if (currentAttackingAbility != null)
+            {
+                CharacterConfigHolder.instance.attackingAbility = currentAttackingAbility;
+                Debug.Log($"[GameManager] Saved current attacking ability: {currentAttackingAbility.abilityName}");
+            }
+            
+            PlayerAbility currentDefenseAbility = abilityController.GetCurrentDefenseAbility();
+            if (currentDefenseAbility != null)
+            {
+                CharacterConfigHolder.instance.defenseAbility = currentDefenseAbility;
+                Debug.Log($"[GameManager] Saved current defense ability: {currentDefenseAbility.abilityName}");
+            }
+        }
+        
+        // Update selected level index to next level
+        string currentSceneName = SceneManager.GetActiveScene().name;
+        for (int i = 0; i < levelScenes.Length; i++)
+        {
+            if (levelScenes[i] == currentSceneName)
+            {
+                int nextLevelIndex = i + 1;
+                if (nextLevelIndex < levelScenes.Length)
+                {
+                    CharacterConfigHolder.instance.selectedLevelIndex = nextLevelIndex;
+                    Debug.Log($"[GameManager] Updated selectedLevelIndex to: {nextLevelIndex}");
+                }
+                break;
+            }
+        }
+        
+        // Mark as configured so CharacterHandler will apply these settings in next level
+        CharacterConfigHolder.instance.SetConfigured(true);
+    }
+    
     //helper functions
     private void ChangePauseStat()
     {

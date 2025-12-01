@@ -82,4 +82,20 @@ public class AbilityController : MonoBehaviour
         float angle = UnityEngine.Random.Range(0, 2 * Mathf.PI);
         return transform.position+new Vector3(Mathf.Cos(angle), Mathf.Sin(angle), 0);
     }
+    
+    /// <summary>
+    /// Get the currently equipped attacking ability. Returns null if no ability is equipped.
+    /// </summary>
+    public PlayerAbility GetCurrentAttackingAbility()
+    {
+        return cachedAttackingAbility;
+    }
+    
+    /// <summary>
+    /// Get the currently equipped defense ability. Returns null if no ability is equipped.
+    /// </summary>
+    public PlayerAbility GetCurrentDefenseAbility()
+    {
+        return cachedDefenseAbility;
+    }
 }

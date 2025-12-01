@@ -200,4 +200,16 @@ public class WeaponController : MonoBehaviour
             }
         }
     }
+    
+    /// <summary>
+    /// Get the currently equipped weapon. Returns null if no weapon is equipped.
+    /// </summary>
+    public PlayerBaseWeapon GetCurrentWeapon()
+    {
+        if (cachedSlotIndex >= 0 && cachedSlotIndex < weaponList.Length && weaponList[cachedSlotIndex] != null)
+        {
+            return weaponList[cachedSlotIndex];
+        }
+        return null;
+    }
 }
