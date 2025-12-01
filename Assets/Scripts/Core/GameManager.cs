@@ -413,7 +413,7 @@ public class GameManager : MonoBehaviour
 
     public void UpdateAmmo(int ammo, int maxAmmo)
     {
-        AmmoCounter.text = $"Ammo: {ammo}/{maxAmmo}";
+        AmmoCounter.text = $"{ammo}/{maxAmmo}";
     }
 
     // Called by a WinTrigger when the player reaches the goal

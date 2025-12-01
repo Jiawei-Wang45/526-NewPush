@@ -44,10 +44,11 @@ public class WeaponController : MonoBehaviour
         pc.playerInput.Default.DropWeapon.performed += OnWeaponDropped;
         if (rangedWeaponEquipped && fireAbility.currentWeapon)
         {
+            gameManager.AmmoCounter.transform.parent.gameObject.SetActive(true);
             gameManager.UpdateAmmo(fireAbility.currentAmmo, fireAbility.currentWeapon.maxAmmoNums);
         } else
         {
-            gameManager.AmmoCounter.text = "";
+            gameManager.AmmoCounter.transform.parent.gameObject.SetActive(false);
         }
     }
     #region callback
@@ -104,6 +105,7 @@ public class WeaponController : MonoBehaviour
             IcurrentAbility = fireAbility;
             fireAbility.ChangeWeapon((RangedWeapon)weaponToEquip, weaponInstance.transform.GetChild(0), weaponInstance.GetComponent<Animator>());
             if(gameManager){
+                gameManager.AmmoCounter.transform.parent.gameObject.SetActive(true);
                 gameManager.UpdateAmmo(fireAbility.currentAmmo,fireAbility.currentWeapon.maxAmmoNums);
             }
         }
@@ -114,7 +116,7 @@ public class WeaponController : MonoBehaviour
             meleeAbility.ChangeWeapon((MeleeWeapon)weaponToEquip, weaponInstance.transform.GetChild(0), weaponInstance.GetComponent<Animator>());
             weaponInstance.GetComponent<MeleeWeaponInstance>().InitPlayerAim(playerAim);
             if(gameManager){
-                gameManager.AmmoCounter.text = "";
+                gameManager.AmmoCounter.transform.parent.gameObject.SetActive(false);
             }
 
         }
@@ -193,6 +195,9 @@ public class WeaponController : MonoBehaviour
             Destroy(weaponInstance);
             weaponInstance = null;
             cachedSlotIndex = maxWeaponCount - 1;
+            if(gameManager){
+                gameManager.AmmoCounter.transform.parent.gameObject.SetActive(false);
+            }
         }
     }
 }
