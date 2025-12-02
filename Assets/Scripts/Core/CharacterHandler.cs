@@ -15,7 +15,6 @@ public class CharacterHandler: MonoBehaviour
     private void Awake()
     {
         pc = GetComponent<PlayerController>();
-        pc.speed = 16.0f;
         //weapons=new List<RangedWeapon>();
     }
     private void Start()

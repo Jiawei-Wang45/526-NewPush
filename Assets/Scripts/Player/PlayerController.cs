@@ -13,12 +13,12 @@ public class PlayerController : MonoBehaviour, IDamagable
     [NonSerialized] private Animator anim; 
     [NonSerialized] private SpriteRenderer sr; 
     public PlayerInput playerInput;
-    private bool isInTutorial = false;
+    [SerializeField] private bool isInTutorial = false;
     public int weaponIndex = -1;
     public int abilityIndex = -1;
     public int combinationIndex = -1; 
     // movement parameter
-    public float speed;
+    public float speed=10;
     private float inCombatSpeed;
     private float outOfCombatSpeed;
     public Vector2 movement;
