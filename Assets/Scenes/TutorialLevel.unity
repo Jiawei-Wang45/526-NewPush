@@ -12892,7 +12892,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -777, y: -509}
+  m_AnchoredPosition: {x: -765, y: -380}
   m_SizeDelta: {x: 311.29907, y: 248.456}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &727321636
@@ -47599,11 +47599,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1b063910e29d0f4c90745f48a9ce1a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isInTutorial: 0
+  isInTutorial: 1
   weaponIndex: -1
   abilityIndex: -1
   combinationIndex: -1
-  speed: 10
+  speed: 12
   movement: {x: 0, y: 0}
   knockback: {x: 0, y: 0}
   initialPosition: {x: 0, y: 0}
