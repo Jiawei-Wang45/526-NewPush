@@ -282,11 +282,14 @@ MonoBehaviour:
   enemySpawnList:
   - {fileID: 7980401159501858626, guid: cb298d38fe50fe8469fa224474718118, type: 3}
   - {fileID: 7980401159501858626, guid: 1ff3d5095b554cf49a8fe674fecece7d, type: 3}
+  eliteSpawnList:
+  - {fileID: 7980401159501858626, guid: 813fb24b8a96a4df8acb689d90d96cfb, type: 3}
   canSpawnAfterRoomNumber: 
   enemySpawnIndicator: {fileID: 62652219401394802, guid: cc44a7ca5f6c670479244ae20d6b696c, type: 3}
   gameManager: {fileID: 0}
   spawnBox: {fileID: 177841893781875243}
   spawnBudget: 60
+  eliteSpawnChance: 0.2
   waveBudgets: 
   loopWaves: 1
   totalWaves: 1
@@ -338,14 +341,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   roomTrigger: {fileID: 0}
-  doorNorth: {fileID: 0}
-  doorEast: {fileID: 0}
-  doorSouth: {fileID: 0}
-  doorWest: {fileID: 0}
-  doorNorthMode: 0
-  doorEastMode: 0
-  doorSouthMode: 0
-  doorWestMode: 0
+  obstacleNorth: {fileID: 0}
+  obstacleEast: {fileID: 0}
+  obstacleSouth: {fileID: 0}
+  obstacleWest: {fileID: 0}
+  obstacleNorthMode: 0
+  obstacleEastMode: 0
+  obstacleSouthMode: 0
+  obstacleWestMode: 0
   floorPrefab: {fileID: 8985250233356799001, guid: 2995cb799fe4b2946af61eb525399dad, type: 3}
   wallPrefab: {fileID: 4770911442484851634, guid: e80eff1e34a04b4479f7c95a39adb99e, type: 3}
   doorPrefab: {fileID: 1718955756871633245, guid: 5054cc0f7525bed499e80edc2feca79b, type: 3}
@@ -353,6 +356,14 @@ MonoBehaviour:
   doorOutsideOffset: 1
   defaultSize: 45
   clearExistingChildren: 0
+  useTilemapBuilder: 0
+  floorRuleTile: {fileID: 0}
+  wallTopRuleTile: {fileID: 0}
+  wallLeftRuleTile: {fileID: 0}
+  wallRightRuleTile: {fileID: 0}
+  wallBottomRuleTile: {fileID: 0}
+  sharedGrid: {fileID: 0}
+  isProcedurallyGenerated: 0
   enemySpawner: {fileID: 3945821863562805851}
   isRoomActive: 0
   winTrigger: {fileID: 1179398412238194903}

@@ -57,7 +57,7 @@ public class PlayerController : MonoBehaviour, IDamagable
     { 
         //Let player run fast outside of combat to move between rooms quickly
         inCombatSpeed = speed;
-        outOfCombatSpeed = speed * 2;
+        outOfCombatSpeed = speed + 8;
         if (!isInTutorial)
         {
             speed = outOfCombatSpeed;

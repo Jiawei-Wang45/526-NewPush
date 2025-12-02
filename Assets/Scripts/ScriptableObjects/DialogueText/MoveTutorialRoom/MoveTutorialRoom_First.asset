@@ -27,7 +27,7 @@ MonoBehaviour:
     choiceText: []
     choiceEventKeys: []
   - id: 2
-    text: use WASD to controll the movement of your body.
+    text: use WASD to control the movement of your body.
     nextNodeIds:
     - 3
     choiceText: []
@@ -42,6 +42,13 @@ MonoBehaviour:
   - id: 4
     text: 'Remember, I''ll always be there, come close to me and press <sprite name=f>
       to invoke me. '
+    nextNodeIds:
+    - 5
+    choiceText: []
+    choiceEventKeys: []
+  - id: 5
+    text: You can also press <sprite name=f> to skip through my dialogue, but it
+      will hurt my feelings :(
     nextNodeIds:
     - null
     choiceText: []

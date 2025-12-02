@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialogueNodes:
   - id: Start
-    text: All picking items are displayed below. They are seperated by different
-      colors. Grab it and have a try.
+    text: All the weapons and abilities are displayed below. They are seperated by
+      different colors. Grab them and have a try.
     nextNodeIds:
     - 1
     choiceText: []
@@ -35,7 +35,8 @@ MonoBehaviour:
     choiceText: []
     choiceEventKeys: []
   - id: 3
-    text: 'Of course, three dummies are listed above. Feel free to rip them! '
+    text: I'll spawn some real enemies in the rooms above. Feel free to try all of
+      your new toys against them >:)
     nextNodeIds:
     - null
     choiceText: []

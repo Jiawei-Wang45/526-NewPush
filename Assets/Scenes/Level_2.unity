@@ -454,6 +454,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 733287810915277562, guid: 9799244406a124e4a803c459701c31e7, type: 3}
+      propertyPath: speed
+      value: 12
+      objectReference: {fileID: 0}
     - target: {fileID: 1581396907068257557, guid: 9799244406a124e4a803c459701c31e7, type: 3}
       propertyPath: defenseAbilityIcon
       value: 

@@ -14,14 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialogueNodes:
   - id: Start
-    text: 'Nice job! Cluster bomb is quite useful if enemies are gathing together. '
+    text: Nice job! If enemies group together, a cluster bomb will clear them out
+      at once!
     nextNodeIds:
     - 1
     choiceText: []
     choiceEventKeys: []
   - id: 1
-    text: ' And next I will spawn a defense type of ability for you. press <sprite
-      name="f"> to pick it up. '
+    text: ' Next, I will spawn a defense type of ability for you. press <sprite name="f">
+      to pick it up. '
     nextNodeIds:
     - null
     choiceText: []

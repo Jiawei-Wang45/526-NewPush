@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialogueNodes:
   - id: Start
-    text: Use <sprite name="ml"> to trigger attacking. Kill him!
+    text: Use <sprite name="ml"> to use your weapon. Kill him!
     nextNodeIds:
     - null
     choiceText: []

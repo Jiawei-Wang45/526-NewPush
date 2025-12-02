@@ -14,15 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialogueNodes:
   - id: Start
-    text: 'Use <sprite name="e"> to trigger invincible dash. Just like the name described,
-      you will be invinvible during the dash. '
+    text: Use <sprite name="e"> to trigger invincible dash. This ability speeds you
+      up and makes you invincible just like your normal dash, but for much longer!
     nextNodeIds:
     - 1
     choiceText: []
     choiceEventKeys: []
   - id: 1
-    text: 'Practice several times. Once you are ready, come close to me and press
-      <sprite name="f">. I have a final task for you! '
+    text: 'Try it out, then once you are ready, come close to me and press <sprite
+      name="f">. I have a final task for you! '
     nextNodeIds:
     - null
     choiceText: []

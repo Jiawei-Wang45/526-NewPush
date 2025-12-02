@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9fd78b07c1d854bed858b02a0fde1ad2, type: 3}
+  m_Name: EliteLaser
+  m_EditorClassIdentifier: 
+  bulletCount: 4
+  bulletSpeed: 6
+  speedVariance: 0
+  bulletType: {fileID: 3935374861718379042, guid: f48af251745181548adf9b30f9a111c6, type: 3}
+  isLaser: 1
+  firingAngle: 360
+  baseAngleOffset: 0
+  bulletDistribution: 3
+  fireCount: 1
+  rotateBetweenFiring: 0
+  timeBetweenFiring: 0
+  speedChangeBetweenFiring: 0
+  waitUntilDone: 1
+  delayAfterPattern: 2
