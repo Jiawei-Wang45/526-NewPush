@@ -21,11 +21,42 @@ public class CharacterHandler: MonoBehaviour
     {
         if (CharacterConfigHolder.instance && CharacterConfigHolder.instance.GetConfigured())
         {
-            //weapons.Add(CharacterConfigHolder.instance.weapon);
             WeaponController weaponController = FindFirstObjectByType<WeaponController>();
             if (weaponController)
             {
-                weaponController.EquipNewWeapon(CharacterConfigHolder.instance.weapon);
+                // Load all weapons from the saved list
+                if (CharacterConfigHolder.instance.weaponList != null && CharacterConfigHolder.instance.weaponList.Count > 0)
+                {
+                    PlayerBaseWeapon currentWeapon = CharacterConfigHolder.instance.weapon;
+                    
+                    // Equip all weapons (they will be added to slots automatically)
+                    foreach (PlayerBaseWeapon weapon in CharacterConfigHolder.instance.weaponList)
+                    {
+                        if (weapon != null)
+                        {
+                            weaponController.EquipNewWeapon(weapon);
+                        }
+                    }
+                    
+                    // Switch to the previously equipped weapon if it exists
+                    if (currentWeapon != null)
+                    {
+                        int weaponSlotIndex = weaponController.FindWeaponSlotIndex(currentWeapon);
+                        if (weaponSlotIndex >= 0)
+                        {
+                            weaponController.ChangeWeapon(weaponSlotIndex, true);
+                        }
+                        else
+                        {
+                            Debug.LogWarning($"[CharacterHandler] Could not find saved current weapon '{currentWeapon.name}' in loaded weapons. Keeping last equipped weapon.");
+                        }
+                    }
+                }
+                // Backward compatibility: if weaponList is empty but weapon is set
+                else if (CharacterConfigHolder.instance.weapon != null)
+                {
+                    weaponController.EquipNewWeapon(CharacterConfigHolder.instance.weapon);
+                }
             }
             AbilityController abilityController = FindFirstObjectByType<AbilityController>();
             if (abilityController)

@@ -1,5 +1,5 @@
 using System;
-using UnityEditor.PackageManager;
+//using UnityEditor.PackageManager;
 using UnityEngine;
 
 /// <summary>
@@ -124,7 +124,7 @@ public static class RoomBuilder
 #if UNITY_EDITOR
             GameObject.DestroyImmediate(c);
 #else
-            Object.Destroy(c);
+            UnityEngine.Object.Destroy(c);
 #endif
         }
     }

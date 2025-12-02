@@ -3733,6 +3733,7 @@ MonoBehaviour:
   levelScenes:
   - Level_1
   - Level_2
+  - Level_3
   rooms: []
   clearedRoomCount: 0
   levelStartTime: 0

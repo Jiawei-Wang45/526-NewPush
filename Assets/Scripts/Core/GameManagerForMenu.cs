@@ -195,6 +195,10 @@ public class GameManagerForMenu : MonoBehaviour
     private void SaveCharacterConfig()
     {
         CharacterConfigHolder.instance.weapon = weapons[weaponIndex];
+        CharacterConfigHolder.instance.weaponList.Clear();
+        CharacterConfigHolder.instance.weaponList.Add(weapons[weaponIndex]);
+        CharacterConfigHolder.instance.currentWeaponIndex = 0;
+        
         CharacterConfigHolder.instance.attackingAbility = attackingAbilities[attackingAbilityIndex];
         CharacterConfigHolder.instance.defenseAbility= defenseAbilities[defenseAbilityIndex];
         CharacterConfigHolder.instance.selectedLevelIndex = selectedLevelIndex;

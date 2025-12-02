@@ -1,10 +1,13 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class CharacterConfigHolder : MonoBehaviour
 {
     static public CharacterConfigHolder instance;
-    public PlayerBaseWeapon weapon;
+    public PlayerBaseWeapon weapon; // Kept for backward compatibility, but use weaponList instead
+    public List<PlayerBaseWeapon> weaponList = new List<PlayerBaseWeapon>();
+    public int currentWeaponIndex = 0; // Index of currently equipped weapon in weaponList
     public PlayerAbility attackingAbility;
     public PlayerAbility defenseAbility;
     public int selectedLevelIndex = 0;

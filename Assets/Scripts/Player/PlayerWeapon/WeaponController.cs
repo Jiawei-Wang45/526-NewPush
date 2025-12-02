@@ -212,4 +212,38 @@ public class WeaponController : MonoBehaviour
         }
         return null;
     }
+    
+    /// <summary>
+    /// Get all weapons in the inventory. Returns a copy of the weapon list array.
+    /// </summary>
+    public PlayerBaseWeapon[] GetAllWeapons()
+    {
+        PlayerBaseWeapon[] weapons = new PlayerBaseWeapon[weaponList.Length];
+        System.Array.Copy(weaponList, weapons, weaponList.Length);
+        return weapons;
+    }
+    
+    /// <summary>
+    /// Get the index of the currently equipped weapon.
+    /// </summary>
+    public int GetCurrentWeaponIndex()
+    {
+        return cachedSlotIndex;
+    }
+    
+    /// <summary>
+    /// Find the slot index of a specific weapon. Returns -1 if not found.
+    /// </summary>
+    public int FindWeaponSlotIndex(PlayerBaseWeapon weapon)
+    {
+        if (weapon == null) return -1;
+        for (int i = 0; i < weaponList.Length; i++)
+        {
+            if (weaponList[i] == weapon)
+            {
+                return i;
+            }
+        }
+        return -1;
+    }
 }
