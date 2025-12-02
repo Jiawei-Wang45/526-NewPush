@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialogueNodes:
   - id: Start
-    text: Your pistol is incompetent in killing multiple enemies. Try pressing <sprite
+    text: Your weapon is incompetent in killing multiple enemies. Try pressing <sprite
       name="q"> to trigger cluster bomb
     nextNodeIds:
     - null

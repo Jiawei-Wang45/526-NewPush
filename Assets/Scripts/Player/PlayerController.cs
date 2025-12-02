@@ -17,7 +17,7 @@ public class PlayerController : MonoBehaviour, IDamagable
     public int abilityIndex = -1;
     public int combinationIndex = -1; 
     // movement parameter
-    public float speed;
+    public float speed=10;
     public Vector2 movement;
     public Vector2 knockback;
     // revive parameter
@@ -40,7 +40,7 @@ public class PlayerController : MonoBehaviour, IDamagable
         stats = GetComponent<PlayerStats>();
         weaponController = GetComponent<WeaponController>();
         anim = GetComponent<Animator>(); 
-        sr = GetComponent<SpriteRenderer>(); 
+        sr = GetComponent<SpriteRenderer>();
     }
     private void OnEnable()
     {
@@ -52,7 +52,7 @@ public class PlayerController : MonoBehaviour, IDamagable
     }
     private void Start()
     { 
-        speed = 16.0f;
+        
         initialPosition = transform.position;
         //player movement binding, ability binding now moves to relative ability script
         playerInput.Default.Move.performed += OnMoveTriggered;

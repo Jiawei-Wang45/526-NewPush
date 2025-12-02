@@ -28,39 +28,33 @@ MonoBehaviour:
     choiceText: []
     choiceEventKeys: []
   - id: 2
-    text: 'In this dungeon, guns are much lighter than melee weapons.  '
+    text: 'when you equip a gun and in the state of moving, press <sprite name=mr>
+      can let you dash on the original direction. '
     nextNodeIds:
     - 3
     choiceText: []
     choiceEventKeys: []
   - id: 3
-    text: 'As a result, when you equip a gun and in the state of moving, press <sprite
-      name=mr> can let you dash on the original direction. '
+    text: 'It''s noticable you will turn gray and enter invincible state for a little
+      while. '
     nextNodeIds:
     - 4
     choiceText: []
     choiceEventKeys: []
   - id: 4
-    text: 'It''s noticable you will turn gray and enter invincible state for a little
-      while. '
+    text: 'That will be quite useful if you are enclosed by bullet hell. '
     nextNodeIds:
     - 5
     choiceText: []
     choiceEventKeys: []
   - id: 5
-    text: 'That will be quite useful if you are enclosed by bullet hell. '
+    text: 'Next, Press <sprite name="1"> to requip pistol and try several times in
+      place.  '
     nextNodeIds:
     - 6
     choiceText: []
     choiceEventKeys: []
   - id: 6
-    text: 'Next, Press <sprite name="1"> to requip pistol and try several times in
-      place.  '
-    nextNodeIds:
-    - 7
-    choiceText: []
-    choiceEventKeys: []
-  - id: 7
     text: 'Once you are ready, come close to me and I have a task for you. '
     nextNodeIds:
     - null

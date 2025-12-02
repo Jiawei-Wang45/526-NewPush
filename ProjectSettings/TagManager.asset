@@ -11,6 +11,7 @@ TagManager:
   - Pausible
   - TutorialBullet
   - player
+  - Baffle
   layers:
   - Default
   - TransparentFX

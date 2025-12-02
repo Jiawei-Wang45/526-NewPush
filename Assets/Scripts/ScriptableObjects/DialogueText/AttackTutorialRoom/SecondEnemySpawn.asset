@@ -14,19 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialogueNodes:
   - id: Start
-    text: 'Cool! The triggering method is the same as the gun. Use Use <sprite name="ml">! '
+    text: 'Cool! The wielding method is the same as the gun.  Use <sprite name="ml">! '
     nextNodeIds:
     - 1
     choiceText: []
     choiceEventKeys: []
   - id: 1
-    text: 'Another poor enemy will be released by me. '
-    nextNodeIds:
-    - 2
-    choiceText: []
-    choiceEventKeys: []
-  - id: 2
-    text: 'And now, kill him with the weapon you are equipping! '
+    text: 'Another poor enemy will be released by me. Kill him with the weapon you
+      are equipping! '
     nextNodeIds:
     - null
     choiceText: []

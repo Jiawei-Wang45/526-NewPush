@@ -14,8 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialogueNodes:
   - id: Start
-    text: Woo, you are just a real cruel demon. But being coward can't save you out
-      of the dungeon.
+    text: Woo, you are just a real cruel demon.
     nextNodeIds:
     - 1
     choiceText: []

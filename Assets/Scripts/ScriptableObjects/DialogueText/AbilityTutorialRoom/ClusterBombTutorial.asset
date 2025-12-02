@@ -28,19 +28,13 @@ MonoBehaviour:
     choiceText: []
     choiceEventKeys: []
   - id: 2
-    text: 'In the real dungeon, ability is droped by enemies like an item. '
+    text: 'Ability is divided into two categories: attacking and defense. And each
+      ability has its own cool down time. '
     nextNodeIds:
     - 3
     choiceText: []
     choiceEventKeys: []
   - id: 3
-    text: 'Ability is divided into two categories: attacking and defense. And each
-      ability has its own cool down time. '
-    nextNodeIds:
-    - 4
-    choiceText: []
-    choiceEventKeys: []
-  - id: 4
     text: 'Let''s just try one attacking ability first. I''ll spawn a cluster bomb
       ability. press <sprite name="f"> to pick it up  '
     nextNodeIds:

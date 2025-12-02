@@ -14,24 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialogueNodes:
   - id: Start
-    text: Haha, I am still here.
+    text: Right now you are armless and vulnerable, don't you want to get some weapons?
+      All in all, this is a shooting game.
     nextNodeIds:
     - 1
     choiceText: []
     choiceEventKeys: []
   - id: 1
-    text: Right now you are armless and vulnerable, don't you want to get some weapons?
-    nextNodeIds:
-    - 2
-    choiceText: []
-    choiceEventKeys: []
-  - id: 2
-    text: All in all, this is a shooting game.
-    nextNodeIds:
-    - 3
-    choiceText: []
-    choiceEventKeys: []
-  - id: 3
     text: I will spwan a pistol for you. Come close to it and press <sprite name="f">
       to equip it.
     nextNodeIds:

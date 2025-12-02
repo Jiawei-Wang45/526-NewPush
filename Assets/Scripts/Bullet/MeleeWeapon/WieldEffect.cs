@@ -34,7 +34,9 @@ public class WieldEffect: MonoBehaviour
             }
             if (collider.gameObject.layer == ENEMYBULLET_LAYER)
             {
-                Destroy(collider.gameObject);
+                Bullet_Default enemyBullet = collider.gameObject.GetComponent<Bullet_Default>();
+                if (enemyBullet != null)
+                    Destroy(collider.gameObject);
             }
         }
         else
@@ -42,7 +44,8 @@ public class WieldEffect: MonoBehaviour
             if (collider.gameObject.layer == ENEMYBULLET_LAYER)
             {
                 Bullet_Default enemyBullet = collider.gameObject.GetComponent<Bullet_Default>();
-                enemyBullet.ReflectBullet();
+                if (enemyBullet != null)
+                    enemyBullet.ReflectBullet();
             }
         }
     }

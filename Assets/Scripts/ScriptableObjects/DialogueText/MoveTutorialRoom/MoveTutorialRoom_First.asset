@@ -27,26 +27,19 @@ MonoBehaviour:
     choiceText: []
     choiceEventKeys: []
   - id: 2
-    text: '...Be patient, otherwise you are gonna die veryyyyyy soon!! '
+    text: use WASD to controll the movement of your body.
     nextNodeIds:
     - 3
     choiceText: []
     choiceEventKeys: []
   - id: 3
-    text: 'use WASD to controll the movement of your body, get familar with it first.
-      Before you can fly, you must learn how to walk. '
+    text: 'You can practice in this room, once you get trained enough, go back and
+      talk to me. '
     nextNodeIds:
     - 4
     choiceText: []
     choiceEventKeys: []
   - id: 4
-    text: 'You can practice in this room, once you get trained enough, go back and
-      talk to me. '
-    nextNodeIds:
-    - 5
-    choiceText: []
-    choiceEventKeys: []
-  - id: 5
     text: 'Remember, I''ll always be there, come close to me and press <sprite name=f>
       to invoke me. '
     nextNodeIds:
