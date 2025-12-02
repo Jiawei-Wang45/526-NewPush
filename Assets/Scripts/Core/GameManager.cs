@@ -230,6 +230,11 @@ public class GameManager : MonoBehaviour
         // Send ability data at the start of the game
         SendAbilityData();
     }
+
+    public void setPlayerInCombat(bool isInCombat)
+    {
+        pc.setPlayerSpeedState(isInCombat);   
+    }
     
     /// <summary>
     /// Set the dungeon graph structure (called by ProceduralDungeonGenerator after generation)
@@ -300,6 +305,8 @@ public class GameManager : MonoBehaviour
         clearedRoomCount++;
         
         float roomTime = Time.time - roomStartTime;
+
+        setPlayerInCombat(false);
 
         // Send timer data only for rooms 1 and above (skip room0)
         if (sendToGoogle != null && clearedRoomCount >= 1 && lastSentTimerRoom != clearedRoomCount)
