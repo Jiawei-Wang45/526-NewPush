@@ -13,11 +13,14 @@ public class PlayerController : MonoBehaviour, IDamagable
     [NonSerialized] private Animator anim; 
     [NonSerialized] private SpriteRenderer sr; 
     public PlayerInput playerInput;
+    private bool isInTutorial = false;
     public int weaponIndex = -1;
     public int abilityIndex = -1;
     public int combinationIndex = -1; 
     // movement parameter
-    public float speed=10;
+    public float speed;
+    private float inCombatSpeed;
+    private float outOfCombatSpeed;
     public Vector2 movement;
     public Vector2 knockback;
     // revive parameter
@@ -52,12 +55,23 @@ public class PlayerController : MonoBehaviour, IDamagable
     }
     private void Start()
     { 
-        
+        //Let player run fast outside of combat to move between rooms quickly
+        inCombatSpeed = speed;
+        outOfCombatSpeed = speed * 2;
+        if (!isInTutorial)
+        {
+            speed = outOfCombatSpeed;
+        }
         initialPosition = transform.position;
         //player movement binding, ability binding now moves to relative ability script
         playerInput.Default.Move.performed += OnMoveTriggered;
         playerInput.Default.Move.canceled += OnMoveTriggered;
         playerInput.Default.Interact.started += OnInteractTriggered;
+    }
+
+    public void setPlayerSpeedState(bool isInCombat)
+    {
+        speed = isInCombat ? inCombatSpeed : outOfCombatSpeed;
     }
 
     public void AddForcePlayer(Vector2 force)

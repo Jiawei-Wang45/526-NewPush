@@ -288,6 +288,7 @@ public class RoomManager : MonoBehaviour
         // Close doors via RoomDoors
         CloseDoors();
         enemySpawner.StartWave();
+        GameManager.instance?.setPlayerInCombat(true);
 
         // Single-spawner logic: if the spawner is finite, subscribe and wait for its
         // OnSpawnerFinished event to open doors. Otherwise poll until idle.

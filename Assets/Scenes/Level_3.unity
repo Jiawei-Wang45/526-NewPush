@@ -373,7 +373,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -618, y: -618}
+  m_AnchoredPosition: {x: -618, y: -480}
   m_SizeDelta: {x: 612.74304, y: 140.98224}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &56121646
@@ -3453,6 +3453,7 @@ MonoBehaviour:
   levelScenes:
   - Level_1
   - Level_2
+  - Level_3
   rooms: []
   clearedRoomCount: 0
   levelStartTime: 0
@@ -4443,7 +4444,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -137, y: 36}
+  m_AnchoredPosition: {x: -165, y: 36}
   m_SizeDelta: {x: 311.299, y: 76.712006}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1095011905
@@ -4531,7 +4532,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -2.2259216, y: 0, z: 235.66682, w: 0}
+  m_margin: {x: -2.2259216, y: 0, z: 173.52122, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -7337,7 +7338,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
+  m_BackGroundColor: {r: 0.09411766, g: 0.1137255, b: 0.13725491, a: 1}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0

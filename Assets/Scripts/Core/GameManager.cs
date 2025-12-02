@@ -230,6 +230,11 @@ public class GameManager : MonoBehaviour
         // Send ability data at the start of the game
         SendAbilityData();
     }
+
+    public void setPlayerInCombat(bool isInCombat)
+    {
+        pc.setPlayerSpeedState(isInCombat);   
+    }
     
     /// <summary>
     /// Set the dungeon graph structure (called by ProceduralDungeonGenerator after generation)
@@ -300,6 +305,8 @@ public class GameManager : MonoBehaviour
         clearedRoomCount++;
         
         float roomTime = Time.time - roomStartTime;
+
+        setPlayerInCombat(false);
 
         // Send timer data only for rooms 1 and above (skip room0)
         if (sendToGoogle != null && clearedRoomCount >= 1 && lastSentTimerRoom != clearedRoomCount)
@@ -562,15 +569,34 @@ public class GameManager : MonoBehaviour
             return;
         }
         
-        // Get current weapon from WeaponController
+        // Get all weapons from WeaponController
         WeaponController weaponController = FindFirstObjectByType<WeaponController>();
         if (weaponController != null)
         {
+            // Save all weapons
+            PlayerBaseWeapon[] allWeapons = weaponController.GetAllWeapons();
+            CharacterConfigHolder.instance.weaponList.Clear();
+            foreach (PlayerBaseWeapon weapon in allWeapons)
+            {
+                if (weapon != null)
+                {
+                    CharacterConfigHolder.instance.weaponList.Add(weapon);
+                }
+            }
+            
+            // Save current weapon reference (for loading)
             PlayerBaseWeapon currentWeapon = weaponController.GetCurrentWeapon();
             if (currentWeapon != null)
             {
                 CharacterConfigHolder.instance.weapon = currentWeapon;
-                Debug.Log($"[GameManager] Saved current weapon: {currentWeapon.name}");
+                // Also save index for reference
+                CharacterConfigHolder.instance.currentWeaponIndex = weaponController.GetCurrentWeaponIndex();
+                Debug.Log($"[GameManager] Saved {CharacterConfigHolder.instance.weaponList.Count} weapons. Current weapon: {currentWeapon.name} (slot index: {CharacterConfigHolder.instance.currentWeaponIndex})");
+            }
+            else
+            {
+                CharacterConfigHolder.instance.currentWeaponIndex = -1;
+                Debug.Log($"[GameManager] Saved {CharacterConfigHolder.instance.weaponList.Count} weapons. No weapon currently equipped.");
             }
         }
         
