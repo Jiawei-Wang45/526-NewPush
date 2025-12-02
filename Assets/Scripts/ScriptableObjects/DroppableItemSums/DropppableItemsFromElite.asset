@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   catrgoryWeightList:
   - category: 0
-    weight: 4
-  - category: 1
     weight: 3
+  - category: 1
+    weight: 4
   - category: 2
     weight: 2
   consumableList:

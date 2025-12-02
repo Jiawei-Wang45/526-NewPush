@@ -23,6 +23,6 @@ MonoBehaviour:
   weaponBulletInOneShot: 1
   weaponFiringAngle: 0
   weaponBulletSpread: 0
-  maxAmmoNums: 7
+  maxAmmoNums: 10
   reloadTime: 1
   bulletType: {fileID: 8604903965720594084, guid: 2904f1b643d26f24ea817c2a40263281, type: 3}

@@ -21,28 +21,26 @@ MonoBehaviour:
     choiceText: []
     choiceEventKeys: []
   - id: 1
-    text: 'Unlike the ranged weapon, using melee weapon don''t allow you to dash. '
+    text: 'Unlike the ranged weapon, using a melee weapon doesn''t allow you to dash. '
     nextNodeIds:
     - 2
     choiceText: []
     choiceEventKeys: []
   - id: 2
-    text: 'But instead, press <sprite name="mr"> can let you bounce the bullets back
-      to where it came. '
+    text: 'Instead, pressing <sprite name="mr"> will reflect  the bullets back to
+      where they came! '
     nextNodeIds:
     - 3
     choiceText: []
     choiceEventKeys: []
   - id: 3
-    text: Next, use <sprite name="2"> to change back to the sword. You can try several
-      times in place.
+    text: Use <sprite name="2"> to change back to the sword and try it out!
     nextNodeIds:
     - 4
     choiceText: []
     choiceEventKeys: []
   - id: 4
-    text: 'Once you are ready, this time I will release a armed enemy shooting at
-      you constantly. '
+    text: 'Once you are ready, I will release an armed enemy shooting at you constantly. '
     nextNodeIds:
     - 5
     choiceText: []

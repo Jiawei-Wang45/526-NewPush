@@ -14,19 +14,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialogueNodes:
   - id: Start
-    text: 'Cooool, you made it. I have nothing to teach you. '
+    text: You made it! I only have one thing left to teach you.
     nextNodeIds:
     - 1
     choiceText: []
     choiceEventKeys: []
   - id: 1
-    text: My warehouse is located behind. There lists all the weapons and abilities.
+    text: Your defensive abilities don't just help you survive...they give your weapons
+      special effects!
     nextNodeIds:
     - 2
     choiceText: []
     choiceEventKeys: []
   - id: 2
-    text: ' You can pick whatever you like and tried using them.'
+    text: What effects, you say? You'll have to experiment and see.
+    nextNodeIds:
+    - 3
+    choiceText: []
+    choiceEventKeys: []
+  - id: 3
+    text: My warehouse is right over there. You'll find more weapons and a new defense
+      ability that pauses enemies and bullets!
+    nextNodeIds:
+    - 4
+    choiceText: []
+    choiceEventKeys: []
+  - id: 4
+    text: Head on over there and try them all out!
     nextNodeIds:
     - null
     choiceText: []

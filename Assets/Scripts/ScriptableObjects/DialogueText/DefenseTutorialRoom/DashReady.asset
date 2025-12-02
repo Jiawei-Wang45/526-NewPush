@@ -25,21 +25,21 @@ MonoBehaviour:
     - OnDashStart
     - null
   - id: 1
-    text: 'Nice, I will remove the green plate behind and trigger the bullet spawners.  '
+    text: Nice, I will open the way forward.
     nextNodeIds:
     - 2
     choiceText: []
     choiceEventKeys: []
   - id: 2
-    text: You need to use <sprite name="mr"> to come across the bullet screen and
-      reach another side. Good luck!
+    text: Walls of bullets will spawn in this corridor. You'll need to use your dash
+      to get past them.
     nextNodeIds:
     - null
     choiceText: []
     choiceEventKeys: []
   - id: 3
-    text: 'Ok, don''t forget to use <sprite name="1"> to change to pistol and press
-      <sprite name="mr"> while you are moving to dash. '
+    text: 'Don''t forget to use <sprite name="1"> to change to pistol and press <sprite
+      name="mr"> while you are moving to dash. '
     nextNodeIds:
     - null
     choiceText: []

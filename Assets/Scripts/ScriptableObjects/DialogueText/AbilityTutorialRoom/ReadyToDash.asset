@@ -25,14 +25,14 @@ MonoBehaviour:
     - OnInvincibleDashStart
     - null
   - id: 1
-    text: 'Now, Use the invincible dash to go through the bullet screen again. '
+    text: Now, use the invincible dash to make it through this corridor.
     nextNodeIds:
     - 2
     choiceText: []
     choiceEventKeys: []
   - id: 2
-    text: 'This time your dash ability is not qualified to do that since the bullets
-      are quite dense. Use <sprite name="e"> instead. '
+    text: 'Your regular dash will not be enough to make it through this wall of bullets!
+      Use <sprite name="e"> instead. '
     nextNodeIds:
     - null
     choiceText: []
