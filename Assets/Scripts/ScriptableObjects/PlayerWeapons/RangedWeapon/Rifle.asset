@@ -17,8 +17,8 @@ MonoBehaviour:
   weaponIcon: {fileID: -1557013538026691241, guid: 320b531c59b3b2a47aa9c134ec92f255, type: 3}
   weaponPrefab: {fileID: 3938421325960285555, guid: 49c97e2078a79f145826113c22e092dc, type: 3}
   weaponBulletLifeTime: 2
-  weaponBulletDamage: 10
-  weaponBulletSpeed: 20
+  weaponBulletDamage: 12
+  weaponBulletSpeed: 50
   weaponFireInterval: 1
   weaponBulletInOneShot: 1
   weaponFiringAngle: 0

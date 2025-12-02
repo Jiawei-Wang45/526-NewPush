@@ -106,7 +106,7 @@ MonoBehaviour:
   bulletDamage: 0
   bounceCount: 0
   bounceMultiplier: 2
-  speedChangeMultiplier: 1.07
+  speedChangeMultiplier: 1.06
 --- !u!58 &8784066047790718971
 CircleCollider2D:
   m_ObjectHideFlags: 0
