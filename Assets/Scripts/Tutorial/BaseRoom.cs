@@ -13,27 +13,38 @@ public class BaseRoom : MonoBehaviour
     [SerializeField] protected DialogueSystem dialogSystem;
     //[SerializeField] protected DialogueText dialogueText;
     [SerializeField] protected TutorialNPC NPC;
-    [SerializeField] protected GameObject leftBarrier;
+    //[SerializeField] protected GameObject leftBarrier;
     [SerializeField] protected GameObject rightBarrier;
+    [SerializeField] protected Transform exitRayPos;
+    [SerializeField] protected GameObject exitRayEffect;
+    protected GameObject exitRayinstance;
 
     public virtual void Awake()
     {
-        leftBarrier.SetActive(false);
+        //leftBarrier.SetActive(false);
         rightBarrier.SetActive(false);
     }
     public virtual void TrapPlayer()
     {
-        leftBarrier.SetActive(true);
+        //leftBarrier.SetActive(true);
         rightBarrier.SetActive(true);
     }
     public virtual void ReleasePlayer()
     {
         rightBarrier.SetActive(false);
         Destroy(NPC.gameObject);
+        exitRayinstance=Instantiate(exitRayEffect, exitRayPos.position, Quaternion.identity);
     }
     public virtual DialogueText GetCurrentDialogueText() 
     { 
         return currentDialogueText; 
+    }
+    public virtual void PlayerEntered()
+    { 
+    }
+    public virtual void PlayerExited()
+    {
+        Destroy(exitRayinstance);
     }
 
 }

@@ -16,7 +16,7 @@ public class AttackTutorialRoom : BaseRoom
 
 
     [NonSerialized] private PlayerController pc;
-    [NonSerialized] private Collider2D cd;
+    //[NonSerialized] private Collider2D cd;
     [Header("DialogueText")]
     [SerializeField] private DialogueText EquipHint;
     [SerializeField] private DialogueText FiringHint;
@@ -39,23 +39,27 @@ public class AttackTutorialRoom : BaseRoom
     private void Start()
     {
         pc = FindFirstObjectByType<PlayerController>();
-        cd=GetComponent<Collider2D>();
+        //cd=GetComponent<Collider2D>();
         dialogSystem.OnDialogueEnd += OnDialogueEnd;
     }
-    private void OnTriggerEnter2D(Collider2D collision)
+    public override void PlayerEntered()
     {
-        if (collision.gameObject.layer==LayerMask.NameToLayer("Player"))
-        {
-            TrapPlayer();
-            NPC.gameObject.SetActive(true);
-            pc.InteractObject = NPC;
-            state = DialogueState.SpawnPistol;
-            dialogSystem.gameObject.SetActive(true);
-            dialogSystem.SetDialogueText(SpawnPistol);
-            dialogSystem.StartDialogue("Start");
-            cd.enabled = false;
-        }
+        TrapPlayer();
+        NPC.gameObject.SetActive(true);
+        pc.InteractObject = NPC;
+        state = DialogueState.SpawnPistol;
+        dialogSystem.gameObject.SetActive(true);
+        dialogSystem.SetDialogueText(SpawnPistol);
+        dialogSystem.StartDialogue("Start");
+        //cd.enabled = false;
     }
+    //private void OnTriggerEnter2D(Collider2D collision)
+    //{
+    //    if (collision.gameObject.layer==LayerMask.NameToLayer("Player"))
+    //    {
+            
+    //    }
+    //}
     public void OnFirstWeaponPicked()
     {
         pc.InteractObject = NPC;

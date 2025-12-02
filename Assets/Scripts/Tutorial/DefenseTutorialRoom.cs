@@ -38,14 +38,14 @@ public class DefenseTutorialRoom : BaseRoom
     [SerializeField] private Transform NPCPos;
 
     [Header("ReplacedItem")]
-    [SerializeField] PlayerBaseWeapon Pistol;
-    [SerializeField] PlayerBaseWeapon Sword_NoDamage;
+    //[SerializeField] PlayerBaseWeapon Pistol;
+    //[SerializeField] PlayerBaseWeapon Sword_NoDamage;
     [Header("SpawnedEnemy")]
     [SerializeField] GameObject spinFireEnemy;
     [SerializeField] private Transform enemyPos;
     public override void Awake()
     {
-        leftBarrier.SetActive(false);
+        //leftBarrier.SetActive(false);
         rightBarrier.SetActive(false);
         rearLeftBarrier.SetActive(false);
     }
@@ -56,30 +56,26 @@ public class DefenseTutorialRoom : BaseRoom
         DialogueEventManager.instance.RegisterEvent("OnDashStart", StartDash);
         DialogueEventManager.instance.RegisterEvent("OnBounceStart", StartBounce);
     }
-    public void OnAreaEntered(TutorialArea.Area areaType)
+    public override void PlayerEntered()
     {
-        if (areaType == TutorialArea.Area.frontPart)
-        {
-            TrapPlayer();
-            NPC.gameObject.SetActive(true);
-            pc.InteractObject = NPC;
-            state = DialogueState.DashTutorialText;
-            dialogSystem.gameObject.SetActive(true);
-            dialogSystem.SetDialogueText(DashTutorialText);
-            dialogSystem.StartDialogue("Start");
-        }
-        else
-        {
-            rearLeftBarrier.SetActive(true);
-            EndDash();
-            NPC.gameObject.transform.position = NPCPos.position;
-            pc.InteractObject = NPC;
-            state = DialogueState.BounceTutorialText;
-            dialogSystem.gameObject.SetActive(true);
-            dialogSystem.SetDialogueText(BounceTutorialText);
-            dialogSystem.StartDialogue("Start");
-
-        }
+        TrapPlayer();
+        NPC.gameObject.SetActive(true);
+        pc.InteractObject = NPC;
+        state = DialogueState.DashTutorialText;
+        dialogSystem.gameObject.SetActive(true);
+        dialogSystem.SetDialogueText(DashTutorialText);
+        dialogSystem.StartDialogue("Start");
+    }
+    public void OnAreaEntered()
+    {
+        rearLeftBarrier.SetActive(true);
+        EndDash();
+        NPC.gameObject.transform.position = NPCPos.position;
+        pc.InteractObject = NPC;
+        state = DialogueState.BounceTutorialText;
+        dialogSystem.gameObject.SetActive(true);
+        dialogSystem.SetDialogueText(BounceTutorialText);
+        dialogSystem.StartDialogue("Start");
     }
 
     public void StartDash()
@@ -136,6 +132,7 @@ public class DefenseTutorialRoom : BaseRoom
             case DialogueState.EndDialogue:
                 rearRightBarrier.SetActive(false);
                 Destroy(NPC.gameObject);
+                exitRayinstance = Instantiate(exitRayEffect, exitRayPos.position, Quaternion.identity);
                 break;
         }
         if (state != DialogueState.None)

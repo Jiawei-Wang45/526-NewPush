@@ -43,7 +43,7 @@ public class AbilityTutorialRoom : BaseRoom
 
     public override void Awake()
     {
-        leftBarrier.SetActive(false);
+        //leftBarrier.SetActive(false);
         rightBarrier.SetActive(false);
         rearLeftBarrier.SetActive(false);
     }
@@ -54,30 +54,40 @@ public class AbilityTutorialRoom : BaseRoom
         DialogueEventManager.instance.RegisterEvent("OnInvincibleDashStart", StartInvincibleDash);
     }
 
-    public void OnAreaEntered(TutorialArea.Area areaType)
+    public override void PlayerEntered()
     {
-        switch(areaType)
-        {
-            case TutorialArea.Area.frontPart:
-                TrapPlayer();
-                NPC.gameObject.SetActive(true);
-                pc.InteractObject = NPC;
-                state = DialogueState.ClusterBombTutorial;
-                dialogSystem.gameObject.SetActive(true);
-                dialogSystem.SetDialogueText(ClusterBombTutorial);
-                dialogSystem.StartDialogue("Start");
-                break;
-            case TutorialArea.Area.rearPart:
-                EndInvincibleDash();
-                rearLeftBarrier.SetActive(true);
-                NPC.gameObject.transform.position = NPCPos.position;
-                pc.InteractObject = NPC;
-                state = DialogueState.EndDialogue;
-                dialogSystem.gameObject.SetActive(true);
-                dialogSystem.SetDialogueText(EndDialogue);
-                dialogSystem.StartDialogue("Start");
-                break;
-        }
+        TrapPlayer();
+        NPC.gameObject.SetActive(true);
+        pc.InteractObject = NPC;
+        state = DialogueState.ClusterBombTutorial;
+        dialogSystem.gameObject.SetActive(true);
+        dialogSystem.SetDialogueText(ClusterBombTutorial);
+        dialogSystem.StartDialogue("Start");
+    }
+    public void OnAreaEntered()
+    {
+        //switch(areaType)
+        //{
+        //    case TutorialArea.Area.frontPart:
+        //        TrapPlayer();
+        //        NPC.gameObject.SetActive(true);
+        //        pc.InteractObject = NPC;
+        //        state = DialogueState.ClusterBombTutorial;
+        //        dialogSystem.gameObject.SetActive(true);
+        //        dialogSystem.SetDialogueText(ClusterBombTutorial);
+        //        dialogSystem.StartDialogue("Start");
+        //        break;
+        //    case TutorialArea.Area.rearPart:
+                
+        //}
+        //EndInvincibleDash();
+        rearLeftBarrier.SetActive(true);
+        NPC.gameObject.transform.position = NPCPos.position;
+        pc.InteractObject = NPC;
+        state = DialogueState.EndDialogue;
+        dialogSystem.gameObject.SetActive(true);
+        dialogSystem.SetDialogueText(EndDialogue);
+        dialogSystem.StartDialogue("Start");
     }
     public void OnEnemyDestroyed(int index)
     {
@@ -153,6 +163,7 @@ public class AbilityTutorialRoom : BaseRoom
             case DialogueState.EndDialogue:
                 rearRightBarrier.SetActive(false);
                 Destroy(NPC.gameObject);
+                exitRayinstance = Instantiate(exitRayEffect, exitRayPos.position, Quaternion.identity);
                 break;
         }
         if (state != DialogueState.None)

@@ -22,7 +22,7 @@ public class TestTutorialRoom : BaseRoom
 
     public override void Awake()
     {
-        leftBarrier.SetActive(false);
+        //leftBarrier.SetActive(false);
     }
     private void Start()
     {
@@ -30,16 +30,14 @@ public class TestTutorialRoom : BaseRoom
         dialogSystem.OnDialogueEnd += OnDialogueEnd;
         DialogueEventManager.instance.RegisterEvent("OnBack", BackToMainMenu);
     }
-    public void OnAreaEntered(TutorialArea.Area areaType)
+    public override void PlayerEntered()
     {
-        leftBarrier.SetActive(true);
         NPC.gameObject.SetActive(true);
         pc.InteractObject = NPC;
         state = DialogueState.Introduction;
         dialogSystem.gameObject.SetActive(true);
         dialogSystem.SetDialogueText(Introduction);
         dialogSystem.StartDialogue("Start");
-
     }
     public void OnEnemyDestroyed(int index)
     {
